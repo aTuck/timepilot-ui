@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Version: 2.0.0
+Updated: 2016-02-15
+ABSType: Simple
+
+This targets file contains standard build scripts for building projects.
+
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+
+	<PropertyGroup>
+		<CleanBuild Condition="'$(CleanBuild)' == 'true'">true</CleanBuild>
+		<CleanBuild Condition="'$(CleanBuild)' == ''">true</CleanBuild>
+		<CleanBuild Condition="'$(CleanBuild)' != 'false'">true</CleanBuild>
+		<CleanBuild Condition="'$(CleanBuild)' == 'false'">false</CleanBuild>
+	</PropertyGroup>
+
+	<Target Name="Build">
+		<CallTarget Targets="Compile"/>
+	</Target>
+
+	<Target Name="Compile">
+		<!-- Call Standard MS Build Compile if no Custom Compile is ran. -->
+		<MSBuild Projects="$(MSBuildProjectFullPath)" 
+				 Targets="MSCompile" 
+				 Condition="'$(CustomCompile)' == 'false' OR '$(CustomCompile)' == ''" />
+	
+		<!-- Hook to run Custom Compile -->
+		<MSBuild Projects="$(MSBuildProjectFullPath)" 
+				 Targets="CustomCompile" 
+				 Condition="'$(CustomCompile)' == 'true'" />
+	</Target>
+	
+</Project>

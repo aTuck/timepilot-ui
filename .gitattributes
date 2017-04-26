@@ -1,0 +1,8 @@
+* -crlf
+
+*.jpg  	binary
+*.png 	binary
+*.gif 	binary
+
+*.csproj text=auto merge=union 
+*.sln text=auto eol=crlf merge=union 

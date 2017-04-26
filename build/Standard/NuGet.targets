@@ -1,0 +1,1251 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Version: 2.0.4
+Updated: 2016-08-19
+ABSType: Simple
+
+This targets file contains standard build scripts for building projects.
+
+    Reference URLs:
+        https://github.com/NuGet/Home/issues/1516
+        
+	To Do's:
+    	- Add override to NuSpecDefaultPath when overriding NuSpec
+
+    v2.0.0
+        2016-02-15: GS - Spinoff of v1.x
+    v2.0.1
+        2016-05-02: GS - Rename "ClearPackageCache" to "NuGetClearPackagesCache"
+                       - Update "NuGetClearPackagesCache": Clears the local packages cache
+                       - Add "NuGetClearGlobalPackages": Clears the local machine-wide packages folder
+                       - Rename "UpdateNuGetEXE" to "NuGetUpdateSelf"
+		2016-06-07: GS - Add support for searching in sub-folders for nuspec files using the parameter NuSpec_ScanSub=true.  Standard functionality by default.
+					   - Fix Missing nuspec display message.
+	v2.0.2
+		2016-07-21: GS - Add clear of global-packages for nuget cache.
+	v2.0.3
+		2016-08-03: GS - Add InstallNuGetPackages-Debug
+	v2.0.4
+		2016-08-19: GS - Update for support for override of NuSpec file.
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+	
+	<PropertyGroup>
+		<NuGetPath>$(Local_Tools)\NuGet</NuGetPath>	
+		<NuGet>$(NuGetPath)\nuget.exe</NuGet>
+		<NuSpecDefaultPath>$(Local_Custom)\NuGet</NuSpecDefaultPath>
+	</PropertyGroup>
+	
+	<PropertyGroup>
+	
+		<CleanNuGet Condition="'$(CleanNuGet)' == 'true'">true</CleanNuGet>
+		<CleanNuGet Condition="'$(CleanNuGet)' == ''">true</CleanNuGet>
+		<CleanNuGet Condition="'$(CleanNuGet)' != 'false'">true</CleanNuGet>
+		<CleanNuGet Condition="'$(CleanNuGet)' == 'false'">false</CleanNuGet>
+		
+		<InstallNuGet Condition="'$(InstallNuGet)' == 'true'">true</InstallNuGet>
+		<InstallNuGet Condition="'$(InstallNuGet)' == ''">true</InstallNuGet>
+		<InstallNuGet Condition="'$(InstallNuGet)' != 'false'">true</InstallNuGet>
+		<InstallNuGet Condition="'$(InstallNuGet)' == 'false'">false</InstallNuGet>
+	
+	</PropertyGroup>
+	
+	<PropertyGroup> <!-- NuGet Settings -->
+		<!-- Nuspec/NuGet Override -->
+			<NuGetTargetOverride>$(NuSpecTargetOverride)</NuGetTargetOverride>
+			<NuGetTargetOverrideStatus>False</NuGetTargetOverrideStatus>
+			<NuGetTargetOverrideStatus Condition="'$(NuSpecOverride)' != ''">True</NuGetTargetOverrideStatus>
+		<!--*****************-->
+				
+		<!-- Repository Settings -->
+			<!-- Local Repositories -->
+				<NuGetRepoLocal>$(LocalRepoPath)</NuGetRepoLocal>
+				<NuGetRepoLocal Condition="'$(NuGetRepoLocal)' == ''">C:\Temp\LocalRepo</NuGetRepoLocal>
+			<!--***********-->
+
+			<!-- Internal Repositories -->
+				<!-- Vancouver -->
+					<NuGetRepoUNCVancouver>\\photochannel.net\dfs\repositories\nuget</NuGetRepoUNCVancouver>
+					<NuGetRepoURLVancouver>http://nuget.photochannel.net</NuGetRepoURLVancouver>
+				<!--***********-->
+				<!-- Austin -->
+					<NuGetRepoUNCAustin>\\austindc01.photochannel.net\FileShare\nuget</NuGetRepoUNCAustin>
+					<NuGetRepoURLAustin>http://nuget.photochannel.net</NuGetRepoURLAustin>
+				<!--***********-->
+				<!-- BlackOps -->
+					<NuGetRepoUNCBlackOps>\\vanfile\rmteam$\SourceCode\NugetRepo</NuGetRepoUNCBlackOps>
+					<NuGetRepoURLBlackOps>\\vanfile\rmteam$\SourceCode\NugetRepo</NuGetRepoURLBlackOps>
+				<!--***********-->
+				<!-- Other -->
+					<NuGetRepoURLAzure>http://nuget.photochannel.net</NuGetRepoURLAzure>
+					<NuGetRepoURLAzurePublish>http://nuget.photochannel.net</NuGetRepoURLAzurePublish>
+					
+					<NuGetRepoURLCloud3rdParty>$(NuGetRepoURLAzure)</NuGetRepoURLCloud3rdParty>
+					<NuGetRepoURLCloud3rdPartyPublish>$(NuGetRepoURLAzure)</NuGetRepoURLCloud3rdPartyPublish>
+					
+					<NuGetRepoURLCloudOfficial>$(NuGetRepoURLAzure)</NuGetRepoURLCloudOfficial>
+					<NuGetRepoURLCloudOfficialPublish>$(NuGetRepoURLAzure)</NuGetRepoURLCloudOfficialPublish>
+					
+					<NuGetRepoURLCloudCandidate>$(NuGetRepoURLAzure)/Development/</NuGetRepoURLCloudCandidate>
+					<NuGetRepoURLCloudCandidatePublish>$(NuGetRepoURLAzure)/Development/</NuGetRepoURLCloudCandidatePublish>
+				<!--***********-->
+				<!-- Official & Candidate -->
+					<NuGetRepoUNC3rdParty Condition="'$(DevSite)'!='BlackOps'">$(NuGetRepoUNCVancouver)\3rdParty</NuGetRepoUNC3rdParty>
+					<NuGetRepoURL3rdParty Condition="'$(DevSite)'!='BlackOps'">http://nuget.photochannel.net/api/v2/</NuGetRepoURL3rdParty>
+					<NuGetRepoURL3rdPartyPublish Condition="'$(DevSite)'!='BlackOps'">http://nuget.photochannel.net</NuGetRepoURL3rdPartyPublish>
+					
+					<NuGetRepoUNCOfficial Condition="'$(DevSite)'!='BlackOps'">$(NuGetRepoUNCVancouver)\Official\Release</NuGetRepoUNCOfficial>
+					<NuGetRepoURLOfficial Condition="'$(DevSite)'!='BlackOps'">http://nuget.photochannel.net/api/v2/</NuGetRepoURLOfficial>
+					<NuGetRepoURLOfficialPublish Condition="'$(DevSite)'!='BlackOps'">http://nuget.photochannel.net</NuGetRepoURLOfficialPublish>
+					
+					<NuGetRepoUNCCandidate Condition="'$(DevSite)'!='BlackOps'">$(NuGetRepoUNCVancouver)\Teams\Common\</NuGetRepoUNCCandidate>
+					<NuGetRepoURLCandidate Condition="'$(DevSite)'!='BlackOps'">http://nuget-pre.photochannel.net/api/v2/</NuGetRepoURLCandidate>
+					<NuGetRepoURLCandidatePublish Condition="'$(DevSite)'!='BlackOps'">http://nuget-pre.photochannel.net</NuGetRepoURLCandidatePublish>
+				<!--***********-->
+				<!-- Official & Candidate (BlackOps) -->
+					<NuGetRepoUNC3rdParty Condition="'$(DevSite)'=='BlackOps'">$(NuGetRepoUNCBlackOps)\3rdParty</NuGetRepoUNC3rdParty>
+					<NuGetRepoURL3rdParty Condition="'$(DevSite)'=='BlackOps'">http://nuget.photochannel.net/api/v2/</NuGetRepoURL3rdParty>
+					<NuGetRepoURL3rdPartyPublish Condition="'$(DevSite)'=='BlackOps'">http://nuget.photochannel.net</NuGetRepoURL3rdPartyPublish>
+					
+					<NuGetRepoUNCOfficial Condition="'$(DevSite)'=='BlackOps'">$(NuGetRepoUNCBlackOps)\Official\Release</NuGetRepoUNCOfficial>
+					<NuGetRepoURLOfficial Condition="'$(DevSite)'=='BlackOps'">http://nuget.photochannel.net/api/v2/</NuGetRepoURLOfficial>
+					<NuGetRepoURLOfficialPublish Condition="'$(DevSite)'=='BlackOps'">http://nuget.photochannel.net</NuGetRepoURLOfficialPublish>
+					
+					<NuGetRepoUNCCandidate Condition="'$(DevSite)'=='BlackOps'">$(NuGetRepoUNCBlackOps)\Teams\Common\</NuGetRepoUNCCandidate>
+					<NuGetRepoURLCandidate Condition="'$(DevSite)'=='BlackOps'">http://nuget-pre.photochannel.net/api/v2/</NuGetRepoURLCandidate>
+					<NuGetRepoURLCandidatePublish Condition="'$(DevSite)'=='BlackOps'">http://nuget-pre.photochannel.net</NuGetRepoURLCandidatePublish>
+				<!--***********-->
+				
+			<!--***********-->
+
+			<!-- External Repositories -->
+				<NuGetRepoURLMicrosoft>https://www.nuget.org/api/v2/curated-feeds/microsoftdotnet/</NuGetRepoURLMicrosoft>
+				<NuGetRepoURLNuGetORG Condition="'$(NuGetORG)' == 'true'">https://www.nuget.org/api/v2/</NuGetRepoURLNuGetORG>
+			<!--***********-->
+			<!-- Location Based properties are based on the Choose action below. -->
+		<!--*****************-->
+	</PropertyGroup>
+	
+	<Choose> <!-- NuGet Repositories -->
+		<When Condition="'$(DevSite)'=='Vancouver'">
+			<!-- Repositories: Vancouver -->
+			<PropertyGroup>
+				<NuGetRepo3rdparty>$(NuGetRepoUNCVancouver)\3rdparty\</NuGetRepo3rdparty>
+				<!--<NuGetRepoOfficial>$(NuGetRepoUNCVancouver)\official\$(configuration)\</NuGetRepoOfficial>-->
+				<NuGetRepoOfficial>$(NuGetRepoUNCVancouver)\official\Release\</NuGetRepoOfficial>
+				<NuGetRepoCandidate>$(NuGetRepoUNCVancouver)\teams\common\</NuGetRepoCandidate>
+			</PropertyGroup>
+			<!--***********-->
+		</When>
+		<When Condition="'$(DevSite)'=='Austin'">
+			<!-- Repositories: Austin -->
+			<PropertyGroup>
+				<NuGetRepo3rdparty>$(NuGetRepoUNCAustin)\3rdparty\</NuGetRepo3rdparty>
+				<!--<NuGetRepoOfficial>$(NuGetRepoUNCAustin)\official\$(configuration)\</NuGetRepoOfficial>-->
+				<NuGetRepoOfficial>$(NuGetRepoUNCAustin)\official\Release\</NuGetRepoOfficial>
+				<NuGetRepoCandidate>$(NuGetRepoUNCAustin)\teams\common\</NuGetRepoCandidate>
+			</PropertyGroup>
+			<!--***********-->
+		</When>
+		<When Condition="'$(DevSite)'=='Offline'">
+			<!-- Repositories: Offline (Local) -->
+			<PropertyGroup>
+				<NuGetRepo3rdparty>$(NuGetRepoLocal)\3rdparty\</NuGetRepo3rdparty>
+				<!--<NuGetRepoOfficial>$(NuGetRepoLocal)\$(configuration)\</NuGetRepoOfficial>-->
+				<NuGetRepoOfficial>$(NuGetRepoLocal)\official\Release\</NuGetRepoOfficial>
+				<NuGetRepoCandidate>$(NuGetRepoLocal)\teams\common\</NuGetRepoCandidate>
+			</PropertyGroup>
+			<!--***********-->
+		</When>
+		<When Condition="'$(DevSite)'=='Web'">
+			<!-- Repositories: Offline (Local) -->
+			<PropertyGroup>
+				<NuGetRepo3rdparty>$(NuGetRepoURL3rdParty)</NuGetRepo3rdparty>
+				<NuGetRepoOfficial>$(NuGetRepoURLOfficial)</NuGetRepoOfficial>
+				<NuGetRepoCandidate>$(NuGetRepoURLCandidate)</NuGetRepoCandidate>
+			</PropertyGroup>
+			<!--***********-->
+		</When>
+		<When Condition="'$(DevSite)'=='Cloud'">
+			<!-- Repositories: Offline (Local) -->
+			<PropertyGroup>
+				<NuGetRepo3rdparty>$(NuGetRepoURLCloud3rdParty)</NuGetRepo3rdparty>
+				<NuGetRepoOfficial>$(NuGetRepoURLCloudOfficialPublish)</NuGetRepoOfficial>
+				<NuGetRepoCandidate>$(NuGetRepoURLCloudCandidatePublish)</NuGetRepoCandidate>
+			</PropertyGroup>
+			<!--***********-->
+		</When>
+		<When Condition="'$(DevSite)'=='WebArchive'">
+			<!-- Repositories: Offline (Local) -->
+			<PropertyGroup>
+				<NuGetRepo3rdparty>$(NuGetRepoURLVancouver)/3rdParty/nuget/</NuGetRepo3rdparty>
+				<!--<NuGetRepoOfficial>$(NuGetRepoURLVancouver)/Official/$(configuration)/nuget/</NuGetRepoOfficial>-->
+				<NuGetRepoOfficial>$(NuGetRepoURLVancouver)/Official/Release/nuget/</NuGetRepoOfficial>
+				<NuGetRepoCandidate>$(NuGetRepoURLVancouver)/Teams/Common/nuget/</NuGetRepoCandidate>
+			</PropertyGroup>
+			<!--***********-->
+		</When>
+		<When Condition="'$(DevSite)'=='BlackOps'">
+			<!-- Repositories: BlackOps -->
+			<PropertyGroup>
+				<NuGetRepo3rdparty>$(NuGetRepoURLBlackOps)/3rdParty/</NuGetRepo3rdparty>
+				<!--<NuGetRepoOfficial>$(NuGetRepoURLVancouver)/Official/$(configuration)/nuget/</NuGetRepoOfficial>-->
+				<NuGetRepoOfficial>$(NuGetRepoURLBlackOps)/Official/Release/</NuGetRepoOfficial>
+				<NuGetRepoCandidate>$(NuGetRepoURLBlackOps)/Teams/Common/</NuGetRepoCandidate>
+			</PropertyGroup>
+			<!--***********-->
+		</When>
+		<When Condition="'$(DevSite)'=='BLANK'">
+			<!-- Repositories: Blank (Test) -->
+			<PropertyGroup>
+				<NuGetRepo3rdparty></NuGetRepo3rdparty>
+				<!--<NuGetRepoOfficial></NuGetRepoOfficial>-->
+				<NuGetRepoOfficial></NuGetRepoOfficial>
+				<NuGetRepoCandidate></NuGetRepoCandidate>
+			</PropertyGroup>
+			<!--***********-->
+		</When>
+		<Otherwise>
+			<!-- Repositories: Default (Vancouver - Web) -->
+			<PropertyGroup>
+				<NuGetRepo3rdparty>$(NuGetRepoURL3rdParty)</NuGetRepo3rdparty>
+				<NuGetRepoOfficial>$(NuGetRepoURLOfficial)</NuGetRepoOfficial>
+				<NuGetRepoCandidate>$(NuGetRepoURLCandidate)</NuGetRepoCandidate>
+			</PropertyGroup>
+			<!--***********-->
+		</Otherwise>
+	</Choose>
+
+	<ItemGroup> <!-- NuGet Settings -->
+		<NuGetPackageConfigs Include="$(ProjectRoot)\**\packages.config" />
+	</ItemGroup>
+	
+	<PropertyGroup> <!-- Custom.targets Configuration (NuSpec) -->
+		<CustomNuSpecInclude_Override Condition="'$(CustomNuSpecInclude)' != '*.nuspec'">True</CustomNuSpecInclude_Override>
+		<CustomNuSpecInclude_Override Condition="'$(CustomNuSpecInclude)' == '*.nuspec'">False</CustomNuSpecInclude_Override>
+		<CustomNuSpecInclude_Override Condition="'$(CustomNuSpecInclude)' == ''">False</CustomNuSpecInclude_Override>
+		<CustomNuSpecExlcude_Override Condition="'$(CustomNuSpecExclude)' != ''">True</CustomNuSpecExlcude_Override>
+		<CustomNuSpecExlcude_Override Condition="'$(CustomNuSpecExclude)' == ''">False</CustomNuSpecExlcude_Override>
+	</PropertyGroup>
+
+	<PropertyGroup> <!-- NuSpec Override -->
+		<NuSpecOverride>$(NuSpecOverride)</NuSpecOverride>
+		<NuSpecOverrideStatus>False</NuSpecOverrideStatus>
+		<!--<NuSpecOverrideStatus Condition="'$(NuSpecOverride)' != ''">True</NuSpecOverrideStatus>-->
+		<NuSpecUpdate Condition="'$(NuSpecUpdate)' != False">True</NuSpecUpdate>
+
+		<NuSpecExtension>True</NuSpecExtension>
+		<NuSpecExtension Condition="$([System.Text.RegularExpressions.Regex]::IsMatch($(NuSpecOverride),((?i)(.nuspec))))">False</NuSpecExtension>
+	</PropertyGroup>
+
+	<ItemGroup> <!-- NuSpec Configuration -->
+		<!---->
+		<NuSpecFiles Include="$(CustomNuSpecInclude)" Exclude="$(CustomNuSpecExclude)" Condition="'$(CustomNuSpecInclude_Override)' == True AND '$(NuSpecOverrideStatus)' == False"/>
+		<NuSpecFiles Include="$(NuSpecDefaultPath)\*.nuspec" Condition="'$(NuSpecOverrideStatus)' == False"/>
+		<NuSpecFiles Include=".\**\*.nuspec" Exclude="$(CustomNuSpecExclude)" Condition="'$(SolutionSub)' == True AND '$(CustomNuSpecInclude_Override)' == False AND '$(NuSpecOverrideStatus)' == False"/>
+		<NuSpecFiles Include="*.nuspec" Exclude="$(CustomNuSpecExclude)" Condition="'$(SolutionSub)' != True AND '$(CustomNuSpecInclude_Override)' == False AND '$(NuSpecOverrideStatus)' == False"/>
+
+		<NuSpecFiles Include="$(NuSpecDefaultPath)\$(NuSpecOverride).nuspec" Condition="'$(NuSpecOverrideStatus)' == True AND '$(NuSpecExtension)' == True"/>
+		<NuSpecFiles Include="$(NuSpecDefaultPath)\$(NuSpecOverride)" Condition="'$(NuSpecOverrideStatus)' == True AND '$(NuSpecExtension)' == False"/>
+		<!--ToDo: Add override to the NuSpecDefaultPath-->
+	</ItemGroup>
+
+	<Target Name="NuGetInfo">
+		<Message Text=" "/>
+		<Message Text="msbuild project.targets /t:UpdateNuGetConfig"/>
+		<Message Text=" "/>
+		<Message Text="Optional /p:NuGetOrg=True"/>
+		<Message Text="This will allow for the NuGetOrg path to be added to the config file."/>
+	</Target>
+	
+	<Target Name="NuGetSettings">
+		<PropertyGroup>
+			<NuGetConfig Condition="Exists('$(NuGetPath)\nuget.config')">$(NuGetPath)\nuget.config</NuGetConfig>
+			<NuGetConfig Condition="Exists('$(ProjectRoot)\nuget.config')">$(ProjectRoot)\nuget.config</NuGetConfig>
+			
+			<NuGetOutputFolder>$(ProjectRoot)\packages</NuGetOutputFolder>
+			<NuGet_Status Condition="Exists('$(NuGet)')">true</NuGet_Status>
+			<NuGet_Status Condition="!Exists('$(NuGet)')">false</NuGet_Status>
+		</PropertyGroup>
+		
+		<Message Text="NuGet_Status: $(NuGet_Status)"
+				 Condition="'$(DebugMsg)' == 'true'"/> <!-- Debug -->
+		
+		<Warning  Text="Nuget.exe was not found."
+				  Condition="'$(NuGet_Status)' == 'false'"/>
+				  
+		<Message Text="NuGet Config: $(NuGetConfig)" />
+	</Target>
+	
+	<Target Name="NuGetPackageSettings" DependsOnTargets="NuGetSettings">
+		<!-- NuSpec Override will allow for setting a single NuSpec file name and overriding the bulk batch process. -->
+		<PropertyGroup>
+		<!-- NuGet Package Settings -->
+			<nuspecExtension>true</nuspecExtension>
+			<nuspecExtension Condition="$([System.Text.RegularExpressions.Regex]::IsMatch($(NuSpecOverride),((?i)(.nuspec))))">false</nuspecExtension>
+			<nugetTarget Condition="'$(NuGetTargetOverrideStatus)' == 'false'">$(BuildArtifacts)\nupkg\$(configuration)\</nugetTarget> <!-- Default -->
+			<!--<nugetTargetURL Condition="'$(NuGetTargetOverrideStatus)' == 'false'">$(CurrentRepoOfficial)</nugetTargetURL>--> <!-- Default -->
+			<nugetTarget Condition="'$(NuGetTargetOverrideStatus)' == 'true'">$(NuGetTargetOverride)\</nugetTarget> <!-- Override -->
+			<nugetTarget Condition="'$(NuGetTargetOverride)' == ''">$(BuildArtifacts)\nupkg\$(configuration)\</nugetTarget> <!-- Override if blank -->
+		<!--*****************-->
+		</PropertyGroup>
+		<Message Text="NuSpec Extension Required: $(nuspecExtension)"
+				 Condition="'$(DebugMsg)' == 'true'"/>
+	</Target>
+	
+	<Target Name="NuGetUpdateSelf" DependsOnTargets="NuGetSettings" Condition="'$(InstallNuGet)' == 'true'">
+		<Exec Command="$(NuGet) update -self" 
+			  ContinueOnError="WarnAndContinue"/>
+	</Target>
+
+	<Target Name="UpdateNuGetConfig" DependsOnTargets="ReadNuGetConfig" >
+		<Message Text="-------------------------------------------------------------------" Importance="high" />
+		<Message Text="Update: NuGet configuration settings"/>
+		<Message Text="-------------------------------------------------------------------" Importance="high" />
+		<Message Text="Attrib: Remove Read-Only flag on $(CurrentNuGet)" />
+		<Exec
+			Command='attrib -R $(NuGetConfig)'
+			WorkingDirectory="$(NuGetPath)"
+		/>
+
+		<Message Text="Updating: 3rdParty Repo" />
+			<XmlUpdate
+				Prefix="nu"
+				Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+				XmlFileName="$(NuGetConfig)"
+				XPath="/configuration/packageSources/add[@key='3rdparty']/@value"
+				Value="$(NuGetRepo3rdparty)"
+			/>
+
+		<Message Text="Updating: Official Repo" />
+			<XmlUpdate
+				Prefix="nu"
+				Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+				XmlFileName="$(NuGetConfig)"
+				XPath="/configuration/packageSources/add[@key='official']/@value"
+				Value="$(NuGetRepoOfficial)"
+			/>
+	
+		<Message Text="Updating: Teams Repo" />
+			<XmlUpdate
+				Prefix="nu"
+				Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+				XmlFileName="$(NuGetConfig)"
+				XPath="/configuration/packageSources/add[@key='teams']/@value"
+				Value="$(NuGetRepoCandidate)"
+				Condition="'$(BuildType)' != 'Official'"	
+			/>
+
+			<XmlUpdate
+				Prefix="nu"
+				Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+				XmlFileName="$(NuGetConfig)"
+				XPath="/configuration/packageSources/add[@key='teams']/@value"
+				Value=""
+				Condition="'$(BuildType)' == 'Official'"
+			/>
+			
+		<Message Text="Updating: Local Repo" />
+			<XmlUpdate
+				Prefix="nu"
+				Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+				XmlFileName="$(NuGetConfig)"
+				XPath="/configuration/packageSources/add[@key='local']/@value"
+				Value="$(NuGetRepoLocal)"
+				Condition="'$(BuildType)' != 'Official'"
+			/>
+			<XmlUpdate
+				Prefix="nu"
+				Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+				XmlFileName="$(NuGetConfig)"
+				XPath="/configuration/packageSources/add[@key='local']/@value"
+				Value=""
+				Condition="'$(BuildType)' == 'Official'"
+			/>
+			
+		<Message Text="Updating: Microsoft and .NET Repo" />
+			<XmlUpdate
+				Prefix="nu"
+				Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+				XmlFileName="$(NuGetConfig)"
+				XPath="/configuration/packageSources/add[@key='microsoft']/@value"
+				Value="$(NuGetRepoURLMicrosoft)"
+			/>
+			<XmlUpdate
+				Prefix="nu"
+				Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+				XmlFileName="$(NuGetConfig)"
+				XPath="/configuration/packageSources/add[@key='microsoft']/@value"
+				Value=""
+				Condition="'$(DevSite)' == 'BlackOps'"
+			/>
+			
+		<Message Text="Updating: NuGet.org Repo" />
+			<XmlUpdate
+				Prefix="nu"
+				Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+				XmlFileName="$(NuGetConfig)"
+				XPath="/configuration/packageSources/add[@key='nuget.org']/@value"
+				Value="$(NuGetRepoURLNuGetORG)"
+				Condition="'$(BuildType)' != 'Official'"
+			/>
+			<XmlUpdate
+				Prefix="nu"
+				Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+				XmlFileName="$(NuGetConfig)"
+				XPath="/configuration/packageSources/add[@key='nuget.org']/@value"
+				Value=""
+				Condition="'$(BuildType)' == 'Official'"
+			/>
+		<Message Text="-------------------------------------------------------------------" Importance="high" />
+	</Target>
+	
+	<Target Name="AddNuGetConfig" DependsOnTargets="NuGetSettings" Condition="'$(MSBuildExtensionPack_Status)' == 'true'">
+		<!-- Requires: MSBuild Extension Pack -->
+		<ItemGroup>
+			<!-- Set: Attributes -->
+			<GroupToAdd Include="packageSources"/>
+			
+			<!-- Set: Elements -->
+			<NuGetConfigToAdd Include="3rdparty"/>
+			<NuGetConfigToAdd Include="official"/>
+			<NuGetConfigToAdd Include="teams"/>
+			<NuGetConfigToAdd Include="local"/>
+			<NuGetConfigToAdd Include="microsoft"/>
+			<NuGetConfigToAdd Include="nuget.org"/>
+		</ItemGroup>
+
+		<Message Text="Configuration: $(Configuration)"
+				 Importance="high"/>
+		
+		<!-- Create packageSources attribute. -->
+		<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+				 Targets="AddNuGetAttribute" 
+				 Properties="SetElement=%(GroupToAdd.Identity)"/>
+				 
+		<!-- Create repository elements into the packageSource parent element. -->
+		<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+				 Targets="AddNuGetElement" 
+				 Properties="SetAttribute=%(NuGetConfigToAdd.Identity)"/>
+
+		<!-- Update newly created nuget repo elements. -->
+		<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+				 Targets="UpdateNuGetConfig" 
+				 Properties=""/>
+	</Target>
+
+	<Target Name="AddNuGetAttribute"  DependsOnTargets="NuGetSettings" Condition="'$(MSBuildExtensionPack_Status)' == 'true'">
+		<!-- Check file to see if element exists. -->
+		<MSBuild.ExtensionPack.Xml.XmlFile 
+				TaskAction="ReadElementXml"
+				File="$(NuGetConfig)"
+				XPath="/configuration/$(SetElement)">
+			<Output  PropertyName="Element_Status" TaskParameter="Value" />
+		</MSBuild.ExtensionPack.Xml.XmlFile>
+		
+		<PropertyGroup>
+			<AddNuGetAttribute_Status Condition="'$(Element_Status)' != ''">false</AddNuGetAttribute_Status>
+			<AddNuGetAttribute_Status Condition="'$(Element_Status)' == ''">true</AddNuGetAttribute_Status>
+		</PropertyGroup>
+		
+		<!-- Create Element -->
+		<MSBuild.ExtensionPack.Xml.XmlFile 
+				TaskAction="AddElement" 
+				File="$(NuGetConfig)" 
+				Element="$(SetElement)" 
+				XPath="/configuration"  
+				Condition="'$(AddNuGetAttribute_Status)'=='true'"
+			/>
+	</Target>
+	
+	<Target Name="AddNuGetElement"  DependsOnTargets="NuGetSettings" Condition="'$(MSBuildExtensionPack_Status)' == 'true'">
+		<!-- Check file to see if element exists. -->
+		<MSBuild.ExtensionPack.Xml.XmlFile 
+				TaskAction="ReadAttribute"
+				File="$(NuGetConfig)"
+				XPath="/configuration/packageSources/add[@key='$(SetAttribute)']/@key">
+			<Output PropertyName="Element_Status" TaskParameter="Value" />
+		</MSBuild.ExtensionPack.Xml.XmlFile>
+			
+		<PropertyGroup>
+			<AddNuGetElement_Status Condition="'$(Element_Status)' != ''">false</AddNuGetElement_Status>
+			<AddNuGetElement_Status Condition="'$(Element_Status)' == ''">true</AddNuGetElement_Status>
+		</PropertyGroup>
+		
+		<!-- Create Element -->
+		<MSBuild.ExtensionPack.Xml.XmlFile 
+				TaskAction="AddElement" 
+				File="$(NuGetConfig)" 
+				Key="key" 
+				Value="$(SetAttribute)" 
+				Element="add" 
+				XPath="/configuration/packageSources" 
+				Condition="'$(AddNuGetElement_Status)'=='true'"
+		/>
+		
+		<!-- Add Attribute to Element -->
+		<MSBuild.ExtensionPack.Xml.XmlFile 
+				TaskAction="AddAttribute" 
+				File="$(NuGetConfig)" 
+				Key="value" 
+				Value="%(XMLConfigAttributesToAdd.Value)" 
+				XPath="/configuration/packageSources/add[@key='$(SetAttribute)']" 
+				Condition="'$(AddNuGetElement_Status)'=='true'"
+		/>
+		
+	</Target>
+	
+	<Target Name="AddNuGetDisableElement"  DependsOnTargets="NuGetSettings" Condition="'$(MSBuildExtensionPack_Status)' == 'true'">
+		<!-- Check file to see if element exists. -->
+		<MSBuild.ExtensionPack.Xml.XmlFile 
+				TaskAction="ReadAttribute"
+				File="$(NuGetConfig)"
+				XPath="/configuration/disabledPackageSources/add[@key='$(SetAttribute)']/@key">
+			<Output PropertyName="Element_Status" TaskParameter="Value" />
+		</MSBuild.ExtensionPack.Xml.XmlFile>
+			
+		<PropertyGroup>
+			<AddNuGetElement_Status Condition="'$(Element_Status)' != ''">false</AddNuGetElement_Status>
+			<AddNuGetElement_Status Condition="'$(Element_Status)' == ''">true</AddNuGetElement_Status>
+		</PropertyGroup>
+		
+		<!-- Create Element -->
+		<MSBuild.ExtensionPack.Xml.XmlFile 
+				TaskAction="AddElement" 
+				File="$(NuGetConfig)" 
+				Key="key" 
+				Value="$(SetAttribute)" 
+				Element="add" 
+				XPath="/configuration/disabledPackageSources" 
+				Condition="'$(AddNuGetElement_Status)'=='true'"
+		/>
+		
+		<!-- Add Attribute to Element -->
+		<MSBuild.ExtensionPack.Xml.XmlFile 
+				TaskAction="AddAttribute" 
+				File="$(NuGetConfig)" 
+				Key="value" 
+				Value="true" 
+				XPath="/configuration/disabledPackageSources/add[@key='$(SetAttribute)']" 
+				Condition="'$(AddNuGetElement_Status)'=='true'"
+		/>
+		
+	</Target>
+	
+	<Target Name="ReadNuGetConfig" DependsOnTargets="NuGetSettings">
+		<Message Text="-------------------------------------------------------------------" Importance="high" />
+		<Message Text="Reading: NuGet configuration settings" Importance="high" />
+		<Message Text="-------------------------------------------------------------------" Importance="high" />
+		
+		<Message Text="Reading: 3rdparty" />
+		<XmlRead
+			Prefix="nu"
+			Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+			XmlFileName="$(NuGetConfig)"
+			XPath="/configuration/packageSources/add[@key='3rdparty']/@value">
+			<Output TaskParameter="Value" PropertyName="CurrentRepo3rdparty" />
+		</XmlRead>
+
+		<Message Text="Reading: official" />
+		<XmlRead
+			Prefix="nu"
+			Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+			XmlFileName="$(NuGetConfig)"
+			XPath="/configuration/packageSources/add[@key='official']/@value">
+			<Output TaskParameter="Value" PropertyName="CurrentRepoOfficial" />
+		</XmlRead>
+
+		<Message Text="Reading: teams" />
+		<XmlRead
+			Prefix="nu"
+			Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+			XmlFileName="$(NuGetConfig)"
+			XPath="/configuration/packageSources/add[@key='teams']/@value">
+			<Output TaskParameter="Value" PropertyName="CurrentRepoTeams" />
+		</XmlRead>
+
+		<Message Text="Reading: local" />
+		<XmlRead
+			Prefix="nu"
+			Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+			XmlFileName="$(NuGetConfig)"
+			XPath="/configuration/packageSources/add[@key='local']/@value">
+			<Output TaskParameter="Value" PropertyName="CurrentRepoLocal" />
+		</XmlRead>
+
+		<Message Text="Reading: Microsoft and .NET" />
+		<XmlRead
+			Prefix="nu"
+			Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+			XmlFileName="$(NuGetConfig)"
+			XPath="/configuration/packageSources/add[@key='microsoft']/@value">
+			<Output TaskParameter="Value" PropertyName="CurrentRepoMicrosoft" />
+		</XmlRead>
+
+		<Message Text="Reading: NuGet.org" />
+		<XmlRead
+			Prefix="nu"
+			Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+			XmlFileName="$(NuGetConfig)"
+			XPath="/configuration/packageSources/add[@key='nuget.org']/@value">
+			<Output TaskParameter="Value" PropertyName="CurrentRepoNuGetORG" />
+		</XmlRead>
+		<Message Text="-------------------------------------------------------------------" Importance="high" />
+	</Target>
+	
+	<Target Name="InstallNuGetPackages" DependsOnTargets="NuGetSettings;CleanNuGetPackages;NuGetClearPackagesCache;NuGetClearGlobalPackages" Condition="'$(InstallNuGet)' == 'true'" >
+		<Message Text="Install NuGet Packages"/>
+		<PropertyGroup>
+			<ErrorCode>0</ErrorCode>
+		</PropertyGroup>
+
+		<Message Text="Package Config: %(NuGetPackageConfigs.FullPath)" />
+		<Exec 
+			Command="$(NuGet) install &quot;%(NuGetPackageConfigs.FullPath)&quot; -o $(NuGetOutputFolder) -ConfigFile $(NuGetConfig)" 
+			Condition="Exists('%(NuGetPackageConfigs.FullPath)')"
+			ContinueOnError="True">
+			<Output TaskParameter="ExitCode" PropertyName="ErrorCode"/>
+		</Exec>
+		<!--<Message Text="The exit code is $(ErrorCode)"/>-->
+		<!--<Error Text="Error while installing NuGet packages." Condition="'$(ErrorCode)' > '0'" />
+		<OnError ExecuteTargets="InstallNuGetPackagesRetry"/>-->
+		<CallTarget Targets="InstallNuGetPackagesRetry"  Condition="'$(ErrorCode)' > '0'"/>
+	</Target>
+	
+	<Target Name="InstallNuGetPackagesRetry">
+		<!-- Retry Install -->
+		<Message Text=" "/>
+		<Message Text="--- Retry NuGet Package Install ---" Importance="High"/>
+		<Message Text=" "/>
+		<Exec 
+			Command="$(NuGet) install &quot;%(NuGetPackageConfigs.FullPath)&quot; -o $(NuGetOutputFolder) -ConfigFile $(NuGetConfig)" 
+			Condition="Exists('%(NuGetPackageConfigs.FullPath)')"
+			ContinueOnError="False">
+			<Output TaskParameter="ExitCode" PropertyName="ErrorCode"/>
+		</Exec>
+	</Target>
+	
+	<Target Name="InstallNuGetPackages-Debug">
+		<PropertyGroup>
+			<ErrorCode>0</ErrorCode>
+		</PropertyGroup>
+
+		<Message Text="Package Config: %(NuGetPackageConfigs.FullPath)" />
+		<Message Text=" " />
+		<Message Text="$(NuGet) install &quot;%(NuGetPackageConfigs.FullPath)&quot; -o $(NuGetOutputFolder) -ConfigFile $(NuGetConfig)" />
+	</Target>
+
+	<Target Name="CleanNuGetPackages" Condition="'$(CleanNuGet)' == 'true'" >
+		<Message Text="Clean NuGet Packages"/>
+		<PropertyGroup>
+			<NuGetFolder>$(ProjectRoot)\packages</NuGetFolder>
+		</PropertyGroup>
+		<RemoveDir Directories="$(NuGetFolder)" />
+	</Target>
+	
+	<Target Name="NuGetClearGlobalPackages" Condition="'$(CleanNuGet)' == 'true'" >
+		<Exec Command="$(NuGet) locals -clear global-packages" 
+			  ContinueOnError="WarnAndContinue"/>
+	</Target>
+	
+    <Target Name="NuGetClearPackagesCache" Condition="'$(CleanNuGet)' == 'true'" >
+		<!--<PropertyGroup>
+			<PackageCacheFolder>$(LOCALAPPDATA)\NuGet\Cache</PackageCacheFolder>
+		</PropertyGroup>
+		<MSBuild.ExtensionPack.FileSystem.Folder TaskAction="RemoveContent" Path="$(PackageCacheFolder)" Condition="Exists('$(PackageCacheFolder)')"/>-->
+        <Exec Command="$(NuGet) locals -clear packages-cache" 
+			  ContinueOnError="WarnAndContinue"/>
+		
+		<Exec Command="$(NuGet) locals -clear global-packages" 
+			  ContinueOnError="WarnAndContinue"/>
+		
+		<!--<Exec Command="$(NuGet) locals -clear all" 
+			  ContinueOnError="WarnAndContinue"/>-->
+	</Target>
+	
+	<Target Name="NuGetDebug" >
+		<Message Text="NuGet Config Files:" />
+		<Message Text="%(NuGetPackageConfigs.FullPath)" />
+	</Target>
+	
+	<Target Name="DisableNuGetConfig" DependsOnTargets="ReadNuGetConfig" >
+		<Message Text="-------------------------------------------------------------------" Importance="high" />
+		<Message Text="Disable: NuGet Package Sources"/>
+		<Message Text="-------------------------------------------------------------------" Importance="high" />
+		<Message Text="Attrib: Remove Read-Only flag on $(CurrentNuGet)" />
+		<Exec
+			Command='attrib -R $(NuGetConfig)'
+			WorkingDirectory="$(NuGetPath)"
+		/>
+		<ItemGroup>
+			<!-- Set: Attributes -->
+			<GroupToAdd Include="disabledPackageSources"/>
+			
+			<!-- Set: Elements -->
+			<NuGetConfigToAdd Include="3rdparty" Condition="'$(Disable)' == '3rdParty' OR '$(Disable)' == 'All'"/>
+			<NuGetConfigToAdd Include="official" Condition="'$(Disable)' == 'official' OR '$(Disable)' == 'All'"/>
+			<NuGetConfigToAdd Include="teams" Condition="'$(Disable)' == 'teams' OR '$(Disable)' == 'All'"/>
+			<NuGetConfigToAdd Include="local" Condition="'$(Disable)' == 'local' OR '$(Disable)' == 'All'"/>
+			<NuGetConfigToAdd Include="microsoft" Condition="'$(Disable)' == 'microsoft' OR '$(Disable)' == 'All'"/>
+			<NuGetConfigToAdd Include="nuget.org" Condition="'$(Disable)' == 'nuget.org' OR '$(Disable)' == 'All'"/>
+		</ItemGroup>
+
+		<!-- Create packageSources attribute. -->
+		<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+				 Targets="AddNuGetAttribute" 
+				 Properties="SetElement=%(GroupToAdd.Identity)"/>
+				 
+		<!-- Create repository elements into the packageSource parent element. -->
+		<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+				 Targets="AddNuGetDisableElement" 
+				 Properties="SetAttribute=%(NuGetConfigToAdd.Identity)"
+				 Condition="'%(NuGetConfigToAdd.Identity)' != ''"/>
+
+	</Target>
+	
+	<Target Name="PackageNuGet" DependsOnTargets="NuGetPackageSettings">
+		<!--<ItemGroup>
+			<nuspecFiles Include="*.nuspec" Condition="'$(NuSpecOverrideStatus)' == False"/>
+			<nuspecFiles Include="$(Local_Custom)\NuGet\*.nuspec" Condition="'$(NuSpecOverrideStatus)' == False"/>
+			<nuspecFiles Include="**\*.nuspec" Condition="'$(NuSpecOverrideStatus)' == False AND '$(NuSpec_ScanSub)' == True"/>
+			<nuspecFiles Include="$(NuSpecOverride).nuspec" Condition="'$(NuSpecOverrideStatus)' == True AND '$(nuspecExtension)' == True "/>
+			<nuspecFiles Include="$(NuSpecOverride)" Condition="'$(NuSpecOverrideStatus)' == True AND '$(nuspecExtension)' == False"/>
+		</ItemGroup>-->
+		
+		<PropertyGroup>
+			<nuspecFilesFound Condition="Exists(%(nuspecFiles.Identity))">true</nuspecFilesFound>
+			<nuspecFilesFound Condition="!Exists(%(nuspecFiles.Identity))">false</nuspecFilesFound>
+		</PropertyGroup>
+
+		<Message Text="No nuspec found.  No Package will be generated."
+				 Importance="high"
+				 Condition="'$(nuspecFilesFound)' == 'false'"/>
+		
+		<Exec
+			Command='attrib -R /S temp/*'
+			WorkingDirectory="$(ProjectRoot)"
+			Condition="'$(nuspecFilesFound)' == 'true'"
+		/>
+		
+		<Exec
+			Command='rmdir /S /Q temp\'
+			WorkingDirectory="$(ProjectRoot)"
+			Condition="'$(nuspecFilesFound)' == 'true'"
+		/>
+		
+		<Exec
+			Command='md temp\'
+			WorkingDirectory="$(ProjectRoot)"
+			Condition="'$(nuspecFilesFound)' == 'true' AND !Exists('$(ProjectRoot)\temp') "
+		/>
+
+		<MSBuild 
+			Projects="$(MSBuildProjectFile)"
+			Properties="nugetTarget=$(nugetTarget)"
+			Targets="PrepOutputLocal"
+			Condition="'$(nuspecFilesFound)' == 'true'"
+		/>
+
+		<MSBuild 
+			Projects="$(MSBuildProjectFile)"
+			Properties="CurrentNuGet=%(nuspecFiles.Identity)"
+			Targets="PackageNuGetBulk"
+			Condition="'$(nuspecFilesFound)' == 'true'"
+		/>
+
+		<!--<Exec
+			Command='move *.nupkg ..\nupkg\"$(configuration)"'
+			WorkingDirectory="$(MSBuildProjectDirectory)\temp"
+			Condition="'$(nuspecFilesFound)' == 'true'"
+		/> -->
+
+		<Exec
+			Command='move *.nupkg "$(nugetTarget)"'
+			WorkingDirectory="$(ProjectRoot)\temp"
+			Condition="'$(nuspecFilesFound)' == 'true'"
+		/>
+		
+		<!-- PAUSE -->
+		<!--	<MSBuild.Community.Tasks.Prompt Text="Press any key..." >
+				<Output TaskParameter="UserInput" PropertyName="out" />
+			</MSBuild.Community.Tasks.Prompt>
+		-->
+		<!-- ***** -->
+		<Exec
+			Command='rmdir /S /Q temp\'
+			WorkingDirectory="$(ProjectRoot)"
+			Condition="'$(nuspecFilesFound)' == 'true'"
+		/>
+	
+	</Target>
+	
+	<Target Name="PackageNuGetBulk" >
+		<MSBuild 
+			Projects="$(MSBuildProjectFile)"
+			Targets="UpdateNuspec"
+			Condition="'$(NuSpecUpdate)'== 'true'"
+		/>
+		<PropertyGroup>
+			<versionRelease Condition="'$(versionRelease)' == ''">$(AssemblyFileVersion_Release)</versionRelease>
+		</PropertyGroup>
+
+		<!--
+		<Message Text="*** Debug: BulkPackage ***" />
+		<Message Text="Assembly File Version (Release): $(AssemblyFileVersion_Release)" />
+		<Message Text="Version Release: $(versionRelease)" />
+		<Message Text="**************************" />
+		-->
+
+		<PropertyGroup>
+			<!-- <NuGetParameters>pack &quot;$(ProjectRoot)\$(CurrentNuGet)&quot;^
+				-NoPackageAnalysis^
+				-NoDefaultExcludes^
+				-Prop Configuration=$(configuration)^
+				-Prop versionFull=$(versionFull)^
+				-Prop versionRelease=$(versionRelease)^
+				-Prop version=$(versionWrite)^
+				-Prop FileVersion=$(versionFull)^
+			</NuGetParameters> -->
+			
+			<NuGetParameters>pack &quot;$(CurrentNuGet)&quot;^
+				-NoPackageAnalysis^
+				-NoDefaultExcludes^
+				-Prop Configuration=$(configuration)^
+				-Prop versionFull=$(versionFull)^
+				-Prop versionRelease=$(versionRelease)^
+				-Prop version=$(versionWrite)^
+				-Prop FileVersion=$(versionFull)^
+			</NuGetParameters>
+			
+			<!-- 2015-07-25: GS - PackageNuGetBulk: Add "-Prop FileVersion" for backwards compatibility with older nuspec files.-->
+		</PropertyGroup>
+		
+		<Exec
+			Command="&quot;$(NuGet)&quot; $(NuGetParameters)"
+			WorkingDirectory="$(ProjectRoot)\temp"
+		/>
+	</Target>
+	
+	<Target Name="ReadNuspec" >
+		<Message Text="Reading: Version" />
+		<XmlRead 
+			Prefix="nu"
+			Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+			XmlFileName="$(CurrentNuGet)"
+			XPath="nu:package/nu:metadata/nu:version">
+			<Output TaskParameter="Value" PropertyName="versionRead" />
+		</XmlRead>
+
+		<Message Text="Reading: Description" />
+		<XmlRead 
+			Prefix="nu"
+			Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+			XmlFileName="$(CurrentNuGet)"
+			XPath="nu:package/nu:metadata/nu:description">
+			<Output TaskParameter="Value" PropertyName="descriptionRead" />
+		</XmlRead>
+
+		<Message Text="Reading: Files Exclude" />
+		<XmlRead 
+			Prefix="nu"
+			Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+			XmlFileName="$(CurrentNuGet)"
+			XPath="nu:package/nu:files/nu:file[1]/@exclude">
+			<Output TaskParameter="Value" PropertyName="excludeRead" />
+		</XmlRead>
+	</Target>
+
+	<Target Name="UpdateNuspec" DependsOnTargets="ReadNuspec" >
+		<Message Text="-------------------------------------------------------------------" />
+		<Message Text="Update: Nuspec"/>
+		<Message Text="-------------------------------------------------------------------" />
+		<Message Text="Attrib: Remove Read-Only flag on $(CurrentNuGet)" />
+		<Exec 
+			Command='attrib -R $(CurrentNuGet)'
+			WorkingDirectory="$(MSBuildProjectDirectory)"
+		/>
+
+		<MSBuild.ExtensionPack.Framework.TextString 
+				TaskAction="Compare" 
+				Comparison="Contains" 
+				String1="$(excludeRead)" 
+				String2="**\packages.config" 
+				IgnoreCase="true"
+				Condition="'$(excludeRead)' != ''">
+			<Output PropertyName="fileExcludeAbort" TaskParameter="Result"/>
+		</MSBuild.ExtensionPack.Framework.TextString>
+
+		<PropertyGroup>
+			<fileExcludeAbort Condition="'$(excludeRead)' == ''">false</fileExcludeAbort>
+		</PropertyGroup>
+
+		<Message Text="Updating: Files to Exclude" /><!--Template: **\packages.config -->
+		<XmlUpdate 
+			Prefix="nu"
+			Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+			XmlFileName="$(CurrentNuGet)"
+			XPath="nu:package/nu:files/nu:file[1]/@exclude"
+			Value="**\packages.config;$(excludeRead)"
+			Condition="'$(fileExcludeAbort)' == 'false'"
+		/>
+
+		<Message Text="Updating: Version Information" />
+			<!-- ********** Get Version from File ********** -->
+				<MSBuild 
+					Condition="'$(versionUpdate)' == ''"
+					Projects="$(MSBuildProjectFile)"
+					Targets="GetVersionNumberFromFile"
+				/>
+
+				<PropertyGroup>
+					<VersionFull Condition="'$(versionMajor)' != ''">$(versionMajor).$(versionMinor).$(versionPatch).$(versionBuild)</VersionFull>
+					<VersionUpdate Condition="'$(versionMajor)' != ''">$(versionMajor).$(versionMinor).$(versionPatch)</VersionUpdate>
+					<VersionBuild Condition="'$(versionMajor)' != ''">$(versionBuild)</VersionBuild>
+				</PropertyGroup>
+			<!-- ******************************************* -->
+
+			<Message Text="Version Read (Pre Update): $(versionRead)"/>
+			
+			<PropertyGroup>
+				<versionWrite Condition="'$(versionUpdate)' == ''">$(versionRead)</versionWrite>
+				<versionWrite Condition="'$(versionUpdate)' != ''">$(versionUpdate)</versionWrite>
+				<versionBuild Condition="'$(versionBuild)' == ''">1000</versionBuild>
+				<versionFull Condition="$([System.Text.RegularExpressions.Regex]::IsMatch($(versionWrite),(\d+)\.(\d+)\.(\d+)\.(\d+)))">$(versionWrite)</versionFull>
+				<versionFull Condition="'$(versionFull)' == ''">$(versionWrite).$(versionBuild)</versionFull>
+				<versionWrite Condition="'$(OctoPack)' == 'true'">$(versionFull)</versionWrite>
+				<!--<versionWrite Condition="'$(ExternalPack)' == 'true'">$(versionFull)</versionWrite>--> <!-- 2015-07-26: GS - Change to VersionWrite to keep with what is defined and not updated with VersionBuild -->
+				<versionWrite Condition="'$(ExternalPack)' == 'true'">$(versionWrite)</versionWrite>
+			</PropertyGroup>
+
+			<MSBuild.ExtensionPack.Framework.TextString 
+					TaskAction="Compare" 
+					Comparison="Contains" 
+					String1="$(versionRead)" 
+					String2="$version$" 
+					IgnoreCase="true" 
+					Condition="'$(ExternalPack)' != 'true'">
+				<Output PropertyName="versionUpdateAbort" TaskParameter="Result"/>
+			</MSBuild.ExtensionPack.Framework.TextString>
+
+			<Message Text="Version Full: $(versionFull)"/>
+			<Message Text="Updating version from  '$(versionRead)' to '$(versionWrite)'" />
+			<Message Text="Build version is set to: $(versionBuild)" />
+			<Message Text="Abort Version Update: $(versionUpdateAbort)"/>
+
+			<XmlUpdate 
+				Prefix="nu"
+				Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+				XmlFileName="$(CurrentNuGet)"
+				XPath="nu:package/nu:metadata/nu:version"
+				Value="$(versionWrite)"
+				Condition="'$(versionUpdateAbort)' == 'false'"
+			/>
+
+		<Message Text="Updating: Files Target Path (OctoPack)" />
+			<XmlUpdate 
+				Condition="'$(OctoPack)' == 'true'"			
+				Prefix="nu"
+				Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+				XmlFileName="$(CurrentNuGet)"
+				XPath="nu:package/nu:files/nu:file[1]/@target"
+				Value="" 
+			/>
+
+		<!--
+		<Message Text="Updating: Description" />
+			<PropertyGroup>
+				<versionFull Condition="'$(versionBuild)' == ''">$(versionWrite)</versionFull>
+				<versionFull Condition="'$(versionBuild)' != ''">$(versionWrite).$(versionBuild)</versionFull>
+			</PropertyGroup>
+			<XmlUpdate 
+				Prefix="nu"
+				Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+				XmlFileName="$(CurrentNuGet)"
+				XPath="nu:package/nu:metadata/nu:description"
+				Value="$(descriptionRead) v$(versionFull) ($(configuration))"
+			/>
+		-->
+
+		<!--
+		<Message Text="Updating: Files Source Path" />
+			<XmlUpdate
+				Prefix="nu"
+				Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+				XmlFileName="$(CurrentNuGet)"
+				XPath="nu:package/nu:files/nu:file[1]/@src"
+				Value="bin\$(configuration)\**\*"
+			/>
+		-->
+
+		<!--
+		<Message Text="Updating: Files Target Path (Template: lib\net35)" />
+			<XmlUpdate
+				Prefix="nu"
+				Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+				XmlFileName="$(CurrentNuGet)"
+				XPath="nu:package/nu:files/nu:file[1]/@target"
+				Value="Content"
+			/>
+		-->
+		<Message Text="-------------------------------------------------------------------" />
+	</Target>
+
+	<Target Name="PrepNuSpecINT" >
+		<Exec
+			Command='attrib -R $(CurrentNuGet)'
+			WorkingDirectory="$(MSBuildProjectDirectory)"
+		/>
+
+		<Message Text="Prep: NuSpec Type" /><!--Template: Binary/Content/OctoPack -->
+			<XmlUpdate
+				Condition="'$(PrepNuSpec)' == 'binary'"
+				Prefix="nu"
+				Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+				XmlFileName="$(CurrentNuGet)"
+				XPath="nu:package/nu:files/nu:file[1]/@target"
+				Value="lib\net35"
+			/>
+			<XmlUpdate 
+				Condition="'$(PrepNuSpec)' == 'content'"
+				Prefix="nu"
+				Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+				XmlFileName="$(CurrentNuGet)"
+				XPath="nu:package/nu:files/nu:file[1]/@target"
+				Value="Content"
+			/>
+			<!-- ********** OCTOPACK ********** -->
+			<XmlUpdate
+				Condition="'$(PrepNuSpec)' == 'octopack'"
+				Prefix="nu"
+				Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+				XmlFileName="$(CurrentNuGet)"
+				XPath="nu:package/nu:files/nu:file[1]/@target"
+				Value="octopack"
+			/>
+			<!-- ****************************** -->
+	</Target>
+
+	<Target Name="PrepOutputLocal">
+		<Exec
+			Command='attrib -R /S nupkg/*'
+			WorkingDirectory="$(MSBuildProjectDirectory)"
+			Condition="'$(nugetTarget)' == ''"
+		/>
+
+		<Exec
+			Command='attrib -R /S $(nugetTarget)/*'
+			WorkingDirectory="$(MSBuildProjectDirectory)"
+			Condition="'$(nugetTarget)' != ''"
+		/>
+
+		<Exec
+			Command='rmdir /S /Q nupkg\"$(configuration)"'
+			WorkingDirectory="$(MSBuildProjectDirectory)"
+			Condition="'$(nugetTarget)' == ''"
+		/>
+
+		<Exec
+			Command='rmdir /S /Q $(nugetTarget)'
+			WorkingDirectory="$(MSBuildProjectDirectory)"
+			Condition="'$(nugetTarget)' != ''"
+		/>
+
+		<Exec
+			Command='md nupkg\"$(configuration)"'
+			WorkingDirectory="$(MSBuildProjectDirectory)"
+			Condition="'$(nugetTarget)' == ''"
+		/>
+
+		<Exec
+			Command="md $(nugetTarget)"
+			WorkingDirectory="$(MSBuildProjectDirectory)"
+			Condition="'$(nugetTarget)' != ''"
+		/>
+	</Target>	
+
+	<Target Name="PrepNuSpec">
+		<ItemGroup>
+			<nuspecFiles Include="*.nuspec"/>
+		</ItemGroup>
+
+		<MSBuild 
+			Projects="$(MSBuildProjectFile)"
+			Properties="CurrentNuGet=%(nuspecFiles.Identity)"
+			Targets="PrepNuSpecINT">
+		</MSBuild>
+	</Target>	
+	
+	<Target Name="Publish3rdParty" DependsOnTargets="NuGetSettings;NuGetPackageSettings">
+		<PropertyGroup>
+			<NuGetPackageFolder Condition="'$(nugetTarget)' == ''">$(SourceRoot)\nupkg\$(Configuration)</NuGetPackageFolder>
+			<NuGetPackageFolder Condition="'$(nugetTarget)' != ''">$(nugetTarget)</NuGetPackageFolder>
+		</PropertyGroup>
+		
+		<PropertyGroup>
+			<NuGetServerApiKey Condition="'$(NuGetAPIKey)' ==''"></NuGetServerApiKey>
+			<NuGetServerApiKey Condition="'$(NuGetAPIKey)' !=''">$(NuGetAPIKey)</NuGetServerApiKey>
+		</PropertyGroup>
+		
+		<ItemGroup>
+			<LocalNupkg Include="$(NuGetPackageFolder.TrimEnd('\'))\*.nupkg"/>
+		</ItemGroup>
+		
+		<Message Text="NuSpec Package Folder: $(NuGetPackageFolder)"
+				 Condition="'$(DebugMsg)' == 'true'"/>
+
+		<Message Text="DEBUG: copy $(NuGetPackageFolder)\*.nupkg $(NuGetRepoUNC3rdParty)"
+				 Condition="'$(PublishType)' == 'Network' AND '$(DebugMsg)' == 'true'"/>
+				 
+		<Message Text="DEBUG: $(NuGet) Push %(LocalNupkg.Identity) -ApiKey $(NuGetServerApiKey) -Source $(NuGetRepoURL3rdPartyPublish)"
+				 Condition="'$(PublishType)' == 'Web' AND '$(NuGetServerApiKey)' != '' AND '$(DebugMsg)' == 'true'"/>
+				
+		<Message Text="DEBUG: $(NuGet) Push %(LocalNupkg.Identity) -ApiKey $(NuGetServerApiKey) -Source $(NuGetRepoURLCloud3rdPartyPublish)"
+				 Condition="'$(PublishType)' == 'Cloud' AND '$(NuGetServerApiKey)' != '' AND '$(DebugMsg)' == 'true'"/>
+
+		<Exec 
+			Command='copy $(NuGetPackageFolder)\*.nupkg $(NuGetRepoUNC3rdParty)'
+			WorkingDirectory='$(SourceRoot)'
+			Condition="'$(PublishType)' == 'Network'"
+		/>
+		
+		<Exec 
+			Command='$(NuGet) Push %(LocalNupkg.Identity) -ApiKey $(NuGetServerApiKey) -Source $(NuGetRepoURL3rdPartyPublish)'
+			WorkingDirectory='$(SourceRoot)'
+			Condition="'$(PublishType)' == 'Web' AND '$(NuGetServerApiKey)' != '' AND '%(LocalNupkg.Identity)' != ''"
+		/>
+		
+		<Exec 
+			Command='$(NuGet) Push %(LocalNupkg.Identity) -ApiKey $(NuGetServerApiKey) -Source $(NuGetRepoURLCloud3rdPartyPublish)'
+			WorkingDirectory='$(SourceRoot)'
+			Condition="'$(PublishType)' == 'Cloud' AND '$(NuGetServerApiKey)' != '' AND '%(LocalNupkg.Identity)' != ''"
+		/>
+		
+	</Target>
+
+	<Target Name="PublishCandidate" DependsOnTargets="NuGetSettings;NuGetPackageSettings">
+		<PropertyGroup>
+			<NuGetPackageFolder Condition="'$(nugetTarget)' == ''">$(SourceRoot)\nupkg\$(Configuration)</NuGetPackageFolder>
+			<NuGetPackageFolder Condition="'$(nugetTarget)' != ''">$(nugetTarget)</NuGetPackageFolder>
+		</PropertyGroup>
+		
+		<PropertyGroup>
+			<NuGetServerApiKey Condition="'$(NuGetAPIKey)' ==''"></NuGetServerApiKey>
+			<NuGetServerApiKey Condition="'$(NuGetAPIKey)' !=''">$(NuGetAPIKey)</NuGetServerApiKey>
+		</PropertyGroup>
+		
+		<ItemGroup>
+			<LocalNupkg Include="$(NuGetPackageFolder.TrimEnd('\'))\*.nupkg"/>
+		</ItemGroup>
+		
+		<Message Text="NuSpec Package Folder: $(NuGetPackageFolder)"
+				 Condition="'$(DebugMsg)' == 'true'"/>
+
+		<Message Text="DEBUG: Copy %(LocalNupkg.Identity) $(NuGetRepoUNCCandidate)"
+				 Condition="'$(PublishType)' == 'Network' AND '$(DebugMsg)' == 'true'"/>
+				 
+		<Message Text="DEBUG: $(NuGet) Push %(LocalNupkg.Identity) -ApiKey $(NuGetServerApiKey) -Source $(NuGetRepoURLCandidatePublish)"
+				 Condition="'$(PublishType)' == 'Web' AND '$(NuGetServerApiKey)' != '' AND '$(DebugMsg)' == 'true'"/>
+				
+		<Message Text="DEBUG: $(NuGet) Push %(LocalNupkg.Identity) -ApiKey $(NuGetServerApiKey) -Source $(NuGetRepoURLCloudCandidatePublish)"
+				 Condition="'$(PublishType)' == 'Cloud' AND '$(NuGetServerApiKey)' != '' AND '$(DebugMsg)' == 'true'"/>
+		
+		<!-- 2015-01-26: GS - Replaced "$(NuGetPackageFolder)\*.nupkg" with "%(LocalNupkg.Identity)" -->
+		<Exec 
+			Command='Copy %(LocalNupkg.Identity) $(NuGetRepoUNCCandidate)'
+			WorkingDirectory='$(SourceRoot)'
+			Condition="'$(PublishType)' == 'Network' AND '%(LocalNupkg.Identity)' != ''"
+		/>
+		
+		<Exec 
+			Command='$(NuGet) Push %(LocalNupkg.Identity) -ApiKey $(NuGetServerApiKey) -Source $(NuGetRepoURLCandidatePublish)'
+			WorkingDirectory='$(SourceRoot)'
+			Condition="'$(PublishType)' == 'Web' AND '$(NuGetServerApiKey)' != '' AND '%(LocalNupkg.Identity)' != ''"
+		/>
+
+		<Exec 
+			Command='$(NuGet) Push %(LocalNupkg.Identity) -ApiKey $(NuGetServerApiKey) -Source $(NuGetRepoURLCloudCandidatePublish)'
+			WorkingDirectory='$(SourceRoot)'
+			Condition="'$(PublishType)' == 'Cloud' AND '$(NuGetServerApiKey)' != '' AND '%(LocalNupkg.Identity)' != ''"
+		/>
+	</Target>
+
+	<Target Name="PublishOfficial" DependsOnTargets="NuGetSettings;NuGetPackageSettings">
+		<PropertyGroup>
+			<NuGetPackageFolder Condition="'$(nugetTarget)' == ''">$(SourceRoot)\nupkg\$(Configuration)</NuGetPackageFolder>
+			<NuGetPackageFolder Condition="'$(nugetTarget)' != ''">$(nugetTarget)</NuGetPackageFolder>
+		</PropertyGroup>
+		
+		<PropertyGroup>
+			<NuGetServerApiKey Condition="'$(NuGetAPIKey)' ==''"></NuGetServerApiKey>
+			<NuGetServerApiKey Condition="'$(NuGetAPIKey)' !=''">$(NuGetAPIKey)</NuGetServerApiKey>
+		</PropertyGroup>
+		
+		<ItemGroup>
+			<LocalNupkg Include="$(NuGetPackageFolder.TrimEnd('\'))\*.nupkg"/>
+		</ItemGroup>
+		
+		<Message Text="NuSpec Package Folder: $(NuGetPackageFolder)"
+				 Condition="'$(DebugMsg)' == 'true'"/>
+
+		<Message Text="DEBUG: Copy %(LocalNupkg.Identity) $(NuGetRepoUNCOfficial)"
+				 Condition="'$(PublishType)' == 'Network' AND '$(DebugMsg)' == 'true'"/>
+				 
+		<Message Text="DEBUG: $(NuGet) Push %(LocalNupkg.Identity) -ApiKey $(NuGetServerApiKey) -Source $(NuGetRepoURLOfficialPublish)"
+				 Condition="'$(PublishType)' == 'Web' AND '$(NuGetServerApiKey)' != '' AND '$(DebugMsg)' == 'true'"/>
+				
+		<Message Text="DEBUG: $(NuGet) Push %(LocalNupkg.Identity) -ApiKey $(NuGetServerApiKey) -Source $(NuGetRepoURLOfficialPublish)"
+				 Condition="'$(PublishType)' == 'Cloud' AND '$(NuGetServerApiKey)' != '' AND '$(DebugMsg)' == 'true'"/>
+				 
+		<!-- 2015-01-26: GS - Replaced "$(NuGetPackageFolder)\*.nupkg" with "%(LocalNupkg.Identity)" -->
+		<Exec 
+			Command='Copy %(LocalNupkg.Identity) $(NuGetRepoUNCOfficial)'
+			WorkingDirectory='$(SourceRoot)'
+			Condition="'$(PublishType)' == 'Network' AND '%(LocalNupkg.Identity)' != ''"
+		/>
+		
+		<Exec 
+			Command='$(NuGet) Push %(LocalNupkg.Identity) -ApiKey $(NuGetServerApiKey) -Source $(NuGetRepoURLOfficialPublish)'
+			WorkingDirectory='$(SourceRoot)'
+			Condition="'$(PublishType)' == 'Web' AND '$(NuGetServerApiKey)' != '' AND '%(LocalNupkg.Identity)' != ''"
+		/>
+		
+		<Exec 
+			Command='$(NuGet) Push %(LocalNupkg.Identity) -ApiKey $(NuGetServerApiKey) -Source $(NuGetRepoURLOfficialPublish)'
+			WorkingDirectory='$(SourceRoot)'
+			Condition="'$(PublishType)' == 'Cloud' AND '$(NuGetServerApiKey)' != '' AND '%(LocalNupkg.Identity)' != ''"
+		/>
+
+	</Target>
+
+	<Target Name="PublishLocal" DependsOnTargets="NuGetPackageSettings">
+		<PropertyGroup>
+			<NuGetPackageFolder Condition="'$(nugetTarget)' == ''">$(SourceRoot)\nupkg\$(Configuration)</NuGetPackageFolder>
+			<NuGetPackageFolder Condition="'$(nugetTarget)' != ''">$(nugetTarget)</NuGetPackageFolder>
+		</PropertyGroup>
+		
+		<ItemGroup>
+			<LocalNupkg Include="$(NuGetPackageFolder.TrimEnd('\'))\*.nupkg"/>
+		</ItemGroup>
+		
+		<Message Text="NuSpec Package Folder: $(NuGetPackageFolder)"
+				 Condition="'$(DebugMsg)' == 'true'"/>
+
+		<Message Text="DEBUG: Copy %(LocalNupkg.Identity) $(NuGetRepoUNCOfficial)"
+				 Condition="'$(PublishType)' == 'Network' AND '$(DebugMsg)' == 'true'"/>
+		
+		<Exec 
+			Command='MD $(NuGetRepoLocal)\'
+			WorkingDirectory='$(NuGetPackageFolder)'
+			Condition="!Exists('$(NuGetRepoLocal)')"
+		/>
+		
+		<!-- 2015-01-26: GS - Replaced "$(NuGetPackageFolder)\*.nupkg" with "%(LocalNupkg.Identity)" -->
+		<Exec 
+			Command='Copy %(LocalNupkg.Identity) $(NuGetRepoLocal)'
+			WorkingDirectory='$(SourceRoot)'
+		/>
+	</Target>
+	
+</Project>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Version: 2.0.0
+Updated: 2016-02-15
+ABSType: Simple
+
+This targets file contains standard build scripts for building projects.
+
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+
+	<PropertyGroup> <!-- nDepend Settings -->
+		<nDepend_Status>False</nDepend_Status>
+		<nDepend_Status Condition="Exists('C:\.BuildTools\PNI.BuildTools\NDepend\NDepend.Console.exe')">True</nDepend_Status>
+		<nDependApp Condition="Exists('C:\.BuildTools\PNI.BuildTools\NDepend\NDepend.Console.exe')">C:\.BuildTools\PNI.BuildTools\NDepend\NDepend.Console.exe</nDependApp>
+
+		<nDepend_Status Condition="Exists('C:\Users\svc_pniabm\Downloads\NDepend_6.0.0.8550_RC1\NDepend.Console.exe')">True</nDepend_Status>
+		<nDependApp Condition="Exists('C:\Users\svc_pniabm\Downloads\NDepend_6.0.0.8550_RC1\NDepend.Console.exe')">C:\Users\svc_pniabm\Downloads\NDepend_6.0.0.8550_RC1\NDepend.Console.exe</nDependApp>
+	</PropertyGroup>
+
+	<Target Name="nDepend" Condition="'$(nDepend_Status)' == 'true'">
+		<!-- 2015-06-05: Create Shell Prototype -->
+		<PropertyGroup>
+			<nDependTarget>$(MSBuildProjectDirectory)\bin\$(Configuration)</nDependTarget>
+			<nDependReport>$(BuildArtifacts)\nDepend\Analysis</nDependReport>
+			<dotNetFrameworkPaths>C:\Windows\Microsoft.NET\Framework\v4.0.30319 C:\Windows\Microsoft.NET\Framework\v4.0.30319\WPF</dotNetFrameworkPaths>
+		</PropertyGroup>
+		
+		<ItemGroup> <!-- Solution Configuration -->
+			<nDependProject Include="*.ndproj" Exclude="$(CustomnDependExclude)" />
+			<nDependRoot Include="."/>
+		</ItemGroup>
+
+		<Message Text='"$(nDependApp)" %(nDependProject.FullPath) /OutDir $(nDependReport) /InDirs $(dotNetFrameworkPaths) $(nDependTarget)' Condition='$(DebugMsg) == True'/> <!-- Debug -->
+		
+		<Exec 
+			Command='"$(nDependApp)" %(nDependProject.FullPath) /OutDir $(nDependReport) /InDirs $(dotNetFrameworkPaths) $(nDependTarget)' 
+			Condition="Exists('%(nDependProject.FullPath)')"
+			ContinueOnError="True"
+		/>
+	</Target>
+	
+</Project>

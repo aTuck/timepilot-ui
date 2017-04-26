@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Version: 2.0.0
+Updated: 2016-02-15
+ABSType: Simple
+
+This targets file contains standard build scripts for building projects.
+
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+
+	<PropertyGroup>
+		<InstallNPM Condition="'$(InstallNPM)' == 'true'">true</InstallNPM>
+		<InstallNPM Condition="'$(InstallNPM)' == ''">true</InstallNPM>
+		<InstallNPM Condition="'$(InstallNPM)' != 'false'">true</InstallNPM>
+		<InstallNPM Condition="'$(InstallNPM)' == 'false'">false</InstallNPM>
+	</PropertyGroup>
+
+	<Target Name="InstallNPM" BeforeTargets="GRUNT" Condition="'$(InstallNPM)' == 'true'" >
+		<!--
+			To Do's:	
+				2015-04-01: GS - Fix issue with TeamCity path not working correctly with NPM/Grunt.
+		-->
+		<PropertyGroup>
+			<ErrorCode>0</ErrorCode>
+			<NODEJSPath>C:\Program Files (x86)\nodejs\</NODEJSPath>
+			<NPM>$(APPDATA)\npm</NPM>
+		</PropertyGroup>
+
+		<SetEnvVariable Name="Path" 
+						Value="$(Path);$(NODEJSPath);$(NPM)" />
+			<Exec Command="Set Path"/>
+
+		<Message Text="Package Config: package.json" />
+
+		<Exec 
+			Command="NPM install" 
+			Condition="Exists('package.json')"
+			ContinueOnError="True">
+			<Output TaskParameter="ExitCode" PropertyName="ErrorCode"/>
+		</Exec>
+		<!--<Message Text="The exit code is $(ErrorCode)"/>-->
+		<!--<Error Text="Error while installing NuGet packages." Condition="'$(ErrorCode)' > '0'" />
+		<OnError ExecuteTargets="InstallNuGetPackagesRetry"/>-->
+		<!--<CallTarget Targets="InstallNPMPackagesRetry"  Condition="'$(ErrorCode)' > '0'"/>-->
+		
+	</Target>
+
+</Project>

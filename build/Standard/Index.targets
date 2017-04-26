@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Version: 2.0.0
+Updated: 2016-02-15
+ABSType: Simple
+
+This targets file is to be the index to all external MSBuild tasks custom built.
+	
+	Reference URLs:
+		https://www.nuget.org/packages/MSBuild.SetEnvVariable/
+
+	To Do's:	
+
+	v2.0.0
+		2016-02-16: GS - Start from clean slate to build old system backup in a modular structure.
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	
+	<!-- ABS Library -->
+<!-- 	<PropertyGroup>
+		<SetTargetFile>ABS_Library.targets</SetTargetFile>
+	</PropertyGroup>
+	
+	<Import Project="$(LocalCustom)\$(SetTargetFile)" 
+			Condition="Exists('$(LocalCustom)\$(SetTargetFile)')"/>
+	
+	<Import Project="$(SkyNetPath)\$(SetTargetFile)" 
+			Condition="Exists('$(SkyNetPath)\$(SetTargetFile)')"/> -->
+	<!--************************************-->
+
+	<!-- 3rd Party -->
+		<PropertyGroup>
+			<SetTargetFile>3rdParty.targets</SetTargetFile>
+		</PropertyGroup>
+		
+		<Import Project="$(Local_Standard)\$(SetTargetFile)" 
+				Condition="Exists('$(Local_Standard)\$(SetTargetFile)')"/>
+		
+		<!-- <Import Project="$(SkyNetPath)\$(SetTargetFile)" 
+				Condition="Exists('$(SkyNetPath)\$(SetTargetFile)')"/> -->
+	<!--************************************-->
+	
+	<!-- NuGet -->
+		<PropertyGroup>
+			<SetTargetFile>NuGet.targets</SetTargetFile>
+		</PropertyGroup>
+		
+		<Import Project="$(Local_Standard)\$(SetTargetFile)" 
+				Condition="Exists('$(Local_Standard)\$(SetTargetFile)')"/>
+		
+		<!-- <Import Project="$(SkyNetPath)\$(SetTargetFile)" 
+				Condition="Exists('$(SkyNetPath)\$(SetTargetFile)')"/> -->
+	<!--************************************-->
+	
+	<!-- Microsoft -->
+		<PropertyGroup>
+			<SetTargetFile>Microsoft.targets</SetTargetFile>
+		</PropertyGroup>
+		
+		<Import Project="$(Local_Standard)\$(SetTargetFile)" 
+				Condition="Exists('$(Local_Standard)\$(SetTargetFile)')"/>
+		
+		<!-- <Import Project="$(SkyNetPath)\$(SetTargetFile)" 
+				Condition="Exists('$(SkyNetPath)\$(SetTargetFile)')"/> -->
+	<!--************************************-->
+	
+	<!-- Index (Server) -->
+		<PropertyGroup>
+			<SetTargetFile>Index.targets</SetTargetFile>
+		</PropertyGroup>
+		
+		<Import Project="$(System_Tools)\PNI.MSBuildCustom\$(SetTargetFile)" 
+				Condition="Exists('$(System_Tools)\PNI.MSBuildCustom\$(SetTargetFile)')"/>
+		
+		<!-- <Import Project="$(SkyNetPath)\$(SetTargetFile)" 
+				Condition="Exists('$(SkyNetPath)\$(SetTargetFile)')"/> -->
+	<!--************************************-->
+	
+	<!-- Build -->
+		<PropertyGroup>
+			<SetTargetFile>Build.targets</SetTargetFile>
+		</PropertyGroup>
+		
+		<Import Project="$(Local_Standard)\$(SetTargetFile)" 
+				Condition="Exists('$(Local_Standard)\$(SetTargetFile)')"/>
+		
+		<!-- <Import Project="$(SkyNetPath)\$(SetTargetFile)" 
+				Condition="Exists('$(SkyNetPath)\$(SetTargetFile)')"/> -->
+	<!--************************************-->
+	
+	<!-- Versioning -->
+		<PropertyGroup>
+			<SetTargetFile>Versioning.targets</SetTargetFile>
+		</PropertyGroup>
+		
+		<Import Project="$(Local_Standard)\$(SetTargetFile)" 
+				Condition="Exists('$(Local_Standard)\$(SetTargetFile)')"/>
+		
+		<!-- <Import Project="$(SkyNetPath)\$(SetTargetFile)" 
+				Condition="Exists('$(SkyNetPath)\$(SetTargetFile)')"/> -->
+	<!--************************************-->
+	
+	<!-- Misc -->
+		<PropertyGroup>
+			<SetTargetFile>Misc.targets</SetTargetFile>
+		</PropertyGroup>
+		
+		<Import Project="$(Local_Standard)\$(SetTargetFile)" 
+				Condition="Exists('$(Local_Standard)\$(SetTargetFile)')"/>
+		
+		<!-- <Import Project="$(SkyNetPath)\$(SetTargetFile)" 
+				Condition="Exists('$(SkyNetPath)\$(SetTargetFile)')"/> -->
+	<!--************************************-->
+	
+	<!-- Custom -->
+		<PropertyGroup>
+			<SetTargetFile>Custom.targets</SetTargetFile>
+		</PropertyGroup>
+		
+		<Import Project="$(Local_Custom)\$(SetTargetFile)" 
+				Condition="Exists('$(Local_Custom)\$(SetTargetFile)')"/>
+		
+		<PropertyGroup>
+			<CustomTargets_Status>False</CustomTargets_Status>
+			<CustomTargets_Status Condition="Exists('$(Local_Custom)\$(SetTargetFile)')">True</CustomTargets_Status>
+		</PropertyGroup>
+		
+		<!-- <Import Project="$(SkyNetPath)\$(SetTargetFile)" 
+				Condition="Exists('$(SkyNetPath)\$(SetTargetFile)')"/> -->
+	<!--************************************-->
+	
+	<!-- Testing -->
+		<PropertyGroup>
+			<SetTargetFile>Testing.targets</SetTargetFile>
+		</PropertyGroup>
+		
+		<Import Project="$(Local_Standard)\$(SetTargetFile)" 
+				Condition="Exists('$(Local_Standard)\$(SetTargetFile)')"/>
+		
+		<PropertyGroup>
+			<CustomTargets_Status>False</CustomTargets_Status>
+			<CustomTargets_Status Condition="Exists('$(Local_Standard)\$(SetTargetFile)')">True</CustomTargets_Status>
+		</PropertyGroup>
+		
+		<!-- <Import Project="$(SkyNetPath)\$(SetTargetFile)" 
+				Condition="Exists('$(SkyNetPath)\$(SetTargetFile)')"/> -->
+	<!--************************************-->
+	
+	<!-- Package -->
+		<PropertyGroup>
+			<SetTargetFile>Package.targets</SetTargetFile>
+		</PropertyGroup>
+		
+		<Import Project="$(Local_Standard)\$(SetTargetFile)" 
+				Condition="Exists('$(Local_Standard)\$(SetTargetFile)')"/>
+		
+		<PropertyGroup>
+			<CustomTargets_Status>False</CustomTargets_Status>
+			<CustomTargets_Status Condition="Exists('$(Local_Standard)\$(SetTargetFile)')">True</CustomTargets_Status>
+		</PropertyGroup>
+		
+		<!-- <Import Project="$(SkyNetPath)\$(SetTargetFile)" 
+				Condition="Exists('$(SkyNetPath)\$(SetTargetFile)')"/> -->
+	<!--************************************-->
+	
+	<!-- Publish -->
+		<PropertyGroup>
+			<SetTargetFile>Publish.targets</SetTargetFile>
+		</PropertyGroup>
+		
+		<Import Project="$(Local_Standard)\$(SetTargetFile)" 
+				Condition="Exists('$(Local_Standard)\$(SetTargetFile)')"/>
+		
+		<PropertyGroup>
+			<CustomTargets_Status>False</CustomTargets_Status>
+			<CustomTargets_Status Condition="Exists('$(Local_Standard)\$(SetTargetFile)')">True</CustomTargets_Status>
+		</PropertyGroup>
+		
+		<!-- <Import Project="$(SkyNetPath)\$(SetTargetFile)" 
+				Condition="Exists('$(SkyNetPath)\$(SetTargetFile)')"/> -->
+	<!--************************************-->
+	
+	<!-- Octopus -->
+		<PropertyGroup>
+			<SetTargetFile>Octopus.targets</SetTargetFile>
+		</PropertyGroup>
+		
+		<Import Project="$(Local_Standard)\$(SetTargetFile)" 
+				Condition="Exists('$(Local_Standard)\$(SetTargetFile)')"/>
+		
+		<PropertyGroup>
+			<CustomTargets_Status>False</CustomTargets_Status>
+			<CustomTargets_Status Condition="Exists('$(Local_Standard)\$(SetTargetFile)')">True</CustomTargets_Status>
+		</PropertyGroup>
+		
+		<!-- <Import Project="$(SkyNetPath)\$(SetTargetFile)" 
+				Condition="Exists('$(SkyNetPath)\$(SetTargetFile)')"/> -->
+	<!--************************************-->
+	
+	<Target Name="IndexInfo">
+		<Message Text="Index Debug Activated."/>
+		<Message Text=" "/>
+		<Message Text="Local Path: $(LocalCustom)"/>
+		<Message Text="SkyNet Path: $(SkyNetPath)"/>
+		<Message Text=" "/>
+		<Message Text="Local (Standard): $(Local_Standard) "/>
+		<Message Text="Local (Custom): $(Local_Custom) "/>
+		<Message Text="Local (Tools): $(Local_Tools) "/>
+		<Message Text=" "/>
+		<Message Text="MSBuildCommunityTasks_Status: $(MSBuildCommunityTasks_Status)" />
+		<Message Text="MSBuildExtensionPack_Status: $(MSBuildExtensionPack_Status)" />
+		<Message Text="CustomTargets_Status: $(CustomTargets_Status)" />
+	</Target>
+	
+</Project>

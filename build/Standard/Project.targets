@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Version: 2.0.0
+Updated: 2016-02-15
+ABSType: Simple
+
+This targets file contains standard build scripts for building projects.
+
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+
+	<PropertyGroup> 
+		<!-- Local -->
+		<ProjectRoot>$([System.IO.Path]::GetFullPath('$(MSBuildProjectDirectory)\..\..\'))</ProjectRoot>
+
+		<Local_Standard>$(MSBuildProjectDirectory)</Local_Standard>
+		<Local_Custom>$([System.IO.Path]::GetFullPath('$(MSBuildProjectDirectory)\..\Custom'))</Local_Custom>
+		<Local_Tools>$(ProjectRoot)Tools</Local_Tools>
+
+		<!--<DevPath_Powershell>C:\PNI.RM\Automation\BuildSystem\Tools\Custom\Scripts\PowerShell</DevPath_Powershell>-->
+	
+		<!-- Server -->
+		<System_Tools>C:\.BuildTools</System_Tools>	
+		<SolutionRoot>$(ProjectRoot)</SolutionRoot>
+		<SourceRoot>$(SolutionRoot)src</SourceRoot>
+		
+		<!-- Global -->
+		<DebugMsg>false</DebugMsg>
+		<Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+		<ExternalPack Condition="'$(ExternalPack)' == 'true'">true</ExternalPack>
+		<BuildArtifacts>$(ProjectRoot)Artifacts</BuildArtifacts>
+		<BuildArtifactsServerRemote>\\photochannel.net\dfs\builds\</BuildArtifactsServerRemote>
+	
+	</PropertyGroup>
+
+	<PropertyGroup> <!-- Server -->
+		<!-- <SkyNetRoot Condition="Exists('$(SystemDrive)\.BuildTools')">$(SystemDrive)\.BuildTools</SkyNetRoot>
+		<SkyNetPackage>PNI.MSBuildCustom</SkyNetPackage>
+		<SkyNetPath Condition="'$(SkyNetRoot)' != ''">$(SkyNetRoot)\$(SkyNetPackage)</SkyNetPath> -->
+	
+	</PropertyGroup>
+
+	<!-- Index -->
+		<PropertyGroup>
+			<SetTargetFile>Index.targets</SetTargetFile>
+		</PropertyGroup>
+		
+		<Import Project="$(Local_Standard)\$(SetTargetFile)" 
+				Condition="Exists('$(Local_Standard)\$(SetTargetFile)')"/>
+		
+		<PropertyGroup>
+			<CustomTargets_Status>False</CustomTargets_Status>
+			<CustomTargets_Status Condition="Exists('$(Local_Standard)\$(SetTargetFile)')">True</CustomTargets_Status>
+		</PropertyGroup>
+		
+		<!-- <Import Project="$(SkyNetPath)\$(SetTargetFile)" 
+				Condition="Exists('$(SkyNetPath)\$(SetTargetFile)')"/> -->
+	<!--************************************-->
+
+</Project>

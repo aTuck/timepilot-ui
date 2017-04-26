@@ -1,0 +1,649 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Version: 2.0.0
+Updated: 2016-02-15
+ABSType: Simple
+
+This targets file contains standard build scripts for building projects.
+
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+
+	<Target Name="Package" DependsOnTargets="Boot">
+		<!--<CallTarget Targets="PackageNuGet"/>-->
+		<CallTarget Targets="PackageNuGet" Condition="'$(PackageType)' == ''" /> <!-- NuGet -->
+		<CallTarget Targets="PackageNuGet" Condition="'$(PackageType)' == 'NuGet'" /> <!-- NuGet -->
+		<CallTarget Targets="PackageProjectWeb" Condition="'$(PackageType)' == 'WebApp'" />
+		<CallTarget Targets="PackageApp" Condition="'$(PackageType)' == 'App'" />
+		<CallTarget Targets="PackageSource" Condition="'$(PackageType)' == 'Source'" />
+		<CallTarget Targets="PackageFolder" Condition="'$(PackageType)' == 'Folder'" />
+		<CallTarget Targets="PackageOcto" Condition="'$(PackageType)' == 'Octo'" /> <!-- Octopus -->
+	</Target>
+	
+	<Target Name="PackageProjectWeb" DependsOnTargets="GetVersionNumberFromFile" Condition="'$(PackageProjectName)' != ''">
+		<PropertyGroup>
+			<!-- Name of the solution to be compiled without the .sln extension -->
+			<PackageProjectName>$(PackageProjectName)</PackageProjectName>
+			<!-- Name of the zip file -->
+			<PackageZipName Condition="'$(PackageZipOverride)' == ''">$(PackageProjectName)</PackageZipName>
+			<PackageZipName Condition="'$(PackageZipOverride)' != ''">$(PackageZipOverride)</PackageZipName>
+			
+			<!-- Path where the solution file is located (.sln) -->
+			<!-- <SolutionPath>%(SolutionRoot.FullPath)</SolutionPath> -->
+			<SolutionPath>$(SourceRoot)</SolutionPath>
+			
+			<!-- Path where the project files are located -->
+			<ProjectPath Condition="'$(PackageProjectSubFolder)' == ''">$(SolutionPath)\$(PackageProjectName)\</ProjectPath>
+			<ProjectPath Condition="'$(PackageProjectSubFolder)' != ''">$(SolutionPath)\$(PackageProjectSubFolder)\$(PackageProjectName)\</ProjectPath>
+
+			<!-- Location of compiled files -->
+			<FilePath Condition="$(Configuration)=='Debug'">$(ProjectPath)</FilePath>
+			<FilePath Condition="$(Configuration)=='Release'">$(ProjectPath)</FilePath>	
+
+			<!-- Path where the nightly zip file will be copied -->
+			<PackagePathTarget>$(BuildArtifacts)\packages\$(Configuration)</PackagePathTarget>		
+
+			<StringDate>$([System.DateTime]::Now.ToString('yyyy-MM-dd'))</StringDate>
+
+			<!-- List of files that will be included in the package -->
+			<!-- Release -->
+			<IncludeFilter Condition="$(Configuration)=='Release'">
+				$(FilePath)\**\*.*
+			</IncludeFilter>
+			<!-- Debug -->
+			<IncludeFilter Condition="$(Configuration)=='Debug'">
+				$(FilePath)\**\*.*
+			</IncludeFilter>
+
+			<!-- List of files that will be excluded from the package -->
+			<!-- Release -->
+			<ExcludeFilter Condition="$(Configuration)=='Release'">
+				$(FilePath)\**\*.cs;
+				$(FilePath)\**\*.user;
+				$(FilePath)\**\*.exp;
+				$(FilePath)\**\obj\**;
+				$(FilePath)\**\migrations\**;
+				$(FilePath)\**\Properties\**;
+				$(FilePath)\packages.config;
+				$(FilePath)\*.csproj;
+				$(FilePath)\**\*.vspscc;
+				$(FilePath)\**\*.vssscc;
+				$(FilePath)\*.nuspec;
+				$(FilePath)\**\*.nupkg;
+				$(FilePath)\**\Thumbs.db;
+				$(FilePath)\**\vssver.scc;
+				$(FilePath)\**\packages\**;
+				$(FilePath)\**\.gitignore;
+				$(FilePath)\Project.Targets;
+				$(FilePath)\Custom.Targets;
+				$(FilePath)\*.sln;
+				$(FilePath)\**\.nuget\**;
+				$(FilePath)\**\.octopack\**;
+				$(FilePath)\**\.utilities\**;
+				$(FilePath)\**\BuildInfo.txt;
+				$(FilePath)\**\Quickver.txt;
+			</ExcludeFilter>
+			<!-- Debug -->
+			<ExcludeFilter Condition="$(Configuration)=='Debug'">
+				$(FilePath)\**\*.cs;
+				$(FilePath)\**\*.user;
+				$(FilePath)\**\*.exp;
+				$(FilePath)\**\obj\**;
+				$(FilePath)\**\migrations\**;
+				$(FilePath)\**\Properties\**;
+				$(FilePath)\packages.config;
+				$(FilePath)\*.csproj;
+				$(FilePath)\**\*.vspscc;
+				$(FilePath)\**\*.vssscc;
+				$(FilePath)\*.nuspec;
+				$(FilePath)\**\*.nupkg;
+				$(FilePath)\**\Thumbs.db;
+				$(FilePath)\**\vssver.scc;
+				$(FilePath)\**\packages\**;
+				$(FilePath)\**\.gitignore;
+				$(FilePath)\Project.Targets;
+				$(FilePath)\Custom.Targets;
+				$(FilePath)\*.sln;
+				$(FilePath)\**\.nuget\**;
+				$(FilePath)\**\.octopack\**;
+				$(FilePath)\**\.utilities\**;
+				$(FilePath)\**\BuildInfo.txt;
+				$(FilePath)\**\Quickver.txt;
+			</ExcludeFilter>
+		</PropertyGroup>
+
+		<ItemGroup>
+			<PackageProjectWebFiles
+				Include="$(IncludeFilter)" 
+				Exclude="$(ExcludeFilter)" 
+			/>
+		</ItemGroup>
+		<MakeDir Directories="$(PackagePathTarget)\"/>
+		
+		<MSBuild.ExtensionPack.Compression.Zip 
+			TaskAction="Create" 
+			CompressFiles="@(PackageProjectWebFiles)" 
+			ZipFileName="$(PackagePathTarget)\$(PackageZipName)_$(AssemblyFileVersion_FULL)_($(Configuration)).zip"
+			RemoveRoot="$(ProjectPath)"
+		/>
+
+		<!-- ***** OctoPack Add-On ***** -->
+				<PropertyGroup Condition="$(RunOctoPack)=='true'">
+					<TempFolder>$(SolutionPath)\Temp\Octo</TempFolder>
+				</PropertyGroup>
+				
+				<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+						 Targets="OctoPackAddon" 
+						 Properties="RunOctoPack_Pre=True;TempFolder=$(TempFolder)"
+						 Condition="$(RunOctoPack)=='true'"
+				/>
+				<Copy SourceFiles="@(PackageProjectWebFiles)" 
+					  DestinationFolder="$(TempFolder)\%(RecursiveDir)" 
+					  Condition="$(RunOctoPack)=='true'"
+				/>
+				<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+						 Targets="OctoPackAddon" 
+						 Properties="RunOctoPack_Post=True;TempFolder=$(TempFolder);PackageZipName=$(PackageZipName)"
+						 Condition="$(RunOctoPack)=='true'"
+				/>
+		<!-- *************************** -->
+	</Target>
+	
+	<Target Name="PackageProjectWebSplitSite" DependsOnTargets="GetVersionNumberFromFile" Condition="'$(PackageProjectName)' != ''">
+		<PropertyGroup>
+			<!-- Name of the solution to be compiled without the .sln extension -->
+			<PackageProjectName>$(PackageProjectName)</PackageProjectName>
+			<!-- Name of the zip file -->
+			<PackageZipName Condition="'$(PackageZipOverride)' == ''">$(PackageProjectName)-Site</PackageZipName>
+			<PackageZipName Condition="'$(PackageZipOverride)' != ''">$(PackageZipOverride)-Site</PackageZipName>
+			
+			<!-- Path where the solution file is located (.sln) -->
+			<!-- <SolutionPath>%(SolutionRoot.FullPath)</SolutionPath> -->
+			<SolutionPath>$(SourceRoot)</SolutionPath>
+			
+			<!-- Path where the project files are located -->
+			<ProjectPath Condition="'$(PackageProjectSubFolder)' == ''">$(SolutionPath)\$(PackageProjectName)\</ProjectPath>
+			<ProjectPath Condition="'$(PackageProjectSubFolder)' != ''">$(SolutionPath)\$(PackageProjectSubFolder)\$(PackageProjectName)\</ProjectPath>
+
+			<!-- Location of compiled files -->
+			<FilePath Condition="$(Configuration)=='Debug'">$(ProjectPath)</FilePath>
+			<FilePath Condition="$(Configuration)=='Release'">$(ProjectPath)</FilePath>	
+
+			<!-- Path where the nightly zip file will be copied -->
+			<PackagePathTarget>$(BuildArtifacts)\packages\$(Configuration)</PackagePathTarget>		
+
+			<StringDate>$([System.DateTime]::Now.ToString('yyyy-MM-dd'))</StringDate>
+
+			<!-- List of files that will be included in the package -->
+			<!-- Release -->
+			<IncludeFilter Condition="$(Configuration)=='Release'">
+				$(FilePath)\**\*.*
+			</IncludeFilter>
+			<!-- Debug -->
+			<IncludeFilter Condition="$(Configuration)=='Debug'">
+				$(FilePath)\**\*.*
+			</IncludeFilter>
+
+			<!-- List of files that will be excluded from the package -->
+			<!-- Release -->
+			<ExcludeFilter Condition="$(Configuration)=='Release'">
+				$(FilePath)\**\*.cs;
+				$(FilePath)\**\*.user;
+				$(FilePath)\**\*.exp;
+				$(FilePath)\**\obj\**;
+				$(FilePath)\**\migrations\**;
+				$(FilePath)\**\Properties\**;
+				$(FilePath)\packages.config;
+				$(FilePath)\*.csproj;
+				$(FilePath)\**\*.vspscc;
+				$(FilePath)\**\*.vssscc;
+				$(FilePath)\*.nuspec;
+				$(FilePath)\**\*.nupkg;
+				$(FilePath)\**\Thumbs.db;
+				$(FilePath)\**\vssver.scc;
+				$(FilePath)\**\packages\**;
+				$(FilePath)\**\.gitignore;
+				$(FilePath)\Project.Targets;
+				$(FilePath)\Custom.Targets;
+				$(FilePath)\*.sln;
+				$(FilePath)\**\.nuget\**;
+				$(FilePath)\**\.octopack\**;
+				$(FilePath)\**\.utilities\**;
+				$(FilePath)\**\BuildInfo.txt;
+				$(FilePath)\**\*.jpg;
+				$(FilePath)\**\*.gif;
+				$(FilePath)\**\*.png;
+				$(FilePath)\**\*.psd;
+				$(FilePath)\**\*.flv;
+				$(FilePath)\**\*.mp4;
+				$(FilePath)\**\*.swf;
+			</ExcludeFilter>
+			<!-- Debug -->
+			<ExcludeFilter Condition="$(Configuration)=='Debug'">
+				$(FilePath)\**\*.cs;
+				$(FilePath)\**\*.user;
+				$(FilePath)\**\*.exp;
+				$(FilePath)\**\obj\**;
+				$(FilePath)\**\migrations\**;
+				$(FilePath)\**\Properties\**;
+				$(FilePath)\packages.config;
+				$(FilePath)\*.csproj;
+				$(FilePath)\**\*.vspscc;
+				$(FilePath)\**\*.vssscc;
+				$(FilePath)\*.nuspec;
+				$(FilePath)\**\*.nupkg;
+				$(FilePath)\**\Thumbs.db;
+				$(FilePath)\**\vssver.scc;
+				$(FilePath)\**\packages\**;
+				$(FilePath)\**\.gitignore;
+				$(FilePath)\Project.Targets;
+				$(FilePath)\Custom.Targets;
+				$(FilePath)\*.sln;
+				$(FilePath)\**\.nuget\**;
+				$(FilePath)\**\.octopack\**;
+				$(FilePath)\**\.utilities\**;
+				$(FilePath)\**\BuildInfo.txt;
+				$(FilePath)\**\*.jpg;
+				$(FilePath)\**\*.gif;
+				$(FilePath)\**\*.png;
+				$(FilePath)\**\*.psd;
+				$(FilePath)\**\*.flv;
+				$(FilePath)\**\*.mp4;
+				$(FilePath)\**\*.swf;
+			</ExcludeFilter>
+		</PropertyGroup>
+
+		<ItemGroup>
+			<PackageProjectWebSplitSiteFiles
+				Include="$(IncludeFilter)" 
+				Exclude="$(ExcludeFilter)" 
+			/>
+		</ItemGroup>
+		<MakeDir Directories="$(PackagePathTarget)\"/>
+		
+		<MSBuild.ExtensionPack.Compression.Zip 
+			TaskAction="Create" 
+			CompressFiles="@(PackageProjectWebSplitSiteFiles)" 
+			ZipFileName="$(PackagePathTarget)\$(PackageZipName)_$(AssemblyFileVersion_FULL)_($(Configuration)).zip"
+			RemoveRoot="$(ProjectPath)"
+		/>
+
+		<!-- ***** OctoPack Add-On ***** -->
+				<PropertyGroup Condition="$(RunOctoPack)=='true'">
+					<TempFolder>$(SolutionPath)\Temp\Octo</TempFolder>
+				</PropertyGroup>
+				
+				<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+						 Targets="OctoPackAddon" 
+						 Properties="RunOctoPack_Pre=True;TempFolder=$(TempFolder)"
+						 Condition="$(RunOctoPack)=='true'"
+				/>
+				<Copy SourceFiles="@(PackageProjectWebSplitSiteFiles)" 
+					  DestinationFolder="$(TempFolder)\%(RecursiveDir)" 
+					  Condition="$(RunOctoPack)=='true'"
+				/>
+				<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+						 Targets="OctoPackAddon" 
+						 Properties="RunOctoPack_Post=True;TempFolder=$(TempFolder);PackageZipName=$(PackageZipName)"
+						 Condition="$(RunOctoPack)=='true'"
+				/>
+		<!-- *************************** -->
+	</Target>
+	
+	<Target Name="PackageProjectWebSplitImages" DependsOnTargets="GetVersionNumberFromFile" Condition="'$(PackageProjectName)' != ''">
+		<PropertyGroup>
+			<!-- Name of the solution to be compiled without the .sln extension -->
+			<PackageProjectName>$(PackageProjectName)</PackageProjectName>
+			<!-- Name of the zip file -->
+			<PackageZipName Condition="'$(PackageZipOverride)' == ''">$(PackageProjectName)-Images</PackageZipName>
+			<PackageZipName Condition="'$(PackageZipOverride)' != ''">$(PackageZipOverride)-Images</PackageZipName>
+			
+			<!-- Path where the solution file is located (.sln) -->
+			<!-- <SolutionPath>%(SolutionRoot.FullPath)</SolutionPath> -->
+			<SolutionPath>$(SourceRoot)</SolutionPath>
+			
+			<!-- Path where the project files are located -->
+			<ProjectPath Condition="'$(PackageProjectSubFolder)' == ''">$(SolutionPath)\$(PackageProjectName)\</ProjectPath>
+			<ProjectPath Condition="'$(PackageProjectSubFolder)' != ''">$(SolutionPath)\$(PackageProjectSubFolder)\$(PackageProjectName)\</ProjectPath>
+
+			<!-- Location of compiled files -->
+			<FilePath Condition="$(Configuration)=='Debug'">$(ProjectPath)</FilePath>
+			<FilePath Condition="$(Configuration)=='Release'">$(ProjectPath)</FilePath>	
+
+			<!-- Path where the nightly zip file will be copied -->
+			<PackagePathTarget>$(BuildArtifacts)\packages\$(Configuration)</PackagePathTarget>		
+
+			<StringDate>$([System.DateTime]::Now.ToString('yyyy-MM-dd'))</StringDate>
+
+			<!-- List of files that will be included in the package -->
+			<!-- Release -->
+			<IncludeFilter Condition="$(Configuration)=='Release'">
+				$(FilePath)\**\*.jpg;
+				$(FilePath)\**\*.gif;
+				$(FilePath)\**\*.png;
+				$(FilePath)\**\*.psd;
+				$(FilePath)\**\*.flv;
+				$(FilePath)\**\*.mp4;
+				$(FilePath)\**\*.swf;
+			</IncludeFilter>
+			<!-- Debug -->
+			<IncludeFilter Condition="$(Configuration)=='Debug'">
+				$(FilePath)\**\*.jpg;
+				$(FilePath)\**\*.gif;
+				$(FilePath)\**\*.png;
+				$(FilePath)\**\*.psd;
+				$(FilePath)\**\*.flv;
+				$(FilePath)\**\*.mp4;
+				$(FilePath)\**\*.swf;
+			</IncludeFilter>
+
+			<!-- List of files that will be excluded from the package -->
+			<!-- Release -->
+			<ExcludeFilter Condition="$(Configuration)=='Release'">
+				<!-- $(FilePath)\**\*.* -->
+			</ExcludeFilter>
+			<!-- Debug -->
+			<ExcludeFilter Condition="$(Configuration)=='Debug'">
+				<!--$(FilePath)\**\*.*-->
+			</ExcludeFilter>
+		</PropertyGroup>
+
+		<ItemGroup>
+			<PackageProjectWebSplitImagesFiles
+				Include="$(IncludeFilter)" 
+				Exclude="$(ExcludeFilter)" 
+			/>
+		</ItemGroup>
+		
+		<MakeDir Directories="$(PackagePathTarget)\"/>
+		
+		<MSBuild.ExtensionPack.Compression.Zip 
+			TaskAction="Create" 
+			CompressFiles="@(PackageProjectWebSplitImagesFiles)" 
+			ZipFileName="$(PackagePathTarget)\$(PackageZipName)_$(AssemblyFileVersion_FULL)_($(Configuration)).zip"
+			RemoveRoot="$(ProjectPath)"
+		/>
+
+		<!-- ***** OctoPack Add-On ***** -->
+				<PropertyGroup Condition="$(RunOctoPack)=='true'">
+					<TempFolder>$(SolutionPath)\Temp\Octo</TempFolder>
+				</PropertyGroup>
+				
+				<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+						 Targets="OctoPackAddon" 
+						 Properties="RunOctoPack_Pre=True;TempFolder=$(TempFolder)"
+						 Condition="$(RunOctoPack)=='true'"
+				/>
+				<Copy SourceFiles="@(PackageProjectWebSplitImagesFiles)" 
+					  DestinationFolder="$(TempFolder)\%(RecursiveDir)" 
+					  Condition="$(RunOctoPack)=='true'"
+				/>
+				<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+						 Targets="OctoPackAddon" 
+						 Properties="RunOctoPack_Post=True;TempFolder=$(TempFolder);PackageZipName=$(PackageZipName)"
+						 Condition="$(RunOctoPack)=='true'"
+				/>
+		<!-- *************************** -->
+	</Target>
+	
+	<Target Name="PackageApp" DependsOnTargets="GetVersionNumberFromFile" Condition="'$(PackageProjectName)' != ''">
+		<PropertyGroup>
+			<!-- Name of the solution to be compiled without the .sln extension -->
+			<PackageProjectName>$(PackageProjectName)</PackageProjectName>
+			<!-- Name of the zip file -->
+			<PackageZipName Condition="'$(PackageZipOverride)' == ''">$(PackageProjectName)</PackageZipName>
+			<PackageZipName Condition="'$(PackageZipOverride)' != ''">$(PackageZipOverride)</PackageZipName>
+
+			<!-- Path where the solution file is located (.sln) -->
+			<!-- <SolutionPath>%(SolutionRoot.FullPath)</SolutionPath> -->
+			<SolutionPath>$(SourceRoot)</SolutionPath>
+			
+			<!-- Path where the project files are located -->
+			<ProjectPath Condition="'$(PackageProjectSubFolder)' == ''">$(SolutionPath)\$(PackageProjectName)\bin</ProjectPath>
+			<ProjectPath Condition="'$(PackageProjectSubFolder)' != ''">$(SolutionPath)\$(PackageProjectSubFolder)\$(PackageProjectName)\bin</ProjectPath>
+
+			<ProjectPath Condition="'$(PackageProjectSubFolder)' == '' AND $(Platform) !='' ">$(SolutionPath)\$(PackageProjectName)\bin\$(Platform)</ProjectPath>
+			<ProjectPath Condition="'$(PackageProjectSubFolder)' != '' AND $(Platform) !='' ">$(SolutionPath)\$(PackageProjectSubFolder)\$(PackageProjectName)\bin\$(Platform)</ProjectPath>			
+			
+			<!-- Location of compiled files -->
+			<FilePath Condition="$(Configuration)=='Debug'">$(ProjectPath)\$(Configuration)</FilePath>
+			<FilePath Condition="$(Configuration)=='Release'">$(ProjectPath)\$(Configuration)</FilePath>	
+
+			<!-- Path where the nightly zip file will be copied -->
+			<PackagePathTarget>$(BuildArtifacts)\packages\$(Configuration)</PackagePathTarget>		
+
+			<StringDate>$([System.DateTime]::Now.ToString('yyyy-MM-dd'))</StringDate>
+
+			<!-- List of files that will be included in the package -->
+			<!-- Release -->
+			<IncludeFilter Condition="$(Configuration)=='Release'">
+				$(FilePath)\**\*.*
+			</IncludeFilter>
+			<!-- Debug -->
+			<IncludeFilter Condition="$(Configuration)=='Debug'">
+				$(FilePath)\**\*.*
+			</IncludeFilter>
+
+			<!-- List of files that will be excluded from the package -->
+			<!-- Release -->
+			<ExcludeFilter Condition="$(Configuration)=='Release'">
+				$(FilePath)\**\*.cs;
+				$(FilePath)\**\*.user;
+				$(FilePath)\**\*.exp;
+				$(FilePath)\**\obj\**;
+				$(FilePath)\**\migrations\**;
+				$(FilePath)\**\Properties\**;
+				$(FilePath)\packages.config;
+				$(FilePath)\*.csproj;
+				$(FilePath)\*.vspscc;
+				$(FilePath)\*.nuspec;
+				$(FilePath)\**\*.nupkg;
+				$(FilePath)\**\Thumbs.db;
+				$(FilePath)\**\*.vspscc;
+				$(FilePath)\**\*.vssscc;
+				$(FilePath)\**\*.pdb;
+				$(FilePath)\**\packages\**;
+				$(FilePath)\**\.gitignore;
+				$(FilePath)\Project.Targets;
+				$(FilePath)\Custom.Targets;
+				$(FilePath)\*.sln;
+				$(FilePath)\**\.nuget\**;
+				$(FilePath)\**\.octopack\**;
+				$(FilePath)\**\.utilities\**;
+				$(FilePath)\**\BuildInfo.txt;
+				$(FilePath)\**\Quickver.txt;
+			</ExcludeFilter>
+			<!-- Debug -->
+			<ExcludeFilter Condition="$(Configuration)=='Debug'">
+				$(FilePath)\**\*.cs;
+				$(FilePath)\**\*.user;
+				$(FilePath)\**\*.exp;
+				$(FilePath)\**\obj\**;
+				$(FilePath)\**\migrations\**;
+				$(FilePath)\**\Properties\**;
+				$(FilePath)\packages.config;
+				$(FilePath)\*.csproj;
+				$(FilePath)\**\*.vspscc;
+				$(FilePath)\**\*.vssscc;
+				$(FilePath)\*.nuspec;
+				$(FilePath)\**\*.nupkg;
+				$(FilePath)\**\Thumbs.db;
+				$(FilePath)\**\vssver.scc;
+				$(FilePath)\**\packages\**;
+				$(FilePath)\**\.gitignore;
+				$(FilePath)\Project.Targets;
+				$(FilePath)\Custom.Targets;
+				$(FilePath)\*.sln;
+				$(FilePath)\**\.nuget\**;
+				$(FilePath)\**\.octopack\**;
+				$(FilePath)\**\.utilities\**;
+				$(FilePath)\**\BuildInfo.txt;
+				$(FilePath)\**\Quickver.txt;
+			</ExcludeFilter>
+		</PropertyGroup>
+
+		<Message Text="Source Root: $(SourceRoot)" />
+		
+		<ItemGroup>
+			<PackageAppFiles 
+				Include="$(IncludeFilter)" 
+				Exclude="$(ExcludeFilter)" 
+			/>
+		</ItemGroup>
+
+		<Message Text="Configuration: $(Configuration)"
+				 Importance="high"/>
+
+		<Message Text="Platform: $(Platform)"
+				 Importance="high"/>
+				 
+		<MakeDir Directories="$(PackagePathTarget)"/>
+		
+		<Message Text="Package Path Target: $(PackagePathTarget)" />
+		
+		<!-- Notes: RemoveRoot property, this property sets the root to remove from the compress files path. -->
+		
+		<Message Text="Compress Files: @(PackageAppFiles)"/> <!-- Debug -->
+		
+		<MSBuild.ExtensionPack.Compression.Zip 
+			TaskAction="Create" 
+			CompressFiles="@(PackageAppFiles)" 
+			ZipFileName="$(PackagePathTarget)\$(PackageZipName)_$(AssemblyFileVersion_FULL)_($(Configuration)).zip"
+			RemoveRoot="$(FilePath)"
+		/>
+
+		<!-- ***** OctoPack Add-On ***** -->
+				<PropertyGroup Condition="$(RunOctoPack)=='true'">
+					<TempFolder>$(SolutionPath)\Temp\Octo</TempFolder>
+				</PropertyGroup>
+				
+				<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+						 Targets="OctoPackAddon" 
+						 Properties="RunOctoPack_Pre=True;TempFolder=$(TempFolder)"
+						 Condition="$(RunOctoPack)=='true'"
+				/>
+				<Copy SourceFiles="@(PackageAppFiles)" 
+					  DestinationFolder="$(TempFolder)\%(RecursiveDir)" 
+					  Condition="$(RunOctoPack)=='true'"
+				/>
+				<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+						 Targets="OctoPackAddon" 
+						 Properties="RunOctoPack_Post=True;TempFolder=$(TempFolder);PackageZipName=$(PackageZipName)"
+						 Condition="$(RunOctoPack)=='true'"
+				/>
+		<!-- *************************** -->
+	</Target>
+	
+	<Target Name="PackageSource" DependsOnTargets="GetVersionNumberFromFile" >
+	</Target>
+	
+	<Target Name="PackageFolder" DependsOnTargets="GetVersionNumberFromFile" Condition="'$(PackageFolderName)' != ''">
+		<PropertyGroup>
+			<!-- Name of the solution to be compiled without the .sln extension -->
+			<PackageFolderName>$(PackageFolderName)</PackageFolderName>
+			<!-- Name of the zip file -->
+			<PackageZipName Condition="'$(PackageZipOverride)' == ''">$(PackageFolderName)</PackageZipName>
+			<PackageZipName Condition="'$(PackageZipOverride)' != ''">$(PackageZipOverride)</PackageZipName>
+
+			<!-- Path where the solution file is located (.sln) -->
+			<!-- <SolutionPath>%(SolutionRoot.FullPath)</SolutionPath> -->
+			<SolutionPath>$(SourceRoot)</SolutionPath>
+			
+			<!-- Path where the project files are located -->
+			<ProjectPath Condition="'$(PackageProjectSubFolder)' == ''">$(SolutionPath)\$(PackageFolderName)</ProjectPath>
+			<ProjectPath Condition="'$(PackageProjectSubFolder)' != ''">$(SolutionPath)\$(PackageProjectSubFolder)\$(PackageFolderName)</ProjectPath>
+
+			<!-- Location of compiled files -->
+			<FilePath Condition="$(Configuration)=='Debug'">$(ProjectPath)</FilePath>
+			<FilePath Condition="$(Configuration)=='Release'">$(ProjectPath)</FilePath>	
+
+			<!-- Path where the nightly zip file will be copied -->
+			<PackagePathTarget>$(BuildArtifacts)\packages\$(Configuration)</PackagePathTarget>		
+
+			<StringDate>$([System.DateTime]::Now.ToString('yyyy-MM-dd'))</StringDate>
+
+			<!-- List of files that will be included in the package -->
+			<!-- Release -->
+			<IncludeFilter Condition="$(Configuration)=='Release'">
+				$(FilePath)\**\*.*
+			</IncludeFilter>
+			<!-- Debug -->
+			<IncludeFilter Condition="$(Configuration)=='Debug'">
+				$(FilePath)\**\*.*
+			</IncludeFilter>
+
+			<!-- List of files that will be excluded from the package -->
+			<!-- Release -->
+			<ExcludeFilter Condition="$(Configuration)=='Release'">
+			</ExcludeFilter>
+			<!-- Debug -->
+			<ExcludeFilter Condition="$(Configuration)=='Debug'">
+			</ExcludeFilter>
+		</PropertyGroup>
+
+		<ItemGroup>
+			<PackageFolderFiles 
+				Include="$(IncludeFilter)" 
+				Exclude="$(ExcludeFilter)" 
+			/>
+		</ItemGroup>
+
+		<!-- <Message Text="Compress Files: @(PackageFolderFiles)"/> --> <!-- Debug -->
+		
+		<PropertyGroup>
+			<CompressCheck>@(PackageFolderFiles)</CompressCheck>
+			<CompressStatus Condition="'$(CompressCheck)' == ''">False</CompressStatus>
+			<CompressStatus Condition="'$(CompressCheck)' != ''">True</CompressStatus>
+		</PropertyGroup>
+		
+		<!-- <Message Text="Compress Check: $(CompressCheck)" /> -->
+		<!-- <Message Text="Compress Status: $(CompressStatus)" /> -->
+		
+		<Message Text="Configuration: $(Configuration)"
+				 Importance="high"/>
+
+		<MakeDir Directories="$(PackagePathTarget)"/>
+		
+		<!--<Zip 
+			Files="@(PackageFolderFiles)"
+			WorkingDirectory="$(FilePath)"
+			ZipFileName="$(PackagePathTarget)\$(PackageZipName)_$(AssemblyFileVersion_FULL)_($(Configuration)).zip"
+			ZipLevel="9" 
+		/>-->
+		
+		<!-- Notes: RemoveRoot property, this property sets the root to remove from the compress files path. -->
+
+		<MSBuild.ExtensionPack.Compression.Zip 
+			TaskAction="Create" 
+			CompressFiles="@(PackageFolderFiles)" 
+			ZipFileName="$(PackagePathTarget)\$(PackageZipName)_$(AssemblyFileVersion_FULL)_($(Configuration)).zip"
+			RemoveRoot="$(FilePath)"
+			Condition="'@(PackageFolderFiles)' != ''"
+		/>
+		
+		<!-- ***** OctoPack Add-On ***** -->
+				<PropertyGroup Condition="$(RunOctoPack)=='true'">
+					<TempFolder>$(SolutionPath)\Temp\Octo</TempFolder>
+				</PropertyGroup>
+			<Message Text="OutPack Add-9(PackageFolder)"/>
+				<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+						 Targets="OctoPackAddon" 
+						 Properties="RunOctoPack_Pre=True;TempFolder=$(TempFolder)"
+						 Condition="$(RunOctoPack)=='true'"
+				/>
+				<Copy SourceFiles="@(PackageFolderFiles)" 
+					  DestinationFolder="$(TempFolder)\%(RecursiveDir)" 
+					  Condition="$(RunOctoPack)=='true'"
+				/>
+				<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+						 Targets="OctoPackAddon" 
+						 Properties="RunOctoPack_Post=True;TempFolder=$(TempFolder);PackageZipName=$(PackageZipName)"
+						 Condition="$(RunOctoPack)=='true'"
+				/>
+		<!-- *************************** -->
+		
+	</Target>
+
+</Project>

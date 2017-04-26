@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Version: 2.0.0
+Updated: 2016-02-15
+ABSType: Simple
+
+This targets file contains standard build scripts for building projects.
+
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+
+	<PropertyGroup>
+		<!-- Settings: NUnit -->
+			<NUnitPath>$(System_Tools)\PNI.BuildTools-\NUnit-2.6.3\bin</NUnitPath>
+		<!--*****************-->
+		<!-- Settings: JMeter -->
+			<JMeterPath>$(System_Tools)\apache-jmeter-2.11\bin</JMeterPath>
+		<!--*****************-->
+		<!-- Settings: NAnt -->
+			<NAntPath>$(System_Tools)\nant-0.92\bin\nant.exe</NAntPath>
+		<!--*****************-->
+	</PropertyGroup>
+
+	<Target Name="TestingInfo">
+		<Message Text="Testing.targets"/>
+		<Message Text=""/>
+		<Message Text="NUnit Path: $(NUnitPath)"/>
+		<Message Text="JMeter Path: $(JMeterPath)"/>
+		<Message Text="NAnt Path: $(NAntPath)"/>
+	</Target>
+	
+	<Target Name="UnitTests">
+		<CallTarget Condition="'$(TestType)' == ''" Targets="MSTestUnitTests"/> <!-- Default -->
+		<CallTarget Condition="'$(TestType)' == 'MSTest'" Targets="MSTestUnitTests"/> <!-- MSTest -->
+		<CallTarget Condition="'$(TestType)' == 'NUnit'" Targets="NUnitUnitTests"/> <!-- NUnit -->
+		<CallTarget Condition="'$(TestType)' == 'VSTest'" Targets="VSTestUnitTests"/> <!-- MSTest -->
+		<!--<CallTarget Condition="'$(TestType)' == 'JMeter'" Targets="JMeterUnitTests"/>--> <!-- NUnit -->
+	</Target>
+	
+	<Target Name="IntegrationTests">
+		<!--<CallTarget Condition="'$(TestType)' == ''" Targets="MSTestIntegrationTests"/>--> <!-- Default -->
+		<!--<CallTarget Condition="'$(TestType)' == 'MSTest'" Targets="MSTestIntegrationTests"/>--> <!-- MSTest -->
+		<!--<CallTarget Condition="'$(TestType)' == 'NUnit'" Targets="NUnitIntegrationTests"/>--> <!-- NUnit -->
+		<CallTarget Condition="'$(TestType)' == 'JMeter'" Targets="JMeterIntegrationTests"/> <!-- NUnit -->
+	</Target>
+	
+	<Target Name="NUnitUnitTests" DependsOnTargets="GetVersionNumberFromFile;NUnitUnitTestsClean" Condition="Exists('$(NUnitPath)')">
+		<!-- NUnit Tests not setup yet -->
+		<PropertyGroup>
+			<NUnitLocal Condition="Exists('$(NUnitPath)')">$(NUnitPath)</NUnitLocal>
+			<IncludeFilter>
+				.\**\*.Test.dll;
+				.\**\*.Tests.dll;
+				.\**\*.UnitTest.dll;
+				.\**\*.UnitTests.dll;
+				.\**\Test.*.dll;
+				.\**\Tests.*.dll;
+			</IncludeFilter>
+			<ExcludeFilter>
+				.\Artifacts\**\*;
+				.\**\Out\**\*;
+				.\**\Obj\**\*
+			</ExcludeFilter>
+		</PropertyGroup>
+		<!--<Message Text="Version Full: $(AssemblyFileVersion_FULL_ISO)"/>-->
+
+		<ItemGroup>
+			<NUnitProjects 
+				Include="$(IncludeFilter)" 
+				Exclude="$(ExcludeFilter)" 
+			/>
+		</ItemGroup>
+	
+		<MakeDir Directories='$(BuildArtifacts)\NUnit'
+				 Condition="!Exists('$(BuildArtifacts)\NUnit')"
+		/>
+
+		<CreateItem Include="%(NUnitProjects.Identity)">
+			<Output TaskParameter="Include" ItemName="TestAssembly" />
+		</CreateItem>
+
+		<Message Text="@(TestAssembly)" Condition='$(DebugMsg) == True'/>
+		<NUnit ToolPath="$(NUnitLocal)" Assemblies="@(TestAssembly)" OutputXmlFile="$(BuildArtifacts)\NUnit\%(NUnitProjects.FileName)_$(AssemblyFileVersion_FULL_ISO)_$(Configuration).xml" />
+
+		<Message Text="##teamcity[importData id='nunit' file='$(BuildArtifacts)\NUnit\%(NUnitProjects.FileName)_$(AssemblyFileVersion_FULL_ISO)_$(Configuration).xml']"
+				 Condition="'$(TeamCityActivation_TMP)' == 'true'"
+		/>
+
+	</Target>
+
+	<Target Name="JMeterIntegrationTests" DependsOnTargets="GetVersionNumberFromFile;JMeterIntegrationTestsClean" Condition="Exists('$(JMeterPath)')">
+		<!-- JMeter Tests not setup yet -->
+		<PropertyGroup>
+			<JMeterLocal Condition="Exists('$(JMeterPath)')">$(JMeterPath)</JMeterLocal>
+			<NAntLocal Condition="Exists('$(NAntPath)')">$(NAntPath)</NAntLocal>
+			<IncludeFilter>
+				.\**\JMeterTests.build
+			</IncludeFilter>
+			<ExcludeFilter>
+				
+			</ExcludeFilter>
+		</PropertyGroup>
+		<!--<Message Text="Version Full: $(AssemblyFileVersion_FULL_ISO)"/>-->
+
+		<ItemGroup>
+			<JMeterProjects 
+				Include="$(IncludeFilter)" 
+				Exclude="$(ExcludeFilter)" 
+			/>
+		</ItemGroup>
+	
+		<MakeDir Directories='$(BuildArtifacts)\JMeter'
+				 Condition="!Exists('$(BuildArtifacts)\JMeter')"
+		/>
+
+		<CreateItem Include="%(JMeterProjects.Identity)">
+			<Output TaskParameter="Include" ItemName="TestAssembly" />
+		</CreateItem>
+
+		<Message Text="Assemblies: @(TestAssembly)" Condition='$(DebugMsg) == True'/>
+		
+		<Exec 
+			Command='"$(NAntLocal)" -buildfile:@(TestAssembly) -D:project.dir=. -D:project.branch=Trunk -D:project.environment=Dev -D:project.testselection=Nightly'
+			WorkingDirectory="$(MSBuildProjectDirectory)"
+			ContinueOnError="WarnAndContinue"
+		/>
+		<!--
+		<Message Text="##teamcity[importData id='nunit' file='$(BuildArtifacts)\JMeter\%(JMeterProjects.FileName)_$(AssemblyFileVersion_FULL_ISO)_$(Configuration).xml']"
+				 Condition="'$(TeamCityActivation_TMP)' == 'true'"
+		/>-->
+
+	</Target>
+
+	<Target Name="NUnitUnitTestsClean">
+		<RemoveDir Directories="$(BuildArtifacts)\NUnit" 
+				   Condition="Exists('$(BuildArtifacts)\NUnit')"
+		/>
+	</Target>
+
+	<Target Name="JMeterIntegrationTestsClean">
+		<RemoveDir Directories="$(BuildArtifacts)\JMeter" 
+				   Condition="Exists('$(BuildArtifacts)\JMeter')"
+		/>
+	</Target>
+	
+</Project>

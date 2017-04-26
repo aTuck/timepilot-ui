@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Version: 2.0.0
+Updated: 2016-02-15
+ABSType: Simple
+
+This targets file contains standard build scripts for building projects.
+
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+
+	<!-- MSBuild Community Tasks -->
+		<PropertyGroup>
+			<SetSubFolder>MSBuildCommunityTasks</SetSubFolder>
+			<SetTargetFile>MSBuild.Community.Tasks.Targets</SetTargetFile>
+		</PropertyGroup>
+		
+		<Import Project="$(Local_Tools)\$(SetSubFolder)\$(SetTargetFile)" 
+				Condition="Exists('$(Local_Tools)\$(SetSubFolder)\$(SetTargetFile)')"/>
+		
+		<PropertyGroup>
+			<MSBuildCommunityTasks_Status>False</MSBuildCommunityTasks_Status>
+			<MSBuildCommunityTasks_Status Condition="Exists('$(Local_Tools)\$(SetSubFolder)\$(SetTargetFile)')">True</MSBuildCommunityTasks_Status>
+		</PropertyGroup>
+		
+		<UsingTask AssemblyFile="$(MSBuildCommunityTasksLib)" 
+				   TaskName="MSBuild.Community.Tasks.RegexMatch" 
+				   Condition="$(MSBuildCommunityTasks_Status) == True"/>
+
+		<UsingTask AssemblyFile="$(MSBuildCommunityTasksLib)" 
+				   TaskName="MSBuild.Community.Tasks.RegexReplace" 
+				   Condition="$(MSBuildCommunityTasks_Status) == True" />
+		
+		<!-- <Import Project="$(SkyNetPath)\$(SetTargetFile)" 
+				Condition="Exists('$(SkyNetPath)\$(SetTargetFile)')"/> -->
+		<PropertyGroup>		
+			<MSBuildCommunityTasks_Package>MSBuild.Community.Tasks</MSBuildCommunityTasks_Package>
+			<MSBuildCommunityTasks_Version>1.4.0.42</MSBuildCommunityTasks_Version>
+		</PropertyGroup>
+	<!--************************************-->
+	
+	<!-- MSBuild Extension Pack -->
+		<PropertyGroup>
+			<SetSubFolder>MSBuildExtensionPack</SetSubFolder>
+			<SetTargetFile>MSBuild.ExtensionPack.tasks</SetTargetFile>
+		</PropertyGroup>
+		
+		<Import Project="$(Local_Tools)\$(SetSubFolder)\$(SetTargetFile)" 
+				Condition="Exists('$(Local_Tools)\$(SetSubFolder)\$(SetTargetFile)')"/>
+		
+		<PropertyGroup>
+			<MSBuildExtensionPack_Status>False</MSBuildExtensionPack_Status>
+			<MSBuildExtensionPack_Status Condition="Exists('$(Local_Tools)\$(SetSubFolder)\$(SetTargetFile)')">True</MSBuildExtensionPack_Status>
+		</PropertyGroup>
+		
+		<!-- <Import Project="$(SkyNetPath)\$(SetTargetFile)" 
+				Condition="Exists('$(SkyNetPath)\$(SetTargetFile)')"/> -->
+		<PropertyGroup>
+			<MSBuildExtensionPack_Package>MSBuild.ExtensionPack</MSBuildExtensionPack_Package>
+			<MSBuildExtensionPack_Version>4.0.4.0</MSBuildExtensionPack_Version>
+			<MSBuildExtensionsPath>$(Local_Tools)</MSBuildExtensionsPath>
+			<ExtensionTasksPath>$(MSBuildExtensionsPath)\$(SetSubFolder)\</ExtensionTasksPath>
+			<MSBuild_System_Path>$(ProgramFiles)\MSBuild\</MSBuild_System_Path>
+		</PropertyGroup>
+	<!--************************************-->
+
+
+
+</Project>

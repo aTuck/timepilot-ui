@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Version: 2.0.0
+Updated: 2016-02-15
+ABSType: Simple
+
+This targets file contains standard build scripts for building projects.
+
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+
+	<PropertyGroup>
+		<OctoPackPath>$(Local_Tools)\OctoPack</OctoPackPath>	
+		<OctoPackExe>$(OctoPackPath)\octo.exe</OctoPackExe>
+	</PropertyGroup>
+
+	<PropertyGroup> <!-- Octopus Settings -->
+		<!-- Octopus Settings -->
+			<OctoPack Condition="'$(OctoPack)' == 'true'">true</OctoPack>
+			<!-- /p:OctoPackPublishPackageToFileShare -->
+			<OctoPackPublishPath>\\STGNAS001\Data\OctoPacked\Sites</OctoPackPublishPath>
+			<OctoPackPublishPath Condition="'$(BuildType)' == 'Official'">$(OctoPackPublishPath)\Official</OctoPackPublishPath>
+		<!--******************-->
+	</PropertyGroup>
+
+	<Target Name="OctopusInfo">
+		<Message Text="Octopus.targets" Importance="High"/>
+		<Message Text=" "/>
+		<Message Text="OctoPack Path:" Importance="High"/>
+		<Message Text="$(OctoPackPath)"/>
+		<Message Text="OctoPack Exe:" Importance="High"/>
+		<Message Text="$(OctoPackExe)"/>
+		<Message Text="OctoPack:" Importance="High"/>
+		<Message Text="$(OctoPack)"/>
+		<Message Text="OctoPack Publish Path:" Importance="High"/>
+		<Message Text="$(OctoPackPublishPath)"/>
+	</Target>
+	
+	<Target Name="OctoPackAddon" Condition="$(RunOctoPack)=='true'">
+			
+		<!-- 2015-05-12: GS - OctoPack Add-On: Created to allow for us to add the OctoPack option to any standard package system. -->
+		
+		<!-- ***** Target BootStrap ***** -->
+			<!-- ***** OctoPack Add-On ***** -->
+				<!--<PropertyGroup Condition="$(RunOctoPack)=='true'">
+					<TempFolder>$(SolutionPath)\Temp\Octo</TempFolder>
+				</PropertyGroup>
+				
+				<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+						 Targets="OctoPackAddon" 
+						 Properties="RunOctoPack_Pre=True;TempFolder=$(TempFolder)"
+						 Condition="$(RunOctoPack)=='true'"
+				/>
+				<Copy SourceFiles="@(PackageApplicationFiles)" 
+					  DestinationFolder="$(TempFolder)\%(RecursiveDir)" 
+					  Condition="$(RunOctoPack)=='true'"
+				/>
+				<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+						 Targets="OctoPackAddon" 
+						 Properties="RunOctoPack_Post=True;TempFolder=$(TempFolder);PackageZipName=$(PackageZipName)"
+						 Condition="$(RunOctoPack)=='true'"
+				/>-->
+			<!-- *************************** -->
+		<!-- **************************** -->
+			
+			<Exec
+				Command='attrib -R /S $(TempFolder)/*'
+				WorkingDirectory="$(MSBuildProjectDirectory)"
+				Condition="$(RunOctoPack_Pre)=='true'"
+			/>
+			
+			<Exec
+				Command='rmdir /S /Q $(TempFolder)\'
+				WorkingDirectory="$(MSBuildProjectDirectory)"
+				Condition="$(RunOctoPack_Pre)=='true'"
+			/>
+			
+			<Exec
+				Command='md $(TempFolder)\'
+				WorkingDirectory="$(MSBuildProjectDirectory)"
+				Condition="$(RunOctoPack_Pre)=='true'"
+			/>
+			
+			<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+					 Targets="PackageOcto" 
+					 Properties="PackageFolderName=$(PackageZipName);PackageProjectPathOverride=$(TempFolder)\"
+					 Condition="$(RunOctoPack_Post)=='true'"
+			/>
+			
+			<Exec
+				Command='rmdir /S /Q $(TempFolder)\'
+				WorkingDirectory="$(MSBuildProjectDirectory)"
+				Condition="$(RunOctoPack_Post)=='true'"
+			/>
+		
+	</Target>
+
+	<Target Name="PackageOcto" DependsOnTargets="GetVersionNumberFromFile" Condition="'$(PackageFolderName)' != ''">
+		<!-- Renamed from "BulkPackage" to "PackageNuGetBulk" (2014-10-24)-->
+		<Message Text="PackageOcto - Debug: Package Name: $(PackageName)"/> <!-- Debug-->
+		<Message Text="PackageOcto - Debug: Package Folder Name: $(PackageFolderName)"/> <!--Debug-->
+		<PropertyGroup>
+			<versionRelease Condition="'$(versionRelease)' == ''">$(AssemblyFileVersion_Release)</versionRelease>
+			<PackagePathTarget>$(BuildArtifacts)\OctoPack\$(Configuration)</PackagePathTarget>
+			<!-- Path where the solution file is located (.sln) -->
+			<SolutionPath>%(SolutionRoot.FullPath)</SolutionPath>
+			<!-- Path where the project files are located -->
+			<ProjectPath Condition="'$(PackageProjectSubFolder)' == ''">$(SolutionPath)\$(PackageFolderName)</ProjectPath>
+			<ProjectPath Condition="'$(PackageProjectSubFolder)' != ''">$(SolutionPath)\$(PackageProjectSubFolder)\$(PackageFolderName)</ProjectPath>
+			<ProjectPath Condition="'$(PackageProjectPathOverride)' != ''">$(PackageProjectPathOverride)</ProjectPath>
+			<PackageName_INT Condition="'$(PackageName)' == ''">$(PackageFolderName)</PackageName_INT>
+			<PackageName_INT Condition="'$(PackageName)' != ''">$(PackageName)</PackageName_INT>
+			
+			<PackageVersion_INT Condition="'$(OctoPackPackageVersion)' != ''">$(OctoPackPackageVersion)</PackageVersion_INT>
+				<PackageOcto_DebugTrack_C1>$(PackageVersion_INT)</PackageOcto_DebugTrack_C1>
+				<PackageOcto_DebugTrack_C2 Condition="'$(OctoPackPackageVersion)' != ''">True</PackageOcto_DebugTrack_C2>
+				<PackageOcto_DebugTrack_C3>$(OctoPackPackageVersion)</PackageOcto_DebugTrack_C3>
+			
+			<PackageVersion_INT Condition="'$(OctoPackPackageVersion)' == ''">$(AssemblyFileVersion_FULL)</PackageVersion_INT>
+				<PackageOcto_DebugTrack_D1>$(PackageVersion_INT)</PackageOcto_DebugTrack_D1>
+				<PackageOcto_DebugTrack_D2 Condition="'$(OctoPackPackageVersion)' == ''">True</PackageOcto_DebugTrack_D2>
+				<PackageOcto_DebugTrack_D3>$(AssemblyFileVersion_FULL)</PackageOcto_DebugTrack_D3>
+			
+			<OctoPackTagVersion_INT Condition="'$(OctoPackTag)' != ''">$(PackageVersion_INT)-$(OctoPackTag)</OctoPackTagVersion_INT>
+				<PackageOcto_DebugTrack_E1>$(OctoPackTag)</PackageOcto_DebugTrack_E1>
+				<PackageOcto_DebugTrack_E2 Condition="'$(OctoPackTag)' != ''">True</PackageOcto_DebugTrack_E2>
+				<PackageOcto_DebugTrack_E3>$(OctoPackTagVersion_INT)</PackageOcto_DebugTrack_E3>
+			
+			<PackageVersion_INT Condition="$(PackageVersion_INT.Contains('$(OctoPackTag)')) AND '$(OctoPackPackageVersion)' != ''">$(OctoPackPackageVersion)</PackageVersion_INT>
+			<PackageVersion_INT Condition="$(PackageVersion_INT.Contains('$(OctoPackTag)')) AND '$(OctoPackPackageVersion)' == ''">$(AssemblyFileVersion_FULL)</PackageVersion_INT>
+			<PackageVersion_INT Condition="!$(PackageVersion_INT.Contains('$(OctoPackTag)')) AND '$(OctoPackPackageVersion)' == ''">$(OctoPackTagVersion_INT)</PackageVersion_INT>
+			
+				<PackageOcto_DebugTrack_A1 Condition="$(PackageVersion_INT.Contains('$(OctoPackTag)'))">True</PackageOcto_DebugTrack_A1>
+				<PackageOcto_DebugTrack_A2 Condition="'$(OctoPackPackageVersion)' != ''">True</PackageOcto_DebugTrack_A2>
+				<!-- <PackageOcto_DebugTrack_A3 Condition="'$(OctoPackPackageVersion)' != ''">True</PackageOcto_DebugTrack_A3> -->
+				<PackageOcto_DebugTrack_A4 Condition="!$(PackageVersion_INT.Contains('$(OctoPackTag)'))">True</PackageOcto_DebugTrack_A4>
+				<PackageOcto_DebugTrack_B>$(PackageVersion_INT)</PackageOcto_DebugTrack_B>
+		</PropertyGroup>
+				<Message Text="OctoPackPackageVersion: $(PackageVersion_INT)" />
+				<Message Text="Package Octo Debug Track A1: $(PackageOcto_DebugTrack_A1)" />
+				<Message Text="Package Octo Debug Track A2: $(PackageOcto_DebugTrack_A2)" />
+				<!-- <Message Text="Package Octo Debug Track A3: $(PackageOcto_DebugTrack_A3)" /> -->
+				<Message Text="Package Octo Debug Track A4: $(PackageOcto_DebugTrack_A4)" />
+				<Message Text="Package Octo Debug Track B: $(PackageOcto_DebugTrack_B)" />
+				<Message Text="Package Octo Debug Track C1: $(PackageOcto_DebugTrack_C1)" />
+				<Message Text="Package Octo Debug Track C2: $(PackageOcto_DebugTrack_C2)" />
+				<Message Text="Package Octo Debug Track C3: $(PackageOcto_DebugTrack_C3)" />
+				<Message Text="Package Octo Debug Track D1: $(PackageOcto_DebugTrack_D1)" />
+				<Message Text="Package Octo Debug Track D2: $(PackageOcto_DebugTrack_D2)" />
+				<Message Text="Package Octo Debug Track D3: $(PackageOcto_DebugTrack_D3)" />
+				<Message Text="Package Octo Debug Track E1: $(PackageOcto_DebugTrack_E1)" />
+				<Message Text="Package Octo Debug Track E2: $(PackageOcto_DebugTrack_E2)" />
+				<Message Text="Package Octo Debug Track E3: $(PackageOcto_DebugTrack_E3)" />
+				<Message Text="Package Octo Debug Track DisplayString: $(PackageVersion_INT)" />
+		<PropertyGroup>
+			<OctoPackParameters>pack --id=$(PackageName_INT)^
+				--version=$(PackageVersion_INT)^
+				--basepath=$(ProjectPath)^
+				--outfolder=$(PackagePathTarget)^
+				--overwrite
+			</OctoPackParameters>
+		</PropertyGroup>
+		<Exec
+			Command="&quot;$(OctoPackExe)&quot; $(OctoPackParameters)"
+			Condition="Exists('$(ProjectPath)')"
+		/>
+		
+	</Target>
+	
+	<Target Name="ArchiveOctoPack">
+		<PropertyGroup>
+			<ArchiveSource Condition="'$(ArchiveSource)' == ''">$(SourceRoot)</ArchiveSource>
+			<ArchiveSource Condition="'$(ArchiveSource)' != ''">$(ArchiveSource)</ArchiveSource>
+			<ArchiveFiles Condition="'$(ArchiveFiles)' == ''">*.nupkg</ArchiveFiles>
+			<ArchiveTarget Condition="'$(ArchiveTarget)' == ''">$(BuildArtifacts)\OctoPack\$(Configuration)</ArchiveTarget>
+		</PropertyGroup>
+
+		<ItemGroup>
+			<ArchiveFileScan Include="$(ArchiveSource)\$(ArchiveFiles)"/>
+		</ItemGroup>
+
+		<Message Text="%0aArchive Source: $(ArchiveSource)%0aArtifacts Target: $(ArchiveTarget)%0a" />
+
+		<Exec 
+			Command='md "$(ArchiveTarget)"'
+			WorkingDirectory='$(SourceRoot)'
+			Condition="!Exists('$(ArchiveTarget)')"
+		/>
+
+		<Exec 
+			Command='xcopy /S /Y $(ArchiveSource)\$(ArchiveFiles) "$(ArchiveTarget)\"'
+			WorkingDirectory='$(SourceRoot)'
+			Condition="Exists('%(ArchiveFileScan.FullPath)')"
+		/>
+	</Target>
+	
+</Project>

@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+ 
+<!--
+Version: 1.0.65
+Updated: 2016-07-28
+ABSType: Simple
+
+This targets file contains custom script information for each individual project.
+
+	Reference URLs:
+
+	To Do's:
+	
+	v1.0.43 
+		2014-11-19: GS - Add CustomSLNExclude will allow for filtering out solutions that don't want to be built.
+	v1.0.48 
+		2015-01-05: GS - Add CustomPackageAll to template
+	v1.0.55
+		2015-02-17: GS - Add PackageApp example to CustomPackageAll
+	v1.0.56
+		2015-02-26: GS - CustomCompile: Redesign to all for scanning of multiple solutions in multiple sub-folders.
+					ToDo: Review how NuGet packages get restored and look into how to target there original location
+	v1.0.58
+		2015-03-26: GS - CustomCompile: Add InstallNuGetPackages sequence as the standard install is no longer executed as part of the "Compile" Target.
+	v1.0.62
+		2015-04-08: GS - CustomCopy: Add Custom Copy to allow for a "HACK" to copying files.
+	v1.0.63
+		2015-05-11: GS - CustomTransformProject:  Add a bulk set of possible transform files that could be applied to a build.  All of the transforms have condition statements so there is no Transform file the build will not fail.  This target would be copied per project and updated.
+	v1.0.64
+		2015-09-25: GS - Add xCopy Wildcard support.
+	v1.0.65
+		2016-07-19: GS - Add powershell script support.
+		2016-07-28: GS - Add Package folder template to CustomPackageAll
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0" DefaultTargets="Info">
+	
+	<!-- Setup default properties -->
+	<PropertyGroup>
+		<CustomCompile>false</CustomCompile>
+		<CustomPackage>false</CustomPackage>
+		<CustomSLNInclude>*.sln</CustomSLNInclude> <!-- Add Solutions that would like to be included in the build process -->
+		<CustomSLNExclude></CustomSLNExclude> <!-- Add Solutions that would like to be filtered out of the build process -->
+		<!--<CustomPlatform></CustomPlatform>--> <!-- Set the default Platform Type. (x86, x64, Any CPU) -->
+	</PropertyGroup>
+
+	<Target Name="CustomActions">
+		<!--<PropertyGroup>
+			<LabelDateTime>$([System.DateTime]::Now.ToString("yyyy-MM-dd hh:mm:ss"))</LabelDateTime>
+		</PropertyGroup>
+		
+		<Message Text="$(LabelDateTime)"/>-->
+	</Target>
+
+	<Target Name="CustomPreBuild">
+	</Target>
+
+	<Target Name="CustomBuildAll">
+		<!--
+		<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+				 Targets="CustomTransformAll" 
+				 Properties=""/>
+		-->
+	</Target>
+
+	<Target Name="CustomCompile" DependsOnTargets="OverRideVS">
+		<Message Text="Running Custom Compile"/>
+		<PropertyGroup>
+			<RunOctoPack Condition="'$(RunOctoPack)' == 'true'">true</RunOctoPack>
+
+			<!-- Path where the solution file is located (.sln) -->
+			<SolutionPath>$(SourceRoot)</SolutionPath>
+			<!-- Path where the project files are located -->
+			<ProjectPath Condition="'$(PackageProjectSubFolder)' == ''">$(SolutionPath)\$(PackageProjectName)\</ProjectPath>
+			<ProjectPath Condition="'$(PackageProjectSubFolder)' != ''">$(SolutionPath)\$(PackageProjectSubFolder)\$(PackageProjectName)\</ProjectPath>
+
+			<!-- Location of compiled files -->
+			<FilePath>$(ProjectPath)</FilePath>	
+
+			<IncludeFilter>$(FilePath)\**\$(CustomSLNInclude);</IncludeFilter>
+			<ExcludeFilter>$(FilePath)\**\$(CustomSLNExclude);</ExcludeFilter>
+		</PropertyGroup>
+		
+		<ItemGroup>
+			<CustomCompileSLNScan 
+				Include="$(IncludeFilter)" 
+				Exclude="$(ExcludeFilter)" 
+			/>
+		</ItemGroup>
+
+		<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+				 Targets="InstallNuGetPackages" 
+				 Condition="'$(InstallNuGet)' == 'true'"
+				 Properties=""/>
+		
+		<Message Text="Solution Files: @(CustomCompileSLNScan)"
+			 Condition="'$(DebugMsg)' == 'true'"/> <!-- Debug -->
+		
+		<MSBuild Projects="@(CustomCompileSLNScan)" 
+				 ContinueOnError="false" 
+				 Targets="Clean;Build" 
+				 Properties="Configuration=$(Configuration)">
+			<Output ItemName="BuildOutput" TaskParameter="TargetOutputs"/>
+		</MSBuild> 
+	</Target>
+
+	<Target Name="CustomPostBuild">
+	</Target>
+
+	<Target Name="CustomPackage">
+	
+	</Target>
+
+	<Target Name="CustomTransformAll">
+		<!-- Web Project: Staging -->
+		<!--
+		<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+				 Targets="TransformWebConfig" 
+				 Properties="WebConfigSource=Web.config;WebConfigTransform=Web.Staging.config;WebConfigProjectName="/>
+		-->
+	</Target>
+
+	<Target Name="CustomPackageAll">
+		<!-- Web Project: Staging -->
+	
+		<!--
+		<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+				 Targets="CustomCopy" 
+				 Properties=""/>
+		-->
+	
+		<!--
+		<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+				 Targets="PackageProjectWeb" 
+				 Properties="PackageProjectName="/>
+		-->
+	
+		<!-- 
+		<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+				 Targets="PackageApp" 
+				 Properties="PackageProjectName="/>
+		-->
+
+		<!--
+			<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+				 Targets="PackageFolder" 
+				 Properties="PackageFolderName=;PackageZipOverride=;RunOctoPack=True"/>
+		-->
+
+	</Target>
+
+	<Target Name="CustomCopy">
+		<PropertyGroup>
+			<CustomCopySource Condition="'$(CustomCopySource)' == ''">$(SourceRoot)</CustomCopySource>
+			<CustomCopySource Condition="'$(CustomCopySource)' != ''">$(CustomCopySource)</CustomCopySource>
+			<CustomCopyFiles Condition="'$(CustomCopyFiles)' == ''">*.*</CustomCopyFiles>
+			<CustomCopyFiles Condition="'$(CustomCopyFiles)' != ''">$(CustomCopyFiles)</CustomCopyFiles>
+			<CustomCopyTarget Condition="'$(CustomCopyTarget)' == ''">$(SourceRoot)</CustomCopyTarget>
+		</PropertyGroup>
+
+		<ItemGroup>
+			<CustomCopyFileScan Include="$(CustomCopySource)\$(CustomCopyFiles)"/>
+		</ItemGroup>
+	
+		<Exec 
+			Command='xcopy /S /Y $(CustomCopySource)\$(CustomCopyFiles) "$(CustomCopyTarget)\"'
+			WorkingDirectory='$(SourceRoot)'
+			Condition="Exists('%(CustomCopyFileScan.FullPath)')"
+		/>
+		
+		<Exec 
+			Command='xcopy /S /Y "$(CustomCopySource)\$(CustomCopyFiles)" "$(CustomCopyTarget)\"'
+			WorkingDirectory='$(SourceRoot)'
+			Condition="$(WildCardCopy) == True"
+		/>
+		
+	</Target>
+
+	<Target Name="CustomTransformProject">
+		<PropertyGroup>
+			<CustomTransformProject_INT></CustomTransformProject_INT>
+		</PropertyGroup>
+			
+		<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+				 Targets="TransformWebConfig" 
+				 Properties="WebConfigSource=Web.config;WebConfigTransform=Web.Debug.config;WebConfigProjectName=$(CustomTransformProject_INT)"
+				 Condition="Exists('.\$(CustomTransformProject_INT)\Web.Debug.config')"/>
+		
+		<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+				 Targets="TransformWebConfig" 
+				 Properties="WebConfigSource=Web.config;WebConfigTransform=Web.Release.config;WebConfigProjectName=$(CustomTransformProject_INT)"
+				 Condition="Exists('.\$(CustomTransformProject_INT)\Web.Release.config')"/>
+		
+		<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+				 Targets="TransformWebConfig" 
+				 Properties="WebConfigSource=Web.config;WebConfigTransform=Web.Local.config;WebConfigProjectName=$(CustomTransformProject_INT)"
+				 Condition="Exists('.\$(CustomTransformProject_INT)\Web.Local.config')"/>
+		
+		<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+				 Targets="TransformWebConfig" 
+				 Properties="WebConfigSource=Web.config;WebConfigTransform=Web.Gateway.config;WebConfigProjectName=$(CustomTransformProject_INT)"
+				 Condition="Exists('.\$(CustomTransformProject_INT)\Web.Gateway.config')"/>
+				 
+		<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+				 Targets="TransformWebConfig" 
+				 Properties="WebConfigSource=Web.config;WebConfigTransform=Web.Staging.config;WebConfigProjectName=$(CustomTransformProject_INT)"
+				 Condition="Exists('.\$(CustomTransformProject_INT)\Web.Staging.config')"/>
+		
+		<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+				 Targets="TransformWebConfig" 
+				 Properties="WebConfigSource=Web.config;WebConfigTransform=Web.Preview.config;WebConfigProjectName=$(CustomTransformProject_INT)"
+				 Condition="Exists('.\$(CustomTransformProject_INT)\Web.Preview.config')"/>
+		
+		<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+				 Targets="TransformWebConfig" 
+				 Properties="WebConfigSource=Web.config;WebConfigTransform=Web.Production.config;WebConfigProjectName=$(CustomTransformProject_INT)"
+				 Condition="Exists('.\$(CustomTransformProject_INT)\Web.Production.config')"/>
+		
+		<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+				 Targets="TransformWebConfig" 
+				 Properties="WebConfigSource=Web.config;WebConfigTransform=Web.QA.config;WebConfigProjectName=$(CustomTransformProject_INT)"
+				 Condition="Exists('.\$(CustomTransformProject_INT)\Web.QA.config')"/>
+		
+		<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+				 Targets="TransformWebConfig" 
+				 Properties="WebConfigSource=Web.config;WebConfigTransform=Web.Demo.config;WebConfigProjectName=$(CustomTransformProject_INT)"
+				 Condition="Exists('.\$(CustomTransformProject_INT)\Web.Demo.config')"/>
+	</Target>
+
+	<Target Name="CustomPowerShell">
+		<!-- <Exec Command="powershell.exe ..\Custom\Custom_NPM.ps1" 
+			WorkingDirectory="" /> -->
+	</Target>
+
+</Project>

@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Version: 2.0.0
+Updated: 2016-02-15
+ABSType: Simple
+
+This targets file contains standard build scripts for building projects.
+
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+
+	<PropertyGroup>
+		<!-- Settings: Semantic Versioning -->
+		<!-- <SemVerFile>AssemblyInfoBase.cs</SemVerFile> -->
+		<SemVerFile>$(SourceRoot)\AssemblyInfoBase.cs</SemVerFile>
+		<SemVerCheckinComment>$([System.DateTime]::Now.ToString(`yyyy-MM-dd`)): %USERNAME% - Update $(SemVerFile) to keep Semantic Versioning in sync in source control.</SemVerCheckinComment>
+		<SemVerCheckinOverrideReason>$(SemVerCheckinComment)</SemVerCheckinOverrideReason>
+		<!--***************************-->
+	</PropertyGroup>
+	
+	<PropertyGroup>
+		<versionWrite Condition="'$(versionUpdate)' == ''">$(versionRead)</versionWrite>
+		<versionWrite Condition="'$(versionUpdate)' != ''">$(versionUpdate)</versionWrite>
+		<versionFull Condition="'$(versionBuild)' == ''">$(versionWrite)</versionFull>
+		<versionFull Condition="'$(versionBuild)' != ''">$(versionWrite).$(versionBuild)</versionFull>
+		<versionRelease>$(versionWrite)</versionRelease>
+
+		<versionPackage Condition="'$(OctoPack)' == ''">$(versionWrite)</versionPackage>
+		<versionPackage Condition="'$(OctoPack)' == 'true'">$(versionWrite).$(versionBuild)</versionPackage>
+		
+	</PropertyGroup>
+	
+	<Target Name="VersioningInfo">
+		<Message Text="Versioning.targets" Importance="High"/>
+		<Message Text=" " />
+		<Message Text="Semantic Versioning File:" Importance="High"/>
+		<Message Text="$(SemVerFile)" />
+		<Message Text=" " />
+		<Message Text="Semantic Versioning Checkin Comment:" Importance="High"/>
+		<Message Text="$(SemVerCheckinComment)" />
+		<Message Text=" " />
+		<Message Text="Semantic Versioning Checkin Override Reason:" Importance="High"/>
+		<Message Text="$(SemVerCheckinOverrideReason)" />
+		<Message Text=" " />
+		<Message Text="Version Write:" Importance="High"/>
+		<Message Text="$(versionWrite)" />
+		<Message Text=" " />
+		<Message Text="Version Full:" Importance="High"/>
+		<Message Text="$(versionFull)" />
+		<Message Text=" " />
+		<Message Text="Version Release:" Importance="High"/>
+		<Message Text="$(versionRelease)" />
+		<Message Text=" " />
+		<Message Text="Version Package:" Importance="High"/>
+		<Message Text="$(versionPackage)" />
+	</Target>
+	
+	<Target Name="GetVersionNumberFromFile">
+		<CallTarget Targets="GetVersionNumberFromFileDOTNET"  Condition="$(VersionFileType) == '' OR $(VersionFileType) == '.NET'"/>
+		<CallTarget Targets="GetVersionNumberFromFileJSON" Condition="$(VersionFileType) == 'JSON'" />
+	</Target>
+	
+	<Target Name="GetVersionNumberFromFileDOTNET" Condition="Exists('$(SemVerFile)')">
+		<ReadLinesFromFile File="$(SemVerFile)">
+			<Output TaskParameter="Lines" ItemName="IterationNumberFileContents"/>
+		</ReadLinesFromFile>
+
+		<RegexMatch Input="@(IterationNumberFileContents)" Expression="(AssemblyFileVersion)">
+			<Output ItemName="VersionNumberLineReturn" TaskParameter="Output"/>
+		</RegexMatch>
+		<Message Text="Debug GetVersionNumberFromFileDOTNET"/>
+		<RegexReplace 
+			Input="@(VersionNumberLineReturn)" 
+			Expression="\[assembly\: (AssemblyFileVersion)\(\&quot;(\d+)\.(\d+)\.(\d+)\.(\d+)\&quot;\)\]" 
+			Replacement="$2" 
+			Count="1">
+			<Output PropertyName="VersionMajor" TaskParameter="Output"/>
+		</RegexReplace>
+
+		<RegexReplace 
+			Input="@(VersionNumberLineReturn)" 
+			Expression="\[assembly\: (AssemblyFileVersion)\(\&quot;(\d+)\.(\d+)\.(\d+)\.(\d+)\&quot;\)\]" 
+			Replacement="$3" 
+			Count="1">
+			<Output PropertyName="VersionMinor" TaskParameter="Output"/>
+		</RegexReplace>
+
+		<RegexReplace 
+			Input="@(VersionNumberLineReturn)" 
+			Expression="\[assembly\: (AssemblyFileVersion)\(\&quot;(\d+)\.(\d+)\.(\d+)\.(\d+)\&quot;\)\]" 
+			Replacement="$4" 
+			Count="1">
+			<Output PropertyName="VersionPatch" TaskParameter="Output"/>
+		</RegexReplace>
+
+		<RegexReplace 
+			Input="@(VersionNumberLineReturn)" 
+			Expression="\[assembly\: (AssemblyFileVersion)\(\&quot;(\d+)\.(\d+)\.(\d+)\.(\d+)\&quot;\)\]" 
+			Replacement="$5" 
+			Count="1">
+			<Output PropertyName="VersionBuild" TaskParameter="Output"/>
+		</RegexReplace>
+
+		<Message Text="Version Major (MajorNumber): $(VersionMajor)" Importance="Normal" Condition='$(DebugMsg) == True'/>
+		<Message Text="Version Minor (MinorNumber): $(VersionMinor)" Importance="Normal" Condition='$(DebugMsg) == True'/>
+		<Message Text="Version Patch (ReleaseNumber): $(VersionPatch)" Importance="Normal" Condition='$(DebugMsg) == True'/>
+		<Message Text="Version Build (RevisionNumber): $(VersionBuild)" Importance="Normal" Condition='$(DebugMsg) == True'/>
+
+		<PropertyGroup>
+			<AssemblyFileVersion_FULL>$(VersionMajor).$(VersionMinor).$(VersionPatch).$(VersionBuild)</AssemblyFileVersion_FULL>
+			<AssemblyFileVersion_FULL_ISO>$(VersionMajor)_$(VersionMinor)_$(VersionPatch)_$(VersionBuild)</AssemblyFileVersion_FULL_ISO>
+			<AssemblyFileVersion_Release>$(VersionMajor).$(VersionMinor).$(VersionPatch)</AssemblyFileVersion_Release>
+			<AssemblyFileVersion_Release_ISO>$(VersionMajor)_$(VersionMinor)_$(VersionPatch)</AssemblyFileVersion_Release_ISO>
+		</PropertyGroup>
+		<Message Text="Current Version: $(AssemblyFileVersion_FULL)"/>
+		
+		<WriteLinesToFile
+			File="QuickVer.txt"
+			Lines="$(AssemblyFileVersion_FULL)"
+			Overwrite="true"
+			Encoding="Unicode"
+			Condition = '$(LogVersion)== True' />
+	</Target>
+	
+	<Target Name="GetVersionNumberFromFileJSON">
+		<PropertyGroup>
+			<SemVerFile Condition="Exists('package.json')">package.json</SemVerFile> <!-- 2015-04-02: Override-->
+		</PropertyGroup>
+		
+		<ReadLinesFromFile File="$(SemVerFile)">
+			<Output TaskParameter="Lines" ItemName="IterationNumberFileContents"/>
+		</ReadLinesFromFile>
+
+		<RegexMatch Input="@(IterationNumberFileContents)" Expression="(version)">
+			<Output ItemName="VersionNumberLineReturn" TaskParameter="Output"/>
+		</RegexMatch>
+
+		<RegexReplace 
+			Input="@(VersionNumberLineReturn)" 
+			Expression="&quot;version&quot;: &quot;(\d+).(\d+).(\d+)&quot;," 
+			Replacement="$1" 
+			Count="1">
+			<Output PropertyName="VersionMajor" TaskParameter="Output"/>
+		</RegexReplace>
+		
+		<RegexReplace 
+			Input="@(VersionNumberLineReturn)" 
+			Expression="&quot;version&quot;: &quot;(\d+).(\d+).(\d+)&quot;,"
+			Replacement="$2" 
+			Count="1">
+			<Output PropertyName="VersionMinor" TaskParameter="Output"/>
+		</RegexReplace>
+
+		<RegexReplace 
+			Input="@(VersionNumberLineReturn)" 
+			Expression="&quot;version&quot;: &quot;(\d+).(\d+).(\d+)&quot;,"
+			Replacement="$3" 
+			Count="1">
+			<Output PropertyName="VersionPatch" TaskParameter="Output"/>
+		</RegexReplace>
+
+		<RegexReplace 
+			Input="@(VersionNumberLineReturn)" 
+			Expression="&quot;version&quot;: &quot;(\d+).(\d+).(\d+)&quot;,"
+			Replacement="$4" 
+			Count="1">
+			<Output PropertyName="VersionBuild" TaskParameter="Output"/>
+		</RegexReplace>
+
+		<PropertyGroup>
+			<VersionBuild Condition="'$(VersionBuild)' == '$4'">1000</VersionBuild>
+		</PropertyGroup>
+		
+		<Message Text="Version Major (MajorNumber): $(VersionMajor)" Importance="Normal" Condition='$(DebugMsg) == True'/>
+		<Message Text="Version Minor (MinorNumber): $(VersionMinor)" Importance="Normal" Condition='$(DebugMsg) == True'/>
+		<Message Text="Version Patch (ReleaseNumber): $(VersionPatch)" Importance="Normal" Condition='$(DebugMsg) == True'/>
+		<Message Text="Version Build (RevisionNumber): $(VersionBuild)" Importance="Normal" Condition='$(DebugMsg) == True'/>
+
+		<PropertyGroup>
+			<AssemblyFileVersion_FULL>$(VersionMajor).$(VersionMinor).$(VersionPatch)</AssemblyFileVersion_FULL>
+			<AssemblyFileVersion_FULL_ISO>$(VersionMajor)_$(VersionMinor)_$(VersionPatch)</AssemblyFileVersion_FULL_ISO>
+			<AssemblyFileVersion_Release>$(VersionMajor).$(VersionMinor).$(VersionPatch)</AssemblyFileVersion_Release>
+			<AssemblyFileVersion_Release_ISO>$(VersionMajor)_$(VersionMinor)_$(VersionPatch)</AssemblyFileVersion_Release_ISO>
+		</PropertyGroup>
+		<Message Text="Current Version: $(AssemblyFileVersion_FULL)"/>
+	</Target>
+	
+	<Target Name="UpdateVersionMajor">
+		<CallTarget Targets="UpdateVersionMajor_Sub"/>
+		<CallTarget Targets="UpdateVersionGeneric"/>
+	</Target>
+
+	<Target Name="UpdateVersionMinor">
+		<CallTarget Targets="UpdateVersionMinor_Sub"/>
+		<CallTarget Targets="UpdateVersionGeneric"/>
+	</Target>
+
+	<Target Name="UpdateVersionPatch">
+		<CallTarget Targets="UpdateVersionPatch_Sub"/>
+		<CallTarget Targets="UpdateVersionGeneric"/>
+	</Target>
+
+	<Target Name="UpdateVersionBuild">
+		<CallTarget Targets="UpdateVersionBuild_Sub"/>
+		<CallTarget Targets="UpdateVersionGeneric"/>
+	</Target>
+
+	<Target Name="UpdateVersionMajor_Sub" DependsOnTargets="GetVersionNumberFromFile" Condition="Exists('$(SemVerFile)')">
+		<PropertyGroup>
+			<VersionMajorNext>$([MSBuild]::Add($(VersionMajor), 1))</VersionMajorNext>
+			<AssemblyFileVersion_FULL_Next>$(VersionMajorNext).0.0.1000</AssemblyFileVersion_FULL_Next>
+			<AssemblyInformationalVersion_FULL_Next>$(VersionMajorNext).0.0</AssemblyInformationalVersion_FULL_Next>
+		</PropertyGroup>
+		<Message Text="Version Build Next: $(VersionMajorNext)" Importance="Normal" Condition='$(DebugMsg) == True'/>
+	</Target>
+
+	<Target Name="UpdateVersionMinor_Sub" DependsOnTargets="GetVersionNumberFromFile" Condition="Exists('$(SemVerFile)')">
+		<PropertyGroup>
+			<VersionMinorNext>$([MSBuild]::Add($(VersionMinor), 1))</VersionMinorNext>
+			<AssemblyFileVersion_FULL_Next>$(VersionMajor).$(VersionMinorNext).0.1000</AssemblyFileVersion_FULL_Next>
+			<AssemblyInformationalVersion_FULL_Next>$(VersionMajor).$(VersionMinorNext).0</AssemblyInformationalVersion_FULL_Next>
+		</PropertyGroup>
+		<Message Text="Version Build Next: $(VersionMinorNext)" Importance="Normal" Condition='$(DebugMsg) == True'/>
+	</Target>
+
+	<Target Name="UpdateVersionPatch_Sub" DependsOnTargets="GetVersionNumberFromFile" Condition="Exists('$(SemVerFile)')">
+		<PropertyGroup>
+			<VersionPatchNext>$([MSBuild]::Add($(VersionPatch), 1))</VersionPatchNext>
+			<AssemblyFileVersion_FULL_Next>$(VersionMajor).$(VersionMinor).$(VersionPatchNext).1000</AssemblyFileVersion_FULL_Next>
+			<AssemblyInformationalVersion_FULL_Next>$(VersionMajor).$(VersionMinor).$(VersionPatchNext)</AssemblyInformationalVersion_FULL_Next>
+		</PropertyGroup>
+		<Message Text="Version Build Next: $(VersionPatchNext)" Importance="Normal" Condition='$(DebugMsg) == True'/>
+	</Target>
+
+	<Target Name="UpdateVersionBuild_Sub" DependsOnTargets="GetVersionNumberFromFile" Condition="Exists('$(SemVerFile)')">
+		<PropertyGroup>
+			<VersionBuildNext Condition="'$(SetBuildNumber)' == ''">$([MSBuild]::Add($(VersionBuild), 1))</VersionBuildNext>
+			<VersionBuildNext Condition="'$(SetBuildNumber)' != ''">$(SetBuildNumber)</VersionBuildNext>
+			<AssemblyFileVersion_FULL_Next>$(VersionMajor).$(VersionMinor).$(VersionPatch).$(VersionBuildNext)</AssemblyFileVersion_FULL_Next>
+			<AssemblyInformationalVersion_FULL_Next>$(VersionMajor).$(VersionMinor).$(VersionPatch)</AssemblyInformationalVersion_FULL_Next>
+		</PropertyGroup>
+<!--
+			<Message Text="Version Major: $(VersionMajor)" Importance="Normal" Condition='$(DebugMsg) == True'/>
+			<Message Text="Version Minor: $(VersionMinor)" Importance="Normal" Condition='$(DebugMsg) == True'/>
+			<Message Text="Version Patch: $(VersionPatch)" Importance="Normal" Condition='$(DebugMsg) == True'/>
+			<Message Text="Version Build: $(VersionBuild)" Importance="Normal" Condition='$(DebugMsg) == True'/>
+			<Message Text="Version Build Next: $(VersionBuildNext)" Importance="Normal" Condition='$(DebugMsg) == True'/>
+			<Message Text="Version Next: $(AssemblyFileVersion_FULL_Next)" Importance="Normal" Condition='$(DebugMsg) == True'/>
+		-->
+	</Target>
+
+	<Target Name="UpdateVersionGeneric">
+		<CallTarget Targets="UpdateVersionGenericDOTNET"  Condition="$(VersionFileType) == '' OR $(VersionFileType) == '.NET'"/>
+		<CallTarget Targets="UpdateVersionGenericJSON" Condition="$(VersionFileType) == 'JSON'" />
+	</Target>
+	
+	<Target Name="UpdateVersionGenericDOTNET">
+		<!-- Update all the assembly info files with generated version info -->
+		<Message Text="-------------------------------------------------------------------" />
+		<Message Text="Modifying AssemblyInfo files..." Importance="Normal"/>
+		<Message Text="-------------------------------------------------------------------" />
+
+		<!-- Clear read-only attributes -->
+		<Attrib Files="$(SemVerFile)" Normal="true" />
+
+			<Message Text="Assembly File Version (Full - Next): $(AssemblyFileVersion_FULL_Next)" Importance="Normal" Condition='$(DebugMsg) == True'/>
+			<Message Text="Assembly Informational Version (Full - Next): $(AssemblyInformationalVersion_FULL_Next)" Importance="Normal" Condition='$(DebugMsg) == True'/>
+
+		<!-- Update: AssemblyFileVersion (support x.x.x.x) -->
+		<FileUpdate 
+			Files="$(SemVerFile)"
+			Regex="\[assembly\: (AssemblyFileVersion)\(\&quot;(\d+)\.(\d+)\.(\d+)\.(\d+)\&quot;\)\]"
+			ReplacementText="[assembly: AssemblyFileVersion(&quot;$(AssemblyFileVersion_FULL_Next)&quot;)]"
+		/>
+		<Message Text="$(SemVerFile) updated to version &quot;$(AssemblyFileVersion_FULL_Next)&quot;" Importance="Normal"/>
+		
+		<!-- Update: AssemblyInformationalVersion (support x.x.x) -->
+		<FileUpdate 
+			Files="$(SemVerFile)"
+			Regex="\[assembly\: (AssemblyInformationalVersion)\(\&quot;(\d+)\.(\d+)\.(\d+)\&quot;\)\]"
+			ReplacementText="[assembly: AssemblyInformationalVersion(&quot;$(AssemblyInformationalVersion_FULL_Next)&quot;)]"
+		/>
+		<Message Text="$(SemVerFile) files updated to version &quot;$(AssemblyInformationalVersion_FULL_Next)&quot;" Importance="Normal"/>
+		<Message Text="-------------------------------------------------------------------" />
+	</Target>
+	
+	<Target Name="UpdateVersionGenericJSON">
+		<PropertyGroup>
+			<SemVerFile Condition="Exists('package.json')">package.json</SemVerFile> <!-- 2015-04-02: Override-->
+		</PropertyGroup>
+		<!-- Update all the assembly info files with generated version info -->
+		<Message Text="-------------------------------------------------------------------" />
+		<Message Text="Modifying AssemblyInfo files..." Importance="Normal"/>
+		<Message Text="-------------------------------------------------------------------" />
+
+		<!-- Clear read-only attributes -->
+		<Attrib Files="$(SemVerFile)" Normal="true" />
+
+			<Message Text="Assembly File Version (Full - Next): $(AssemblyFileVersion_FULL_Next)" Importance="Normal" Condition='$(DebugMsg) == True'/>
+			<Message Text="Assembly Informational Version (Full - Next): $(AssemblyInformationalVersion_FULL_Next)" Importance="Normal" Condition='$(DebugMsg) == True'/>
+
+		<!-- Update: AssemblyFileVersion (support x.x.x.x) -->
+		<FileUpdate 
+			Files="$(SemVerFile)"
+			Regex="&quot;version&quot;: &quot;(\d+).(\d+).(\d+)&quot;,"
+			ReplacementText="&quot;version&quot;: &quot;$(AssemblyInformationalVersion_FULL_Next)&quot;,"
+		/>
+		<Message Text="$(SemVerFile) updated to version &quot;$(AssemblyFileVersion_FULL_Next)&quot;" Importance="Normal"/>
+		
+		<!-- Update: AssemblyInformationalVersion (support x.x.x) -->
+		
+		<Message Text="$(SemVerFile) files updated to version &quot;$(AssemblyInformationalVersion_FULL_Next)&quot;" Importance="Normal"/>
+		<Message Text="-------------------------------------------------------------------" />
+	</Target>
+
+	<Target Name="UpdateAssemblyCopyright">
+		<!-- Update all the assembly info files with generated version info -->
+		<Message Text="-------------------------------------------------------------------" />
+		<Message Text="Modifying AssemblyInfo files..." Importance="Normal"/>
+		<Message Text="-------------------------------------------------------------------" />
+
+		<!-- Clear read-only attributes -->
+		<Attrib Files="$(SemVerFile)" Normal="true" />
+
+		<!-- Update: AssemblyCopyright -->
+		<!-- Notes: 
+			2015-01-30: GS - Standard expression "^.*(AssemblyCopyright).*" but was not working so dropped the anchor "^" -->
+		<FileUpdate 
+			Files="$(SemVerFile)"
+			Regex=".*(AssemblyCopyright).*"
+			ReplacementText="[assembly: AssemblyCopyright(&quot;© PNI Digital Media. All rights reserved.&quot;)]"
+		/>
+		<Message Text="$(SemVerFile) files updated Copyright Information" Importance="Normal"/>
+		<Message Text="-------------------------------------------------------------------" />
+	</Target>
+	
+	<Target Name="UpdateAssemblyCompany">
+		<!-- Update all the assembly info files with generated version info -->
+		<Message Text="-------------------------------------------------------------------" />
+		<Message Text="Modifying AssemblyInfo files..." Importance="Normal"/>
+		<Message Text="-------------------------------------------------------------------" />
+
+		<!-- Clear read-only attributes -->
+		<Attrib Files="$(SemVerFile)" Normal="true" />
+
+		<!-- Update: AssemblyCompany -->
+		<!-- Notes: 
+			2015-01-30: GS - Standard expression "^.*(AssemblyCompany).*" but was not working so dropped the anchor "^" -->
+		<FileUpdate 
+			Files="$(SemVerFile)"
+			Regex=".*(AssemblyCompany).*"
+			ReplacementText="[assembly: AssemblyCompany(&quot;PNI Digital Media Inc.&quot;)]"
+		/>
+		<Message Text="$(SemVerFile) files updated Company Information" Importance="Normal"/>
+		<Message Text="-------------------------------------------------------------------" />
+	</Target>
+
+</Project>

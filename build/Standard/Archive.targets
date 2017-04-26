@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Version: 2.0.0
+Updated: 2016-02-15
+ABSType: Simple
+
+This targets file contains standard build scripts for building projects.
+
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+
+	<Target Name="Archive">
+		<PropertyGroup>
+		</PropertyGroup>
+
+		<CallTarget Targets="ArchiveGeneric" Condition="$(ArchiveType) == 'Generic'" />
+		<CallTarget Targets="ArchiveOctoPack" Condition="$(ArchiveType) == 'OctoPack'" /> <!-- Octopus -->
+
+	</Target>
+
+	<Target Name="ArchiveGeneric">
+		<PropertyGroup>
+			<ArchiveSource Condition="'$(ArchiveSource)' == ''">$(SourceRoot)</ArchiveSource>
+			<ArchiveSource Condition="'$(ArchiveSource)' != ''">$(ArchiveSource)</ArchiveSource>
+			<ArchiveFiles Condition="'$(ArchiveFiles)' == ''">*.*</ArchiveFiles>
+			<ArchiveTarget Condition="'$(ArchiveTarget)' == ''">$(BuildArtifacts)\Generic\$(Configuration)</ArchiveTarget>
+		</PropertyGroup>
+
+		<ItemGroup>
+			<ArchiveFileScan Include="$(ArchiveSource)\$(ArchiveFiles)"/>
+		</ItemGroup>
+
+		<Message Text="%0aArchive Source: $(ArchiveSource)%0aArtifacts Target: $(ArchiveTarget)%0a" />
+
+		<Exec 
+			Command='md "$(ArchiveTarget)"'
+			WorkingDirectory='$(SourceRoot)'
+			Condition="!Exists('$(ArchiveTarget)')"
+		/>
+
+		<Exec 
+			Command='xcopy /S /Y $(ArchiveSource)\$(ArchiveFiles) "$(ArchiveTarget)\"'
+			WorkingDirectory='$(SourceRoot)'
+			Condition="Exists('%(ArchiveFileScan.FullPath)')"
+		/>
+	</Target>
+
+</Project>

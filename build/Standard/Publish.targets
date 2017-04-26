@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Version: 2.0.0
+Updated: 2016-02-15
+ABSType: Simple
+
+This targets file contains standard build scripts for building projects.
+
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+
+	<Target Name="Publish" DependsOnTargets="NuGetPackageSettings">
+		<Message Text="Debug - Publish To: $(PublishTo)" 
+				 Condition="'$(DebugMsg)' == 'true'"/> <!-- Debug -->
+		
+		<Message Text="Debug - Publish Artifacts: $(PublishArtifacts)" 
+				 Condition="'$(DebugMsg)' == 'true'"/> <!-- Debug -->
+		
+		<Message Text="Debug - Build Type: $(BuildType)" 
+				 Condition="'$(DebugMsg)' == 'true'"/> <!-- Debug -->
+		
+		<Message Text="Debug - Project Name: $(ProjectName)" 
+				 Condition="'$(DebugMsg)' == 'true'"/> <!-- Debug -->
+
+		<PropertyGroup>
+			<PublishTo Condition="'$(PublishTo)' == '' AND $(PublishArtifacts) == ''">Candidate</PublishTo>
+		</PropertyGroup>
+		
+		<CallTarget Targets="Publish3rdParty" Condition="$(PublishTo) == '3rdParty'" /> <!-- NuGet -->
+		<CallTarget Targets="PublishCandidate" Condition="$(PublishTo) == 'Candidate'" /> <!-- NuGet -->
+		<CallTarget Targets="PublishOfficial" Condition="$(PublishTo) == 'Official'" /> <!-- NuGet -->
+		<CallTarget Targets="PublishLocal" Condition="$(PublishTo) == 'Local'" /> <!-- NuGet -->
+		<CallTarget Targets="PublishArtifacts" Condition="$(PublishArtifacts) == 'true'" />
+	</Target>
+
+	<Target Name="PublishArtifacts" DependsOnTargets="NuGetPackageSettings;GetVersionNumberFromFile;Get-Date" >
+		<!-- Phased Out (2014-10-23): Condition="'$(BuildType)' == 'Official'" -->
+		<PropertyGroup>
+			<PublishArtifactsPathRemote>$(BuildArtifactsServerRemote)\TeamCity\$(BuildType)\$(ProjectName)\$(AssemblyFileVersion_Release)\$(AssemblyFileVersion_FULL)\</PublishArtifactsPathRemote>
+			<PublishArtifactsPathRemote Condition="'$(BuildType)' == 'Nightly'">$(BuildArtifactsServerRemote)\TeamCity\$(BuildType)\$(ISOYear)\$(ISOMonth)\$(ISODay)\$(ProjectName)\$(AssemblyFileVersion_Release)\$(AssemblyFileVersion_FULL)\</PublishArtifactsPathRemote>
+		</PropertyGroup>
+		
+		<Message Text="##teamcity[setParameter name='ReleaseRemoteDistribPath' value='$(PublishArtifactsPathRemote)']" 
+				 Condition="'$(TeamCityActivation_TMP)' == 'true'"
+		/>
+		
+		<Message Text="Publish Artifacts Folder: $(BuildArtifacts)" 
+				 Condition="'$(DebugMsg)' == 'true'"/>
+
+		<Message Text="XCopy /S /Y $(BuildArtifacts)\*.* '$(PublishArtifactsPathRemote)'"
+				 Condition="'$(DebugMsg)' == 'true'"/>
+				 
+		<Message Text="Remote Artifacts folder does not exist."
+				 Condition="!Exists('$(PublishArtifactsPathRemote)')"/>
+				 
+		<Exec 
+			Command='MD "$(PublishArtifactsPathRemote)"'
+			WorkingDirectory='$(SourceRoot)'
+			Condition="!Exists('$(PublishArtifactsPathRemote)')"
+		/>
+
+		<Message Text="Local Artifacts folder does not exist."
+				 Condition="!Exists('$(BuildArtifacts)')"/>
+		
+		<Exec 
+			Command='XCopy /S /Y $(BuildArtifacts)\*.* "$(PublishArtifactsPathRemote)"'
+			WorkingDirectory='$(SourceRoot)'
+			Condition="Exists('$(BuildArtifacts)')"
+		/>
+	</Target>
+
+</Project>

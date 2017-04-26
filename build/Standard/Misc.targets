@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Version: 2.0.0
+Updated: 2016-08-19
+ABSType: Simple
+
+This targets file contains standard build scripts for building projects.
+
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+
+	<Target Name="Boot">
+		<Message Text="-------------------------------------------------------------------" />
+		<Message Text="Config Info" />
+		<Message Text="-------------------------------------------------------------------" />
+		<Message Text="MSBuild Extension location: $(MSBuildExtensionsPath)" />
+		<Message Text="-------------------------------------------------------------------" />
+		
+		<CallTarget Targets="ABS_InfoCurrent"/>
+	</Target>
+
+	<Target Name="ABS_InfoCurrent">
+		<!-- Read version of project.targets -->
+		<ReadLinesFromFile File="$(ABSThisFileFullPath)">
+			<Output TaskParameter="Lines"
+					ItemName="ItemsFromFile"/>
+		</ReadLinesFromFile>
+
+		<PropertyGroup>
+			<Pattern>Version:\s(\d+).(\d+).(\d+)</Pattern>
+			<In>@(ItemsFromFile)</In>
+			<Version_Out>$([System.Text.RegularExpressions.Regex]::Match($(In), $(Pattern)))</Version_Out>
+		</PropertyGroup>
+
+		<PropertyGroup>
+			<Pattern>Updated:\s(\d+).(\d+).(\d+)</Pattern>
+			<In>@(ItemsFromFile)</In>
+			<Date_Out>$([System.Text.RegularExpressions.Regex]::Match($(In), $(Pattern)))</Date_Out>
+		</PropertyGroup>
+		
+		<PropertyGroup>
+			<Pattern>(ABSType:)\s([A-Za-z]+)</Pattern>
+			<In>@(ItemsFromFile)</In>
+			<Type_Out>$([System.Text.RegularExpressions.Regex]::Match($(In), $(Pattern)))</Type_Out>
+		</PropertyGroup>
+		
+		<PropertyGroup>
+			<ABS_BuildString>$(Version_Out.Split(':')[1])</ABS_BuildString>
+			<ABS_BuildNumber>$(ABS_BuildString.Trim())</ABS_BuildNumber>
+			<ABS_Major>$(ABS_BuildNumber.Split('.')[0])</ABS_Major>
+			<ABS_Minor>$(ABS_BuildNumber.Split('.')[1])</ABS_Minor>
+			<ABS_Patch>$(ABS_BuildNumber.Split('.')[2])</ABS_Patch>
+		</PropertyGroup>
+		
+		<PropertyGroup>
+			<ABS_DateString>$(Date_Out.Split(':')[1])</ABS_DateString>
+			<ABS_Date>$(ABS_DateString.Trim())</ABS_Date>
+			<ABS_Year>$(ABS_Date.Split('-')[0])</ABS_Year>
+			<ABS_Month>$(ABS_Date.Split('-')[1])</ABS_Month>
+			<ABS_Day>$(ABS_Date.Split('-')[2])</ABS_Day>
+		</PropertyGroup>
+		
+		<PropertyGroup>
+			<ABS_TypeString>$(Type_Out.Split(':')[1])</ABS_TypeString>
+			<ABS_Type>$(ABS_TypeString.Trim())</ABS_Type>
+		</PropertyGroup>
+		
+		<Message text="Build Script Version: $(ABS_BuildNumber)" />
+		<Message Text="Date: $(ABS_Date)"/>
+		<Message Text="Type: $(ABS_Type)"/>
+		<!--
+		<Message text="********************" />
+		<Message text="Debug:" />
+		<Message Text=" "/>
+		<Message Text="Version Settings"/>
+		<Message text="ABS Major: $(ABS_Major)" />
+		<Message text="ABS Minor: $(ABS_Minor)" />
+		<Message text="ABS_Patch: $(ABS_Patch)" />
+		<Message Text=" "/>
+		<Message Text="Date Settings"/>
+		<Message text="ABS_Year: $(ABS_Year)" />
+		<Message text="ABS_Month: $(ABS_Month)" />
+		<Message text="ABS_Day: $(ABS_Day)" />
+		<Message text="********************" />
+		-->
+	</Target>
+	
+	<Target Name="DebugProject">
+		<Message Text="-------------------------------------------------------------------" />
+		<Message Text="Debug: Project.targets" />
+		<Message Text="-------------------------------------------------------------------" />
+		<Message Text="NuGet Local Repository: $(NuGetRepoLocal)" />
+		<Message Text=" "/>
+		<Message Text="Build Tools Path: $(BuildToolsPath)"/>
+		<Message Text=" "/>
+		<Message Text="TransformXml: $(VS120DevWeb)"/>
+		<Message Text=" "/>
+		<Message Text="Extension Path: $(MSBuildExtensionsPath)"/>
+		<Message Text=" "/>
+		<Message Text="TeamCity Activation: $(TeamCityActivation_TMP)"/>
+		<Message Text=" "/>
+		<Message Text="Build Artifacts: $(BuildArtifacts)"/>
+		<Message Text=" "/>
+		<Message Text="OctoPack Publish Path: $(OctoPackPublishPath)"/>
+		<Message Text=" "/>
+		<Message Text="Custom Compile All: $(CustomCompile)"/>
+		<Message Text=" "/>
+		<Message Text="Path: $(NuGetRepoUNCCandidate)"/>
+		<Message Text="Path TrimEnd: $(NuGetRepoUNCCandidate.TrimEnd('\'))"/>
+		<Message Text=" "/>
+		<Message Text="Custom SLN Include: $(CustomSLNInclude)"/>
+		<Message Text="Custom SLN Include (Status): $(CustomSLNInclude_Override)"/>
+		<Message Text="Custom SLN Exclude: $(CustomSLNExclude)"/>
+		<Message Text="Custom SLN Exclude (Status): $(CustomSLNExlcude_Override)"/>
+		<Message Text=" "/>
+		<Message Text="SLN Override: $(SLNOverride)" />
+		<Message Text="SLN Override Status: $(SLNOverrideStatus)" />
+		<Message Text="SLN Override Extension: $(SLNExtension)"/>
+		<Message Text=" "/>
+		<Message Text="Solution Files: @(SolutionFiles)"/>
+		<Message Text=" "/>
+		<Message Text="Custom NuSpec Include: $(CustomNuSpecInclude)"/>
+		<Message Text="Custom NuSpec Include (Status): $(CustomNuSpecInclude_Override)"/>
+		<Message Text="Custom NuSpec Exclude: $(CustomNuSpecExclude)"/>
+		<Message Text="Custom NuSpec Exclude (Status): $(CustomNuSpecExlcude_Override)"/>
+		<Message Text=" "/>
+		<Message Text="NuSpec Override: $(NuSpecOverride)" />
+		<Message Text="NuSpec Override Status: $(NuSpecOverrideStatus)" />
+		<Message Text="NuSpec Override Extension: $(NuSpecExtension)"/>
+		<Message Text=" "/>
+		<Message Text="NuSpec Files: @(NuSpecFiles)"/>
+		<Message Text="-------------------------------------------------------------------" />
+	</Target>
+	
+	<Target Name="Info">
+		<Message Text="-------------------------------------------------------------------" />
+		<Message Text="Build Targets: $(MSBuildProjectDirectory)" />
+		<Message Text="-------------------------------------------------------------------" />
+		<Message Text="msbuild project.targets /t:Compile" />
+		<Message Text="	Supported parameters for Compile:" />
+		<Message Text="		/p:Configuration=Release|Debug" />
+		<Message Text="		/p:Platform='Any CPU'|x64" />
+		<Message Text="		/p:RunOctoPack=True|False" />
+		<Message Text=" " />
+		<Message Text="msbuild project.targets /t:Package" />
+		<Message Text=" " />
+		<Message Text="	Supported parameters for Package:" />
+		<Message Text="		/p:Configuration=Release" />
+		<Message Text="		/p:NuSpecOverride='Nuspec File Name'" />
+		<Message Text=" " />
+		<Message Text="msbuild project.targets /t:Publish3rdParty" />
+		<Message Text="msbuild project.targets /t:PublishCandidate" />
+		<Message Text="msbuild project.targets /t:PublishLocal" />
+		<Message Text=" " />
+		<Message Text="msbuild project.targets /t:TransformWebConfig " />
+		<Message Text=" " />
+		<Message Text="	Required parameters for TranformWebConfig:" />
+		<Message Text="		/p:WebConfigSource='Web.config Source File'" />
+		<Message Text="		/p:WebConfigTransform='Web.config Transform File'" />
+		<Message Text="		/p:WebConfigTarget='Web.config Target File'" />
+		<Message Text="		/p:WebConfigProjectName='Project Name to Transform'" />
+		<Message Text=" " />
+		<Message Text="	Sample: msbuild project.targets /t:TransformWebConfig /p:WebConfigSource=Web.config /p:WebConfigTransform=Web.Production.config /p:WebConfigTarget=Web.Prod.config "/>
+		<Message Text=" " />
+		<Message Text="msbuild project.targets /t:PackageProjectWeb" />
+		<Message Text=" " />
+		<Message Text="	Required parameters for PackageProjectWeb:" />
+		<Message Text="		/p:PackageProjectName=WebProject1 " />
+		<Message Text=" " />
+		<Message Text="msbuild project.targets /t:UnitTest" />
+		<Message Text=" " />
+		<Message Text="	Supported parameters for Package:" />
+		<Message Text="		/p:TestIgnore=True/False" />
+		<Message Text=" " />
+		<Message Text="TestIgnore will ignore will Continue on Error or Fail out.  Default is True so it will just continue to the next project." />
+		<Message Text=" " />
+		<Message Text="msbuild project.targets /t:DisableNuGetConfig /p:Disable=teams" />
+		<Message Text="		This will disable the nuget package repository for 'teams' and can be applied to any repository." />
+		<Message Text=" " />
+		<Message Text="msbuild project.targets /t:InstallNPM " />
+		<Message Text=" " />
+		<Message Text="msbuild project.targets /t:GRUNT /p:GruntAction=dist " />
+		<Message Text=" 	When running the grunt build the InstallNPM is ran as a precursor to the actual grunt action." />
+		<Message Text=" " />
+		<Message Text="msbuild project.targets /t:GetVersionNumberFromFile /p:VersionFileType=.NET|JSON " />
+		<Message Text=" " />
+		<Message Text=" " />
+		
+		<Message Text="-------------------------------------------------------------------" />
+	</Target>
+	
+	<Target Name="Get-Date" >
+		<!-- http://stackoverflow.com/questions/878037/msbuild-msbuildcommunitytasks-task-time 
+		
+		$(ABS_BuildString.Trim())
+		-->
+		<PropertyGroup> 
+			<ISOYear_Raw>$([System.DateTime]::Now.ToString(`yyyy`)) </ISOYear_Raw>
+			<ISOMonth_Raw>$([System.DateTime]::Now.ToString(`MM`)) </ISOMonth_Raw>
+			<ISODay_Raw>$([System.DateTime]::Now.ToString(`dd`)) </ISODay_Raw>
+			
+			<ISOYear>$(ISOYear_Raw.Trim())</ISOYear>
+			<ISOMonth>$(ISOMonth_Raw.Trim())</ISOMonth>
+			<ISODay>$(ISODay_Raw.Trim())</ISODay>
+		</PropertyGroup>
+		
+		<Message Text = "Year: $(ISOYear)" />
+		<Message Text = "Month: $(ISOMonth)" />
+		<Message Text = "Day: $(ISODay)" />
+	</Target>
+	
+	<Target Name="GenerateNewGuid">
+		<PropertyGroup>
+		<GenerateGuid>
+		<![CDATA[
+		public static string ScriptMain() {
+		return System.Guid.NewGuid().ToString().ToUpper();
+		}
+		]]>
+		</GenerateGuid>
+		</PropertyGroup>
+		 
+		<Script Language="C#" Code="$(GenerateGuid)">
+		<Output TaskParameter="ReturnValue" PropertyName="NewGuid" />
+		</Script>
+
+		<Message Text="Guid: $(NewGuid)" />
+
+		<PropertyGroup>
+			<ShortGuid>$(NewGuid.Replace('-',''))</ShortGuid>
+		</PropertyGroup>
+
+		<Message Text="Short Guid: $(ShortGuid)" />
+
+	</Target>
+	
+	<Target Name="CreateXml">
+		<PropertyGroup>
+			<BuildSpecFile>BuildSpecs_GEN.xml</BuildSpecFile>
+		</PropertyGroup>
+		
+		<ItemGroup>
+			<Line Include="line01"><Text>&lt;Assemblies&gt;</Text></Line>
+			<LineText Include="%(Line.Text)" />
+		</ItemGroup>
+		
+		<WriteLinesToFile
+			File="$(BuildSpecFile)"
+			Lines="@(LineText)"
+			Overwrite="true"
+		/>
+	</Target>
+	
+	<Target Name="BuildSpecXML" Condition='$(LogVersion)== True'  DependsOnTargets="GetVersionNumberFromFileDOTNET">
+		<PropertyGroup>
+			<BuildSpecFile>BuildSpecs_GEN.xml</BuildSpecFile>
+		</PropertyGroup>
+		<!--
+		<XmlUpdate 
+			Prefix="nu"
+			Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+			XmlFileName="$(BuildSpecFile)"
+			XPath="nu:Build/nu:Project/nu:Company"
+			Value="$(Company)"
+		/>
+		-->
+		<!--
+		<XmlUpdate 
+			Prefix="nu"
+			Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+			XmlFileName="$(BuildSpecFile)"
+			XPath="nu:Build/nu:Project/nu:Product"
+			Value="$(Product)"
+		/>-->
+		
+		<XmlUpdate 
+			Prefix="nu"
+			Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+			XmlFileName="$(BuildSpecFile)"
+			XPath="nu:Build/nu:Project/nu:VersionMajor"
+			Value="$(VersionMajor)"
+		/>
+		
+		<XmlUpdate 
+			Prefix="nu"
+			Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+			XmlFileName="$(BuildSpecFile)"
+			XPath="nu:Build/nu:Project/nu:VersionMinor"
+			Value="$(VersionMinor)"
+		/>
+		
+		<XmlUpdate 
+			Prefix="nu"
+			Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+			XmlFileName="$(BuildSpecFile)"
+			XPath="nu:Build/nu:Project/nu:VersionPatch"
+			Value="$(VersionPatch)"
+		/>
+		
+		<XmlUpdate 
+			Prefix="nu"
+			Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+			XmlFileName="$(BuildSpecFile)"
+			XPath="nu:Build/nu:Project/nu:VersionBuild"
+			Value="$(VersionBuild)"
+		/>
+		
+		<XmlUpdate 
+			Prefix="nu"
+			Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+			XmlFileName="$(BuildSpecFile)"
+			XPath="nu:Build/nu:Project/nu:VersionFull"
+			Value="$(AssemblyFileVersion_FULL)"
+		/>
+	
+	</Target>
+	
+	<Target Name="dosKeys">
+	<!--
+		<Exec Command='@DOSKEY InstallNuget=msbuild project.targets /t:InstallNugetPackages' />
+		<Exec Command='@DOSKEY UpdateNuget=msbuild project.targets /t:UpdateNugetConfig' />
+		<Exec Command='@DOSKEY ReadNuget=msbuild project.targets /t:ReadNugetConfig' />
+		<Exec Command='@DOSKEY AddNuget=msbuild project.targets /t:AddNugetConfig' />
+		
+		<Exec Command='@DOSKEY EditNugetConfig=notepad .nuget\nuget.config' />
+		<Exec Command='@DOSKEY EditNuget=EditNugetConfig' />
+		
+		<Exec Command='@DOSKEY EditBuild=notepad project.targets' />
+		
+		<Exec Command='@DOSKEY Build=msbuild project.targets /t:Build $*' />
+		<Exec Command='@DOSKEY BuildOctoPack=msbuild project.targets /t:Build /p:RunOctoPack=True $*' />
+		<Exec Command='@DOSKEY Package=msbuild project.targets /t:Package $*' />
+		<Exec Command='@DOSKEY CustomPackageAll=msbuild project.targets /t:CustomPackageAll $*' />
+		
+		<Exec Command='@DOSKEY BuildInfo=msbuild project.targets /t:Info $*' />
+	-->
+	</Target>
+	
+	<Target Name="ScratchSpace" DependsOnTargets="NuGetPackageSettings;GetVersionNumberFromFile;Get-Date" > 
+		<PropertyGroup>
+			<PublishArtifactsPathRemote>$(BuildArtifactsServerRemote)\TeamCity\$(BuildType)\$(ProjectName)\$(AssemblyFileVersion_Release)\$(AssemblyFileVersion_FULL)\</PublishArtifactsPathRemote>
+			<PublishArtifactsPathRemote Condition="'$(BuildType)' == 'Nightly'">$(BuildArtifactsServerRemote)\TeamCity\$(BuildType)\$(ISOYear)\$(ISOMonth)\$(ISODay)\$(ProjectName)\$(AssemblyFileVersion_Release)\$(AssemblyFileVersion_FULL)\</PublishArtifactsPathRemote>
+		</PropertyGroup>
+		<Message Text = "Build Type: $(BuildType)" />
+		<Message Text = "Publish Artifacts Path Remote: $(PublishArtifactsPathRemote)" />
+	</Target>
+	
+	<Target Name="BuildPreReq">
+		<!-- 2015-03-26: GS - Removed: DependsOnTargets="NuGetSettings" -->
+		<PropertyGroup>
+			<UtilitiesPath>$(SourceRoot)\.Utilities</UtilitiesPath>
+		</PropertyGroup>
+		
+		<Message Text="BuildPreReq Debug: Package Name: $(PackageName)" Condition='$(DebugMsg) == True'/> <!-- Debug -->
+		
+		<!-- MSBuild Community Tasks -->
+		<PropertyGroup>
+			<PackageName_BAK>$(PackageName)</PackageName_BAK>
+			<PackageName>$(MSBuildCommunityTasks_Package)</PackageName>
+			<PackageVersion>$(MSBuildCommunityTasks_Version)</PackageVersion>
+		</PropertyGroup>
+		<Message Text="BuildPreReq Debug: Package Name: $(PackageName)" Condition='$(DebugMsg) == True'/> <!-- Debug -->
+		<Message Text="BuildPreReq Debug: Package Name Backup: $(PackageName_BAK)" Condition='$(DebugMsg) == True'/> <!-- Debug -->
+		<Message Text="MSBuild Community Tasks Status: $(MSBuildCommunityTasks_Status)" Condition="'$(DebugMsg)' == 'true'"/> <!-- Debug -->
+		
+		<Exec 
+			Command="&quot;$(NuGet)&quot; install $(PackageName) -version $(PackageVersion) -o &quot;$(UtilitiesPath)&quot; -ConfigFile &quot;$(NuGetConfig)&quot;" 
+			Condition="!Exists('.Utilities\$(PackageName).$(PackageVersion)\MSBuild.Community.Tasks.Targets') AND $(MSBuildCommunityTasks_Status) == 'false' AND $(NuGet_Status) == 'true'"
+		/>
+		<PropertyGroup>
+			<PackageName>$(PackageName_BAK)</PackageName>
+			<PackageName_BAK></PackageName_BAK>
+		</PropertyGroup>
+		<Message Text="BuildPreReq Debug: PackageName: $(PackageName)" Condition='$(DebugMsg) == True'/> <!-- Debug -->
+		
+		<!-- MSBuild Extension Pack -->
+		<PropertyGroup>
+			<PackageName_BAK>$(PackageName)</PackageName_BAK>
+			<PackageName>$(MSBuildExtensionPack_Package)</PackageName>
+			<PackageVersion>$(MSBuildExtensionPack_Version)</PackageVersion>
+		</PropertyGroup>
+		<Message Text="BuildPreReq Debug: Package Name: $(PackageName)" Condition='$(DebugMsg) == True'/> <!-- Debug -->
+		<Message Text="BuildPreReq Debug: Package Name Backup: $(PackageName_BAK)" Condition='$(DebugMsg) == True'/> <!-- Debug -->
+		<Message Text="MSBuild Extension Pack Status: $(MSBuildExtensionPack_Status)" Condition="'$(DebugMsg)' == 'true'"/> <!-- Debug -->
+		
+		<Exec 
+			Command="&quot;$(NuGet)&quot; install $(PackageName) -version $(PackageVersion) -o &quot;$(UtilitiesPath)&quot; -ConfigFile &quot;$(NuGetConfig)&quot;" 
+			Condition="!Exists('.Utilities\$(PackageName).$(PackageVersion)\MSBuild.ExtensionPack.tasks') AND $(MSBuildExtensionPack_Status) == 'false' AND $(NuGet_Status) == 'true'"
+		/>
+		<PropertyGroup>
+			<PackageName>$(PackageName_BAK)</PackageName>
+			<PackageName_BAK></PackageName_BAK>
+		</PropertyGroup>
+		<Message Text="BuildPreReq Debug: PackageName: $(PackageName)" Condition='$(DebugMsg) == True'/> <!-- Debug -->
+	</Target>
+
+</Project>

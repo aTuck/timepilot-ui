@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Version: 2.0.2
+Updated: 2016-12-06
+ABSType: Simple
+
+This targets file contains standard build scripts for building projects.
+
+	v2.0.1
+		2016-08-03: GS - Add MSCompile-Debug
+		2016-08-19: GS - Add hooks for VS2015
+					   - Add SLN override
+	v2.0.2
+		2016-12-06: GS - Add SolutionRoot to path for exclude to allow for filter to identity.  The full path is required to exclude. 
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+
+	<PropertyGroup> <!-- Custom.targets Configuration (Solution) -->
+		<CustomSLNInclude_Override Condition="'$(CustomSLNInclude)' != '*.sln'">True</CustomSLNInclude_Override>
+		<CustomSLNInclude_Override Condition="'$(CustomSLNInclude)' == '*.sln'">False</CustomSLNInclude_Override>
+		<CustomSLNInclude_Override Condition="'$(CustomSLNInclude)' == ''">False</CustomSLNInclude_Override>
+		<CustomSLNExlcude_Override Condition="'$(CustomSLNExclude)' != ''">True</CustomSLNExlcude_Override>
+		<CustomSLNExlcude_Override Condition="'$(CustomSLNExclude)' == ''">False</CustomSLNExlcude_Override>
+	</PropertyGroup>
+
+	<PropertyGroup> <!-- Solution Override -->
+		<SLNOverride>$(SLNOverride)</SLNOverride>
+		<SLNOverrideStatus>False</SLNOverrideStatus>
+		<!--<SLNOverrideStatus Condition="'$(SLNOverride)' != ''">True</SLNOverrideStatus>-->
+
+		<SLNExtension>True</SLNExtension>
+		<SLNExtension Condition="$([System.Text.RegularExpressions.Regex]::IsMatch($(SLNOverride),((?i)(.sln))))">False</SLNExtension>
+	</PropertyGroup>
+
+	<ItemGroup> <!-- Solution Configuration -->
+		<!-- Note, this is assuming there is only one solution file alongside the project.targets -->
+		
+		<SolutionFiles Include="$(CustomSLNInclude)" Exclude="$(CustomSLNExclude)" Condition="'$(CustomSLNInclude_Override)' == True AND '$(SLNOverrideStatus)' == False"/>
+		<SolutionFiles Include=".\**\*.sln" Exclude="$(CustomSLNExclude)" Condition="'$(SolutionSub)' == True AND '$(CustomSLNInclude_Override)' == False AND '$(SLNOverrideStatus)' == False"/>
+		<SolutionFiles Include="*.sln" Exclude="$(CustomSLNExclude)" Condition="'$(SolutionSub)' != True AND '$(CustomSLNInclude_Override)' == False AND '$(SLNOverrideStatus)' == False"/>
+		
+		<!-- 2016-12-06: GS - Add SolutionRoot to path for exclude to allow for filter to identity.  The full path is required to exclude. -->
+		<SolutionFiles Include="$(SolutionRoot)\*.sln" Exclude="$(SolutionRoot)\$(CustomSLNExclude)" Condition="'$(SolutionSub)' != False AND '$(CustomSLNInclude_Override)' == False AND '$(SLNOverrideStatus)' == False"/>
+		<!-- 
+			<SolutionFiles Include="$(SolutionRoot)\**\*.sln" Exclude="$(CustomSLNExclude)" Condition="'$(SolutionSub)' == True AND '$(CustomSLNInclude_Override)' == False"/>
+			<SolutionFiles Include="$(SolutionRoot)\*.sln" Exclude="$(CustomSLNExclude)" Condition="'$(SolutionSub)' != True AND '$(CustomSLNInclude_Override)' == False"/>
+			<SolutionFiles Include="$(SolutionRoot)\*.sln" Exclude="$(CustomSLNExclude)"/>
+		 -->
+		
+		<!-- <SolutionRoot Include="."/> -->
+		<SolutionFiles Include="$(SolutionRoot)\$(SLNOverride).sln" Condition="'$(SLNOverrideStatus)' == True AND '$(SLNExtension)' == True"/>
+		<SolutionFiles Include="$(SolutionRoot)\$(SLNOverride)" Condition="'$(SLNOverrideStatus)' == True AND '$(SLNExtension)' == False"/>
+	</ItemGroup>
+
+	<PropertyGroup> <!-- Automated Build Script Settings -->
+		<ABSThisFileDirectory>$(MSBuildThisFileDirectory)</ABSThisFileDirectory>
+		<ABSThisFile>$(MSBuildThisFile)</ABSThisFile>
+		<ABSThisFileFullPath>$(MSBuildThisFileFullPath)</ABSThisFileFullPath>
+	</PropertyGroup>
+
+	<PropertyGroup> <!-- Microsoft Settings -->
+		<!-- Visual Studio 2008 -->
+			<!-- Visual Studio Environment -->
+			<VS90DevCmd>$(Vs90ComnTools)\vsvars32.bat</VS90DevCmd>
+			<!-- Team Foundation Server -->
+			<VS90TFS>$(Vs90ComnTools)..\IDE\tf.exe</VS90TFS>
+			<!-- MSTest -->
+			<MSTestVS90>$(VS90COMNTOOLS)\..\IDE\mstest.exe</MSTestVS90>
+			<!-- Visual Studio Web Developer Tools-->
+			<VS90DevWeb>$(MSBuild_System_Path)\Microsoft\VisualStudio\v9.0\Web\Microsoft.Web.Publishing.Tasks.dll</VS90DevWeb>
+		<!--************************************-->
+
+		<!-- Visual Studio 2010 -->
+			<!-- Visual Studio Environment -->
+			<VS100DevCmd>$(Vs100ComnTools)\vsvars32.bat</VS100DevCmd>
+			<!-- Team Foundation Server -->
+			<VS100TFS>$(Vs100ComnTools)..\IDE\tf.exe</VS100TFS>
+			<!-- MSTest -->
+			<MSTestVS100>$(VS100COMNTOOLS)\..\IDE\mstest.exe</MSTestVS100>
+			<!-- Visual Studio Web Developer Tools-->
+			<VS100DevWeb>$(MSBuild_System_Path)\Microsoft\VisualStudio\v10.0\Web\Microsoft.Web.Publishing.Tasks.dll</VS100DevWeb>
+		<!--************************************-->
+
+		<!-- Visual Studio 2012 -->
+			<!-- Visual Studio Environment -->
+			<VS110DevCmd>$(Vs110ComnTools)\VsDevCmd.bat</VS110DevCmd>
+			<!-- Team Foundation Server -->
+			<VS110TFS>$(Vs110ComnTools)..\IDE\tf.exe</VS110TFS>
+			<!-- MSTest -->
+			<MSTestVS110>$(VS110COMNTOOLS)\..\IDE\mstest.exe</MSTestVS110>
+			<!-- Visual Studio Web Developer Tools-->
+			<VS110DevWeb>$(MSBuild_System_Path)\Microsoft\VisualStudio\v11.0\Web\Microsoft.Web.Publishing.Tasks.dll</VS110DevWeb>
+		<!--************************************-->
+
+		<!-- Visual Studio 2013 -->
+			<!-- Visual Studio Environment -->
+			<VS120DevCmd>$(Vs120ComnTools)\VsDevCmd.bat</VS120DevCmd>
+			<!-- Team Foundation Server -->
+			<VS120TFS>$(Vs120ComnTools)..\IDE\tf.exe</VS120TFS>
+			<!-- MSTest -->
+			<MSTestVS120>$(VS120COMNTOOLS)\..\IDE\mstest.exe</MSTestVS120>
+			<!-- VSTest -->
+			<VSTestVS120>$(VS120COMNTOOLS)\..\IDE\CommonExtensions\Microsoft\TestWindow\VSTest.Console.exe</VSTestVS120>
+			<!-- Visual Studio Web Developer Tools-->
+			<VS120DevWeb>$(MSBuild_System_Path)\Microsoft\VisualStudio\v12.0\Web\Microsoft.Web.Publishing.Tasks.dll</VS120DevWeb>
+		<!--************************************-->
+
+		<!-- Visual Studio 2015 -->
+			<!-- Visual Studio Environment -->
+			<VS140DevCmd>$(Vs140ComnTools)\VsDevCmd.bat</VS140DevCmd>
+			<!-- Team Foundation Server -->
+			<VS140TFS>$(Vs140ComnTools)..\IDE\tf.exe</VS140TFS>
+			<!-- MSTest -->
+			<MSTestVS140>$(VS120COMNTOOLS)\..\IDE\mstest.exe</MSTestVS140>
+			<!-- VSTest -->
+			<VSTestVS140>$(VS120COMNTOOLS)\..\IDE\CommonExtensions\Microsoft\TestWindow\VSTest.Console.exe</VSTestVS140>
+			<!-- Visual Studio Web Developer Tools-->
+			<VS140DevWeb>$(MSBuild_System_Path)\Microsoft\VisualStudio\v14.0\Web\Microsoft.Web.Publishing.Tasks.dll</VS140DevWeb>
+		<!--************************************-->
+
+		<!-- Settings: Version Control (TFS) -->
+			<TfsExeLocation>$(VS110TFS)</TfsExeLocation>
+		<!--***************************-->
+		
+	</PropertyGroup>
+
+	<Target Name="OverRideVS">
+		<!--<Message Text="DEBUG: $(VSVer)" Importance="Normal"/>
+		<Message Text="VS 12 $(VS120DevCmd)" Importance="Normal" Condition="'$(VSVer)'=='12'"/>-->
+		
+		<Exec Command='"$(VS90DevCmd)"' Condition="'$(VSVer)'=='9'"/>
+		<Exec Command='"$(VS100DevCmd)"' Condition="'$(VSVer)'=='10'"/>
+		<Exec Command='"$(VS110DevCmd)"' Condition="'$(VSVer)'=='11'"/>
+		<Exec Command='"$(VS120DevCmd)"' Condition="'$(VSVer)'=='12'"/>
+		<Exec Command='"$(VS140DevCmd)"' Condition="'$(VSVer)'=='14'"/>
+	</Target>
+
+	<Target Name="MSCompile" DependsOnTargets="Boot;OverRideVS">
+		<PropertyGroup>
+			<RunOctoPack Condition="'$(RunOctoPack)' == 'true'">true</RunOctoPack>
+		</PropertyGroup>
+
+		<Message Text="Solution: $(CustomSLNInclude)" />
+		<Message Text="Install NuGet: $(InstallNuGet)" />
+		<Message Text="Custom Compile: $(CustomCompile)" />
+		<Message Text="Clean Build: $(CleanBuild)" />
+		
+		<Message Text="Solution Files: @(SolutionFiles)"
+			 Condition="'$(DebugMsg)' == 'true'"/> <!-- Debug -->
+
+		<MSBuild Projects ="$(MSBuildProjectFullPath)" 
+				 Targets="InstallNuGetPackages" 
+				 Condition="'$(InstallNuGet)' == 'true'"
+				 Properties=""/>
+			 
+		<!-- Build with "Clean" when "CleanBuild" mode is true. -->
+		<MSBuild Projects="@(SolutionFiles)" 
+				 ContinueOnError="false" 
+				 Targets="Clean;Build" 
+				 Properties="Configuration=$(Configuration)"
+				 Condition="'$(CustomCompile)' != 'true' AND '$(CleanBuild)' == 'true'">
+			<Output ItemName="BuildOutput" TaskParameter="TargetOutputs"/>
+		</MSBuild>
+		
+		<!-- Build without "Clean" when "QuickBuild" mode is false. -->
+		<MSBuild Projects="@(SolutionFiles)" 
+				 ContinueOnError="false" 
+				 Targets="Build" 
+				 Properties="Configuration=$(Configuration)"
+				 Condition="'$(CustomCompile)' != 'true' AND '$(CleanBuild)' == 'false'">
+			<Output ItemName="BuildOutput" TaskParameter="TargetOutputs"/>
+		</MSBuild>
+	</Target>
+
+	<Target Name="MSCompile-Debug"> 
+		<Message Text="@(SolutionFiles)" />
+	</Target>
+
+	<Target Name="GetInfoFromFileDOTNET" Condition="Exists('$(SemVerFile)')">
+		<ReadLinesFromFile File="$(SemVerFile)">
+			<Output TaskParameter="Lines" ItemName="IterationNumberFileContents"/>
+		</ReadLinesFromFile>
+
+		<RegexMatch Input="@(IterationNumberFileContents)" Expression="(AssemblyCompany)">
+			<Output ItemName="VersionNumberLineReturn" TaskParameter="Output"/>
+		</RegexMatch>
+
+		<RegexReplace 
+			Input="@(VersionNumberLineReturn)" 
+			Expression="\[assembly\: (AssemblyCompany)\(\&quot;\&quot;\)\]" 
+			Replacement="$1" 
+			Count="1">
+			<Output PropertyName="Company" TaskParameter="Output"/>
+		</RegexReplace>
+		<Message Text="$(Company)"/>
+	</Target>
+
+	<Target Name="MSTestUnitTestsClean">
+		<RemoveDir Directories="$(BuildArtifacts)\MSTest"
+				   Condition="Exists('$(BuildArtifacts)\MSTest')"
+		/>
+	</Target>
+
+	<Target Name="VSTestUnitTestsClean">
+		<RemoveDir Directories="$(BuildArtifacts)\VSTest"
+				   Condition="Exists('$(BuildArtifacts)\VSTest')"
+		/>
+	</Target>
+
+	<Target Name="MSTestUnitTests" DependsOnTargets="GetVersionNumberFromFile;MSTestUnitTestsClean">
+		<PropertyGroup>
+			<MSTestLocal>$(MSTestVS120)</MSTestLocal>
+			<IncludeFilter>
+				.\**\*.Test.dll;
+				.\**\*.Tests.dll;
+				.\**\*.UnitTest.dll;
+				.\**\*.UnitTests.dll;
+				.\**\Test.*.dll;
+				.\**\Tests.*.dll;
+			</IncludeFilter>
+			<ExcludeFilter>
+				.\Artifacts\**\*;
+				.\**\Out\**\*;
+				.\**\Obj\**\*
+			</ExcludeFilter>
+			<TestIgnore Condition="'$(TestIgnore)' == ''">true</TestIgnore>
+			<TestIgnore Condition="'$(TestIgnore)' == 'false'">false</TestIgnore>
+		</PropertyGroup>
+		<!--<Message Text="Version Full: $(AssemblyFileVersion_FULL_ISO)"/>	-->
+
+		<ItemGroup>
+			<MSTestProjects 
+				Include="$(IncludeFilter)" 
+				Exclude="$(ExcludeFilter)" 
+			/>
+		</ItemGroup>
+		
+		<MakeDir Directories="$(BuildArtifacts)\MSTest"
+				 Condition="!Exists('$(BuildArtifacts)\MSTest')"
+		/>
+	
+		<!-- Continue on Error -->
+		<Exec 
+			Command='"$(MSTestLocal)" /testcontainer:%(MSTestProjects.Identity) /resultsfile:$(BuildArtifacts)\MSTest\%(MSTestProjects.FileName)_$(AssemblyFileVersion_FULL_ISO)_$(Configuration).trx'
+			WorkingDirectory="$(MSBuildProjectDirectory)"
+			ContinueOnError="WarnAndContinue"
+			Condition="'$(TestIgnore)' == 'true'"
+		/>
+
+		<!-- Stop on Error -->
+		<Exec 
+			Command='"$(MSTestLocal)" /testcontainer:%(MSTestProjects.Identity) /resultsfile:$(BuildArtifacts)\MSTest\%(MSTestProjects.FileName)_$(AssemblyFileVersion_FULL_ISO)_$(Configuration).trx'
+			WorkingDirectory="$(MSBuildProjectDirectory)"
+			Condition="'$(TestIgnore)' == 'false'"
+		/>
+		
+		<Message Text="##teamcity[importData id='mstest' file='$(BuildArtifacts)\MSTest\%(MSTestProjects.FileName)_$(AssemblyFileVersion_FULL_ISO)_$(Configuration).trx']" 
+				 Condition="'$(TeamCityActivation_TMP)' == 'true'"
+		/>
+
+	</Target>
+
+	<Target Name="VSTestUnitTests" DependsOnTargets="GetVersionNumberFromFile;VSTestUnitTestsClean">
+		<PropertyGroup>
+			<VSTestLocal>$(VSTestVS120)</VSTestLocal>
+			<IncludeFilter>
+				.\**\*.Test.dll;
+				.\**\*.Tests.dll;
+				.\**\*.UnitTest.dll;
+				.\**\*.UnitTests.dll;
+				.\**\Test.*.dll;
+				.\**\Tests.*.dll;
+			</IncludeFilter>
+			<ExcludeFilter>
+				.\Artifacts\**\*;
+				.\**\Out\**\*;
+				.\**\Obj\**\*
+			</ExcludeFilter>
+			<VSTestSettingsFile>VSTest.runsettings</VSTestSettingsFile>
+		</PropertyGroup>
+
+		<ItemGroup>
+			<VSTestProjects 
+				Include="$(IncludeFilter)" 
+				Exclude="$(ExcludeFilter)" 
+			/>
+		</ItemGroup>
+		
+		<MakeDir Directories="$(BuildArtifacts)\VSTest"
+				 Condition="!Exists('$(BuildArtifacts)\VSTest')"
+		/>
+
+		<ItemGroup>
+			<VSTestString Include="%3C?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?%3E"/>
+			<VSTestString Include="%3CRunSettings%3E"/>
+			<VSTestString Include="%20 %3CRunConfiguration%3E"/>
+			<VSTestString Include="%20   %3CResultsDirectory%3E$(BuildArtifacts)\VSTest%3C/ResultsDirectory%3E"/>
+			<VSTestString Include="%20 %3C/RunConfiguration%3E"/>
+			<VSTestString Include="%3C/RunSettings%3E"/>
+		</ItemGroup>
+
+		<WriteLinesToFile
+			File="$(VSTestSettingsFile)"
+			Lines="@(VSTestString)"
+			Overwrite="true"
+		/>
+
+		<Exec 
+			Command='"$(VSTestLocal)" /settings:$(VSTestSettingsFile) %(VSTestProjects.Identity) /Platform:$(Platform) /logger:trx'
+			WorkingDirectory="$(MSBuildProjectDirectory)"
+			ContinueOnError="WarnAndContinue"
+		/>
+
+		<Message Text="##teamcity[importData id='mstest' file='$(BuildArtifacts)\VSTest\*.trx']" 
+				 Condition="'$(TeamCityActivation_TMP)' == 'true'"
+		/>
+
+	</Target>
+
+	<Target Name="DebugProjectMicrosoft">
+		<Message Text="-------------------------------------------------------------------" />
+		<Message Text="Debug: Project.targets with Microsoft settings" />
+		<Message Text="-------------------------------------------------------------------" />
+		<Message Text=" "/>
+		<Message Text="Visual Studio 2008 Developer Command Line: $(VS90DevCmd)"/>
+		<Message Text="Visual Studio 2010 Developer Command Line: $(VS100DevCmd)"/>
+		<Message Text="Visual Studio 2012 Developer Command Line: $(VS110DevCmd)"/>
+		<Message Text="Visual Studio 2013 Developer Command Line: $(VS120DevCmd)"/>
+		<Message Text="Visual Studio 2015 Developer Command Line: $(VS140DevCmd)"/>
+		<Message Text="-------------------------------------------------------------------" />
+	</Target>
+
+	<Target Name="TransformWebConfig">
+		<CallTarget Targets="TransformWebConfig_SUB" Condition="'$(MSBuildDevWeb_Status)' == 'true'" />
+		<Error Text="NOTICE: The Web Developer Tools are not currently installed.  These tools are required for the transform action." Condition="'$(MSBuildDevWeb_Status)' == 'false'" />
+	</Target>
+
+	<Target Name="TransformWebConfig_SUB" Condition="'$(MSBuildDevWeb_Status)' == 'true'" DependsOnTargets="GetVersionNumberFromFile">
+		<!-- Source: "%(SolutionRoot.FullPath)\Web.config"
+			 Transform: %(SolutionRoot.FullPath)\Web.Production.config"
+			 Destination: "%(SolutionRoot.FullPath)\Web.config.$(versionfull).config"
+		-->
+		<PropertyGroup>
+			<WebConfigProjectName_INT Condition="'$(WebConfigProjectName)' == ''"></WebConfigProjectName_INT>
+			<WebConfigProjectName_INT Condition="'$(WebConfigProjectName)' != ''">$(WebConfigProjectName)\</WebConfigProjectName_INT>
+
+			<WebConfigSource_INT>$(WebConfigProjectName_INT)$(WebConfigSource)</WebConfigSource_INT>
+			<WebConfigTransform_INT>$(WebConfigProjectName_INT)$(WebConfigTransform)</WebConfigTransform_INT>
+
+			<WebConfigTarget_Override Condition="'$(WebConfigTarget)' == ''">$(WebConfigTransform).$(AssemblyFileVersion_FULL).config</WebConfigTarget_Override>
+
+			<WebConfigTarget_INT Condition="'$(WebConfigTarget)' != ''">$(WebConfigProjectName_INT)$(WebConfigTarget)</WebConfigTarget_INT>
+			<WebConfigTarget_INT Condition="'$(WebConfigTarget)' == ''">$(WebConfigProjectName_INT)$(WebConfigTarget_Override)</WebConfigTarget_INT>
+
+		</PropertyGroup>
+
+		<!--
+		<Message Text="*** Debug: TransformWebConfig_SUB ***" />
+		<Message Text="WebConfigProjectName_INT: $(WebConfigProjectName_INT)" />
+		<Message Text="WebConfigSource_INT: $(WebConfigSource_INT)" />
+		<Message Text="WebConfigTransform_INT: $(WebConfigTransform_INT)" />
+		<Message Text="WebConfigTarget_Override: $(WebConfigTarget_Override)" />
+		<Message Text="WebConfigTarget_INT: $(WebConfigTarget_INT)" />
+		<Message Text="**************************" />
+		-->
+
+		<TransformXml 
+			Source="$(WebConfigSource_INT)"
+			Transform="$(WebConfigTransform_INT)"
+			Destination="$(WebConfigTarget_INT)"
+			StackTrace="true" 
+		/>
+	</Target>
+
+</Project>
