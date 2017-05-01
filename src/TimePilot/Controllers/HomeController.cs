@@ -14,7 +14,7 @@ namespace TimePilot.Controllers
         ApiHelper myhelper = new ApiHelper();
         private string projectJson;
         private string storyJson;
-        List<Project> projects = new List<Project>();
+        List<ProjectViewModel> projects = new List<ProjectViewModel>();
 
         public string SelectedProject;
 
@@ -42,7 +42,7 @@ namespace TimePilot.Controllers
         }
 
         [HttpPost]
-        public ActionResult Index(Project project)
+        public ActionResult Index(ProjectViewModel project)
         {
             receiveProjectData();
             projects = myhelper.parseProjectData(projectJson);
@@ -55,7 +55,7 @@ namespace TimePilot.Controllers
             return View();
         }
 
-        public IEnumerable<SelectListItem> convertProjectListToIEnum(List<Project> projectList)
+        public IEnumerable<SelectListItem> convertProjectListToIEnum(List<ProjectViewModel> projectList)
         {
             List<SelectListItem> listSelectListItem = new List<SelectListItem>();
 

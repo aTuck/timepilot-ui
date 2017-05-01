@@ -15,7 +15,7 @@ namespace TimePilot.Controllers
 {
     public class ApiHelper
     {
-        List<Project> projects = new List<Project>();
+        List<ProjectViewModel> projects = new List<ProjectViewModel>();
 
         private const string USERNAME = "developer";
         private const string PASSWORD = "PN!M3d!a";
@@ -42,16 +42,16 @@ namespace TimePilot.Controllers
         }
 
 
-        public List<Project> parseProjectData(string jsonString)
+        public List<ProjectViewModel> parseProjectData(string jsonString)
         {
 
-            List<Project> projects = new List<Project>();
+            List<ProjectViewModel> projects = new List<ProjectViewModel>();
             dynamic data = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonString);
 
             for (int i = 0; i < data.Count; i++)
             {
 
-                Project project = new Project();
+                ProjectViewModel project = new ProjectViewModel();
                 dynamic item = data[i];
                 project.Key = (string)item.key;
                 project.Name = (string)item.name;

@@ -6,14 +6,12 @@ using System.Web;
 
 namespace TimePilot.Models
 {
-    public class Project
+    public class StoryViewModel
     {
-        [Display(Name = "Blah")]
+        [Display(Name = "Stories")]
         public string Description { get; set; }
         public string Key { get; set; }
         public string Name { get; set; }
-        public Boolean IsSelected { get; set; }  
-
+        public Boolean IsSelected { get; set; }
     }
-
 }
