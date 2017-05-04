@@ -230,11 +230,11 @@
     <Folder Include="Views\Stories\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\TimePilot.DataAccess\TimePilot.DataAccess.csproj">
+    <ProjectReference Include="..\TimePilot.DataAccess\TimePilot.DataAccess.csproj">
       <Project>{40f1f1bd-55aa-4860-b380-ce5518975ec8}</Project>
       <Name>TimePilot.DataAccess</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\TimePilot.Service\TimePilot.Service.csproj">
+    <ProjectReference Include="..\TimePilot.Service\TimePilot.Service.csproj">
       <Project>{EBEA0D5C-3229-403D-BA96-E9C91FA1F361}</Project>
       <Name>TimePilot.Service</Name>
     </ProjectReference>
