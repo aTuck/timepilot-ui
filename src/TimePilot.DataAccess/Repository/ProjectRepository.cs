@@ -41,25 +41,14 @@ namespace TimePilot.DataAccess.Repository
 
         public bool Add(Project t)
         {
-            string sqlCheck = @"SELECT ProjectKey FROM project WHERE ProjectKey = @k";
-            string temp = dbContext.Query<Project>(sqlCheck, new { k = t.Key }).ToString();
-            if (temp == null)
-            {
-                //TSQL string to insert the project passed to this function into the project table
-                string sql = @"INSERT INTO project (Projectkey, ModifiedDate) VALUES (@k, @date)";
+            //TSQL string to insert the project passed to this function into the project table
+            string sql = @"INSERT INTO project (Projectkey, ModifiedDate) VALUES (@k, @date)";
 
-                //Do a query sending sql string and assigning "@p" variable in sql string to the t object passed in
-                dbContext.Query(sql, new { k = t.Key, date = DateTime.Now });
+            //Do a query sending sql string and assigning "@p" variable in sql string to the t object passed in
+            dbContext.Query(sql, new { k = t.Key, date = DateTime.Now });
 
-                //Project didn't exist, now it does
-                return true;
-            }
-            else
-            {
-                //That project is already in the database
-                return false;
-            }
-
+            //Project didn't exist, now it does
+            return true;
         }
 
         public IList<Project> SearchProjects(string search)
