@@ -1,29 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
-using TimePilot.Models;
-using TimePilot.ViewModels;
+using TimePilot.Web.Models;
+using TimePilot.Web.ViewModels;
+using TimePilot.DataAccess.Repository;
+using TimePilot.Entities.Project;
 
 namespace TimePilot.Controllers
 {
     public class HomeController : Controller
     {
-        ApiHelper myhelper = new ApiHelper();
+        ApiHelper apiHelper = new ApiHelper();
         private string projectJson;
         private string storyJson;
         ProjectViewModel mProjectViewModel = new ProjectViewModel();
         StoryViewModel mStoryViewModel = new StoryViewModel();
         ResourceCapacityViewModel mResourceViewModel = new ResourceCapacityViewModel();
-        IEnumerable<SelectListItem> roleList;
+        //IEnumerable<SelectListItem> roleList;
         private static int hoursPerDay = 8;
-        List<Project> projects = new List<Project>();
+        List<TimePilot.Entities.Project.Project> projects = new List<TimePilot.Entities.Project.Project>();
         List<Story> stories = new List<Story>();
         public static string SelectedProject;
 
+        ProjectRepository ProjDB = new ProjectRepository();
 
         public void originateResourceCapacity()
         {
-
             Member member = new Member();
             Sprint sprint = new Sprint();
             List<Sprint> sprintList = new List<Sprint>();
@@ -32,7 +34,6 @@ namespace TimePilot.Controllers
             sprint.members = memberlist;
             sprintList.Add(sprint);
             mResourceViewModel.sprints = sprintList;
-
         }
 
 
@@ -48,19 +49,31 @@ namespace TimePilot.Controllers
 
         public void receiveProjectData()
         {
-            this.projectJson = myhelper.getDataFromJira("https://pnimedia.jira.com/rest/api/2/project/");
+            this.projectJson = apiHelper.getDataFromJira("https://pnimedia.jira.com/rest/api/2/project/");
         }
 
         public void receiveStoryData()
         {
-            this.storyJson = myhelper.getDataFromJira("https://pnimedia.jira.com/rest/api/2/search?jql=project=" + "'" + SelectedProject + "'" + "%20AND%20type%20in(story,improvement)%20and%20(Sprint=EMPTY%20OR%20Sprint%20not%20in(openSprints(),futureSprints()))%20AND%20status%20not%20in(closed,done,resolved,accepted)&fields=customfield_10013,id,description,summary&maxResults=1000");
+            this.storyJson = apiHelper.getDataFromJira("https://pnimedia.jira.com/rest/api/2/search?jql=project=" + "'" + SelectedProject + "'" + "%20AND%20type%20in(story,improvement)%20and%20(Sprint=EMPTY%20OR%20Sprint%20not%20in(openSprints(),futureSprints()))%20AND%20status%20not%20in(closed,done,resolved,accepted)&fields=customfield_10013,id,description,summary&maxResults=1000");
         }
 
 
         public ActionResult Index()
         {
             receiveProjectData();
-            projects = myhelper.parseProjectData(projectJson);
+            projects = apiHelper.parseProjectData(projectJson);
+            for (int i = 0; i < projects.Count; i++)
+            {
+                if (Create(projects[i]))
+                {
+                    System.Diagnostics.Debug.WriteLine("Added to database: " + projects[i].Key);
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine(projects[i].Key + " already exists in the database)");
+                }
+            }
+ 
             bindProjectDataToViewModel();
             return View(mProjectViewModel);
         }
@@ -73,10 +86,15 @@ namespace TimePilot.Controllers
             return RedirectToAction("Story", "Home");
         }
 
+        public bool Create(Entities.Project.Project proj)
+        {
+            return ProjDB.Add(proj);
+        }
+
         public ActionResult Story()
         {
             receiveStoryData();
-            stories = myhelper.parseStoryData(storyJson);
+            stories = apiHelper.parseStoryData(storyJson);
             convertStoryPointToInt(stories);
             bindStoryDataToViewModel();
             sumStoryPoints(mStoryViewModel);
@@ -327,7 +345,7 @@ namespace TimePilot.Controllers
             }
         }
 
-        private IEnumerable<SelectListItem> convertProjectListToIEnum(List<Project> projectList)
+        /*private IEnumerable<SelectListItem> convertProjectListToIEnum(List<Project> projectList)
         {
             List<SelectListItem> selectListItemList = new List<SelectListItem>();
             for (int i = 0; i < projectList.Count; i++)
@@ -342,7 +360,7 @@ namespace TimePilot.Controllers
             }
             IEnumerable<SelectListItem> myEnum = selectListItemList;
             return myEnum;
-        }
+        }*/
 
         private IEnumerable<SelectListItem> createRoleList()
         {

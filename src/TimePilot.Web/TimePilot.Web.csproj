@@ -246,6 +246,10 @@
       <Project>{40f1f1bd-55aa-4860-b380-ce5518975ec8}</Project>
       <Name>TimePilot.DataAccess</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TimePilot.Entities\TimePilot.Entities.csproj">
+      <Project>{c35f95ef-0a9f-4247-bb64-0c04bf3723e1}</Project>
+      <Name>TimePilot.Entities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TimePilot.Service\TimePilot.Service.csproj">
       <Project>{EBEA0D5C-3229-403D-BA96-E9C91FA1F361}</Project>
       <Name>TimePilot.Service</Name>
@@ -254,6 +258,9 @@
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
@@ -272,6 +279,9 @@
           <CustomServerUrl>
           </CustomServerUrl>
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+          <servers defaultServer="SelfHostServer">
+            <server name="SelfHostServer" exePath="" cmdArgs="" url="http://localhost:1460/" workingDir="" />
+          </servers>
         </WebProjectProperties>
       </FlavorProperties>
     </VisualStudio>
