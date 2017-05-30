@@ -14,7 +14,8 @@ namespace TimePilot.DataAccess.Repository
         {
             string sql = @"SELECT TOP (@maxRows) * from project";
 
-            List<Project> projects = dbContext.Query<Project>(sql, new {maxRows = this._maxResults}).ToList();
+            //maxRows = this._maxResults, hardcoded to 1000 for now due to maxResults being null
+            List<Project> projects = dbContext.Query<Project>(sql, new {maxRows = 200}).ToList();
             return projects;
         }
 
@@ -40,7 +41,25 @@ namespace TimePilot.DataAccess.Repository
 
         public bool Add(Project t)
         {
-            throw new NotImplementedException();
+            string sqlCheck = @"SELECT ProjectKey FROM project WHERE ProjectKey = @k";
+            string temp = dbContext.Query<Project>(sqlCheck, new { k = t.Key }).ToString();
+            if (temp == null)
+            {
+                //TSQL string to insert the project passed to this function into the project table
+                string sql = @"INSERT INTO project (Projectkey, ModifiedDate) VALUES (@k, @date)";
+
+                //Do a query sending sql string and assigning "@p" variable in sql string to the t object passed in
+                dbContext.Query(sql, new { k = t.Key, date = DateTime.Now });
+
+                //Project didn't exist, now it does
+                return true;
+            }
+            else
+            {
+                //That project is already in the database
+                return false;
+            }
+
         }
 
         public IList<Project> SearchProjects(string search)

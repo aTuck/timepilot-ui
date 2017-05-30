@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace TimePilot.Models
+namespace TimePilot.Web.Models
 {
     public class Member
     {

@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using TimePilot.Models;
+using TimePilot.Web.Models;
 
-namespace TimePilot.ViewModels
+namespace TimePilot.Web.ViewModels
 {
     public class StoryViewModel
     {

@@ -10,7 +10,7 @@ using System.Data.SqlClient;
 
 namespace TimePilot.DataAccess
 {
-    public abstract class RepositoryBase :IDisposable
+    public abstract class RepositoryBase : IDisposable
     {
         protected readonly IDbConnection _dbContext;
         protected readonly int _maxResults;
@@ -18,7 +18,7 @@ namespace TimePilot.DataAccess
         protected RepositoryBase()
         {
             _dbContext = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
-            _maxResults = int.Parse(ConfigurationManager.AppSettings["MaxResults"]);
+            //_maxResults = int.Parse(ConfigurationManager.AppSettings["MaxResults"]);
         }
 
         protected IDbConnection dbContext

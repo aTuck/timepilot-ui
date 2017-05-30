@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-namespace TimePilot.Models
+namespace TimePilot.Web.Models
 {
     public class Project
     {
