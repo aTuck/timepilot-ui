@@ -1,13 +1,47 @@
-﻿<!DOCTYPE html>
+﻿@using System.Web.Optimization
 
+<!DOCTYPE html>
 <html>
+
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/layout.css" rel="stylesheet" />
+    <link href="~/Content/resource.css" rel="stylesheet" />
+    <link href="~/Content/story.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width" charset="utf-8" />
+    <title> @ViewBag.Title </title>
 </head>
+
 <body>
-    <div>
-        @RenderBody()
+    @{
+        // Data for dynamic header breadcrumbs
+        var currentController = ViewContext.RouteData.Values["controller"] as string ?? "Home";
+        var currentAction = ViewContext.RouteData.Values["action"] as string ?? "Index";
+        var currentPage = (currentController + "-" + currentAction).ToLower();
+    }
+    <!-- Dynamic header shared across views
+    <header class="flex-container-header">
+        <a id="logo" href="/">Time Pilot</a>
+        <p>
+            @Html.Label("Project Selection >",
+           new { @class = currentPage == "home-index" ? "activebread" : "deactivebread" })
+            @Html.Label("Story Points >",
+           new { @class = currentPage == "home-story" ? "activebread" : "deactivebread" })
+            @Html.Label("Resource Capacity >",
+           new { @class = currentPage == "home-placeholder1" ? "activebread" : "deactivebread" })
+            @Html.Label("Conversion Rate & Results",
+           new { @class = currentPage == "home-placeholder2" ? "activebread" : "deactivebread" })
+        </p>
+    </header>
+    -->
+
+    @RenderBody()
+
+    <div class="flex-container-footer">
+        <span class="col-md-2"> Time Pilot </span>
+        <span class="col-md-8"> © 2017 PNI Digital Media Inc. All Rights Reserved</span>
+        <span class="col-md-2"> Team Delta-t </span>
     </div>
 </body>
 </html>

@@ -15,14 +15,13 @@ namespace TimePilot.Controllers
 {
     public class ApiHelper
     {
-        List<ProjectViewModel> projects = new List<ProjectViewModel>();
+        List<Project> projects = new List<Project>();
 
         private const string USERNAME = "developer";
         private const string PASSWORD = "PN!M3d!a";
 
         public string getDataFromJira(string Url)
         {
-
             string responseInString = "";
             System.Net.Http.HttpClient client = new System.Net.Http.HttpClient();
             string base64Credentials = getEncodedCredentials();
@@ -31,7 +30,6 @@ namespace TimePilot.Controllers
             HttpResponseMessage response = client.GetAsync(Url).Result;
             responseInString = response.Content.ReadAsStringAsync().Result;
             return responseInString;
-
         }
 
         private string getEncodedCredentials()
@@ -41,30 +39,39 @@ namespace TimePilot.Controllers
             return Convert.ToBase64String(byteCredentials);
         }
 
-
-        public List<ProjectViewModel> parseProjectData(string jsonString)
+        public List<Story> parseStoryData(string jsonString)
         {
+            List<Story> stories = new List<Story>();
+            JObject results = JObject.Parse(jsonString);
 
-            List<ProjectViewModel> projects = new List<ProjectViewModel>();
+            foreach (var result in results["issues"])
+            {
+                Story story = new Story();
+
+                story.Key = (string)result["key"];
+                story.Summary = (string)result["fields"]["summary"];
+                story.Description = (string)result["fields"]["description"];
+                story.StoryPoint = (string)result["fields"]["customfield_10013"];
+
+                stories.Add(story);
+            }
+            return stories;
+        }
+
+        public List<Project> parseProjectData(string jsonString)
+        {
+            List<Project> projects = new List<Project>();
             dynamic data = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonString);
 
             for (int i = 0; i < data.Count; i++)
             {
-
-                ProjectViewModel project = new ProjectViewModel();
+                Project project = new Project();
                 dynamic item = data[i];
                 project.Key = (string)item.key;
                 project.Name = (string)item.name;
                 projects.Add(project);
-
-
             }
-
             return projects;
-
         }
-
-
     }
-
 }

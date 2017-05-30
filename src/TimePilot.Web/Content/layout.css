@@ -1,0 +1,197 @@
+﻿html {
+    position: relative;
+    min-width: 750px;
+    min-height: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    background-color: #cbebed;
+    font-family: 'Century Gothic';
+    font-size: 16px;
+    margin: 0px;
+    padding: 0px;
+    box-sizing:border-box;
+}
+
+p {
+    margin: 0px;
+}
+
+h1 {
+    font-size: 50px;
+    transform: scale(1);
+    transition: transform .5s;
+    margin: 0px;
+}
+h2 {
+    margin: 0px;
+    margin-bottom: 20px;
+}
+
+select{
+    border:none;
+}
+select:focus{
+    outline:none;
+}
+select:hover{
+    border:none;
+}
+select.projectList option {
+    color: #333;
+}
+
+span{
+    text-align:center;
+}
+
+.projectList option:nth-child(even){
+    background: #cbebed;
+}
+
+h1:hover {
+    transform: scale(1.1);
+    cursor:pointer;
+}
+
+.activebread {
+    font-weight:700;
+    font-size:13px;
+}
+
+.deactivebread {
+    font-size:13px;
+    color: #484949;
+}
+
+.pre-activebread {   
+    font-size:13px;
+    
+}
+
+.pre-activebread:hover{
+    cursor:pointer;
+}
+        
+.button
+{
+    background: #94d0d3;
+    font-family: 'Century Gothic';
+    font-size: 18px; 
+    border-radius: 5px;
+    padding: 10px;  
+    outline:none;
+    align-self:flex-end;
+    margin: 10px 0;
+    border: #aaaaaa 1px;
+    transform: scale(1);
+    transition: transform .5s;
+}
+
+.button:hover
+{
+    background: #7ebbbf;    
+    cursor:pointer;
+    transform: scale(1.1);
+}
+
+.projectList
+{
+    font-family: 'Century Gothic';
+    font-size: 16px;     
+    background:#e2fdff;
+    float:left;
+    border-color: #c0cfd1;  
+    border-radius:10px;
+    outline:none;   
+    width:100%;
+}
+
+.pre-project-container{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 35px;
+}
+
+.project-controls{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width:280px;
+    margin-right: 25px;
+}
+    
+.projectList::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 3px #484949;
+	border-radius:4px;
+}
+
+.projectList::-webkit-scrollbar
+{
+	width: 10px;
+}
+
+.projectList::-webkit-scrollbar-thumb
+{	
+	-webkit-box-shadow: inset 0 0 3px #484949;
+	background-color:#696d6d;
+    border-radius:4px;
+}
+
+.flex-container-header {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(#7ebbbf,#85ced3);
+    box-shadow: 1px 2px 15px rgba(0,0,0,.5);
+    border-radius: 10px;
+    padding: 10px 25px;
+    width: 100%;
+    box-sizing:border-box
+}
+
+.project-container {
+    padding: 0px 35px;
+    box-sizing:border-box;
+    margin-bottom: 45px;
+}        
+
+.project-selector{
+    background-color: black;
+}
+
+.flex-container-footer{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(#99C8CC,#B2E1E5);
+    height: 40px;
+    padding: 0px 25px;
+    bottom: 0;
+    position: absolute;
+    width: 100%;
+    overflow: hidden;
+    box-sizing:border-box;
+}
+
+#logo{
+    font-size: 50px;
+    font-weight: 700;
+    margin: 0px;
+    text-decoration: none;
+    color: black;
+    transition: transform .5s;
+}
+
+#logo:hover{
+    transform: scale(1.1);
+    cursor:pointer;
+}

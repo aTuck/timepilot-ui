@@ -6,9 +6,9 @@ using System.Web;
 
 namespace TimePilot.Models
 {
-    public class StoryViewModel
+    public class Project
     {
-        [Display(Name = "Stories")]
+        [Display(Name = "Description")]
         public string Description { get; set; }
         public string Key { get; set; }
         public string Name { get; set; }

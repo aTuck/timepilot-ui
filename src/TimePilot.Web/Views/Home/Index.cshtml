@@ -1,58 +1,39 @@
 ﻿
-@model TimePilot.Models.ProjectViewModel
+@using TimePilot.ViewModels
+@using TimePilot.Controllers
+@model ProjectViewModel
 
 @{
-
     ViewBag.Title = "Home Page - Time Pilot";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
 }
 
-
-<!DOCTYPE html>
-<html>
-
-<head>
-
-    <script language="javascript">
-
-            function handleSelect(myForm) {
-
-                var selIndex = myForm.Projects.selectedIndex;
-                alert(selIndex);
-
-            }
-
-    </script>
-
-    <title>Time Pilot</title>
-    <meta charset="utf-8" />
-    <style>
-        body {
-            background-color: aqua;
-        }
-    </style>
-    <link href="~/Content/themes/default/bootstrap.css" rel="stylesheet">
-</head>
-
-<body>
-
-    <h1>Time Pilot</h1>
-    <p>Resize this!</p>
-
-    <div>
-        @using (Html.BeginForm("Index", "Home", FormMethod.Post))
-        {
-            @Html.DropDownList("ddlProjects", (IEnumerable<SelectListItem>)ViewBag.ListItems, new { @onchange = "this.form.submit();", size = "30" })
-        }
-
-        <h1>@ViewData["myProject"]</h1>
-
+<div class="container">
+    <div class="flex-container-header">
+        <h1>Time Pilot</h1>
+        <p><a class="activebread">Project Selection ></a><a class="deactivebread"> Story Points > Resource Capacity > Conversion Rate & Results</a></p>
     </div>
-    <input type="button" value="Stories Page" class="btn-danger" />
-</body>
-
-
-</html>
+    <div class="pre-project-container">
+        <h2 class="project-header">PROJECTS</h2>
+        <div class="project-controls">
+            <p class="sort-project-info">Sort Project By:</p>
+            <select class="sort-method">
+                <option onchange="">Name A-Z</option>
+                <option>Name Z-A</option>
+                <option>Newest Updated</option>
+                <option>Oldest Updated</option>
+            </select>
+        </div>
+    </div>
+    <div class="project-container">
+        @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @id = "projectForm" }))
+        {
+            @Html.DropDownListFor(m => m.SelectedProject,
+                                new SelectList(Model.ProjectList, "Key", "Name"),
+                                new { size = "25", @class = "projectList", @id = "projectList" })
+            <input type="submit" value="Stories Page" onclick="this.form.submit()" class="button" />
+        }
+    </div>
+</div>
 
 
