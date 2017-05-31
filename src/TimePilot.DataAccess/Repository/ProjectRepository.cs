@@ -24,10 +24,25 @@ namespace TimePilot.DataAccess.Repository
             throw new NotImplementedException();
         }
 
-        public Project GetById(Project t)
+
+        /* Returns a project object with the same key as 'key'
+         * Returns a project object with key = null if a project with 'key' was not found */
+        public Project GetById(string key)
         {
-            throw new NotImplementedException();
-        }
+            // This will be the return value if no ID was found
+            Project dummyProj = new Project { ProjectKey = null };
+
+            string sql = @"SELECT * from project where ProjectKey = @k";
+            List<Project> projects = dbContext.Query<Project>(sql, new { k = key }).ToList();
+            if (projects.Count <= 0)
+            {
+                return dummyProj;
+            }
+            else
+            {
+                return projects[0];
+            }
+         }
 
         public bool Update(Project t)
         {
@@ -45,7 +60,7 @@ namespace TimePilot.DataAccess.Repository
             string sql = @"INSERT INTO project (Projectkey, ModifiedDate) VALUES (@k, @date)";
 
             //Do a query sending sql string and assigning "@p" variable in sql string to the t object passed in
-            dbContext.Query(sql, new { k = t.Key, date = DateTime.Now });
+            dbContext.Query(sql, new { k = t.ProjectKey, date = DateTime.Now });
 
             //Project didn't exist, now it does
             return true;

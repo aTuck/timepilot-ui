@@ -29,7 +29,7 @@
         @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @id = "projectForm" }))
         {
             @Html.DropDownListFor(m => m.SelectedProject,
-                                new SelectList(Model.ProjectList, "Key", "Name"),
+                                new SelectList(Model.ProjectList, "ProjectKey", "Name"),
                                 new { size = "25", @class = "projectList", @id = "projectList" })
             <input type="submit" value="Stories Page" onclick="this.form.submit()" class="button" />
         }

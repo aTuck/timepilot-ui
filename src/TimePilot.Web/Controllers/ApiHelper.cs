@@ -24,9 +24,9 @@ namespace TimePilot.Controllers
         public string getDataFromJira(string Url)
         {
             string responseInString = "";
-            System.Net.Http.HttpClient client = new System.Net.Http.HttpClient();
+            HttpClient client = new HttpClient();
             string base64Credentials = getEncodedCredentials();
-            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", base64Credentials);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", base64Credentials);
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             HttpResponseMessage response = client.GetAsync(Url).Result;
             responseInString = response.Content.ReadAsStringAsync().Result;
@@ -68,7 +68,7 @@ namespace TimePilot.Controllers
             {
                 TimePilot.Entities.Project.Project project = new TimePilot.Entities.Project.Project();
                 dynamic item = data[i];
-                project.Key = (string)item.key;
+                project.ProjectKey = (string)item.key;
                 project.Name = (string)item.name;
                 projects.Add(project);
             }
