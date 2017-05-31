@@ -11,7 +11,7 @@ namespace TimePilot.DataAccess
     {
         IList<T> GetAll();
         IList<T> GetAllByForeignId(T t);
-        T GetById(T t);
+        T GetById(string t);
         bool Update(T t);
         bool Delete(T t);
         bool Add(T t);

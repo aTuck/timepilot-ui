@@ -62,18 +62,13 @@ namespace TimePilot.Controllers
         {
             receiveProjectData();
             projects = apiHelper.parseProjectData(projectJson);
+            // This populates database, currently the database is populated and this will
+            // violate primary key constraint as it will try to add duplicate projects
+            // TODO: Add logic in controller to check if project exists before trying to add it
             for (int i = 0; i < projects.Count; i++)
             {
-                if (Create(projects[i]))
-                {
-                    System.Diagnostics.Debug.WriteLine("Added to database: " + projects[i].Key);
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine(projects[i].Key + " already exists in the database)");
-                }
+                Populate(projects[i]);
             }
- 
             bindProjectDataToViewModel();
             return View(mProjectViewModel);
         }
@@ -86,9 +81,17 @@ namespace TimePilot.Controllers
             return RedirectToAction("Story", "Home");
         }
 
-        public bool Create(Entities.Project.Project proj)
+        private void Populate(Entities.Project.Project proj)
         {
-            return ProjDB.Add(proj);
+            TimePilot.Entities.Project.Project temp = ProjDB.GetById(proj.ProjectKey);
+            if (temp.ProjectKey == proj.ProjectKey)
+            {
+                return;
+            }
+            else
+            {
+                ProjDB.Add(proj);
+            }
         }
 
         public ActionResult Story()
@@ -113,7 +116,7 @@ namespace TimePilot.Controllers
         }
 
         [HttpPost]
-        public ActionResult Resource(ResourceCapacityViewModel RCModel, String command, int buttonIndex)
+        public ActionResult Resource(ResourceCapacityViewModel RCModel, string command, int buttonIndex)
         {
             ModelState.Clear();
             RCModel.roleList = createRoleList();
