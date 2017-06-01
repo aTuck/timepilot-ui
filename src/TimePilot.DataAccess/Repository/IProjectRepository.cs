@@ -9,7 +9,7 @@ namespace TimePilot.DataAccess.Repository
 {
     public interface IProjectRepository : IRepository<Project>
     {
-        IList<Project> SearchProjects(string search);
-        IList<Project> GetByName(string name);
+        List<Project> SearchProjects(string search);
+        List<Project> GetByName(string name);
     }
 }
