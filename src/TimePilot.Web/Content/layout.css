@@ -132,9 +132,14 @@ h1:hover{
 .project-controls{
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
-    width:280px;
+    justify-content: flex-end;
+    width:580px;
     margin-right: 25px;
+}
+
+.controls-label{
+    margin-left: 15px;
+    margin-right: 5px;
 }
 
 .projectList option:nth-child(even){
