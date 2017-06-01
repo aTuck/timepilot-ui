@@ -1,0 +1,74 @@
+﻿@model TimePilot.Web.ViewModels.ResultsViewModel
+
+@{ 
+    ViewBag.Title = "Result";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<style>
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+</style>
+
+<div class="flex-container-header">
+    <h1>Time Pilot</h1>
+    <p><class="pre-activebread">Project Selection > Story Points > Resource Capacity ><a class="activebread">Conversion Rate & Results</a></p>
+</div>
+    
+
+<h2>HOURS ESTIMATION</h2>
+
+@using (Html.BeginForm("Result", "Home", FormMethod.Post))
+{
+<table id="myTable">
+
+ 
+    <tr>
+        <th>Story pt</th>
+        <th># of Stories</th>
+        <th>Days/St pt</th>
+        <th>Total</th>
+    </tr>
+    
+   
+    @for (int i = 0; i < Model.storypointAllocation.Length; i++)
+    {
+        <tr>
+            <td>
+            @Model.storypointAllocation[i]
+            @Html.HiddenFor(m => m.storypointAllocation[i])
+            </td>
+            <td>
+            @Model.numberOfStories[i]
+            @Html.HiddenFor(m => m.numberOfStories[i])
+            </td>
+            <td>
+                @Html.TextBoxFor(m => m.DaysPerPt[i], new { @onchange = "this.form.submit();" })
+                @Html.HiddenFor(m => m.DaysPerPt[i])    
+            </td>
+            <td>
+                @Html.TextBoxFor(m => m.Total[i], new { @readonly = true }) 
+                @Html.HiddenFor(m => m.Total[i])
+            </td>
+
+        </tr>
+
+    }
+
+
+</table>
+}

@@ -130,6 +130,7 @@
     <input type="submit" name="command" id="command" value="Add Sprint" class="button"/>
     <input type="submit" name="command" id="command" value="Recalculate Values" class="button" />
     <input type="submit" name="command" value="Delete Selected" onclick="this.form.submit();" class="button" />
+    <input type="button" value="Results Page" onclick="location.href='@Url.Action("Result", "Home")'" class="button" />
 }
 
 <p>Total DEV Capacity: @Model.totalDevCapacity</p>
