@@ -27,88 +27,107 @@
 </div>
 @using (Html.BeginForm("Resource", "Home", FormMethod.Post))
 {
-    <table id="myTable">
-        <tr>
-            <th>Role</th>
-            <th>Name</th>
-            <th>Sprint Days</th>
-            <th>% Work</th>
-            <th>Total Hours</th>
-            <th>Standup Duration</th>
-            <th>Standups</th>
-            <th>Misc</th>
-            <th>Time Off</th>
-            <th>Non Dev Hours</th>
-            <th>Total Available</th>
-        </tr>
-        @for (int i = 0; i < Model.sprints.Count(); i++)
+    
+        for (int i = 0; i < Model.sprints.Count(); i++)
         {
-            <tr>
-                <th>Sprint @i</th>
-            </tr>
-            <tr>
-                @for (int j = 0; j < Model.sprints[i].members.Count(); j++)
+            <table id="myTable">
+                @if (i == 0)
                 {
                 <tr>
-                    <td>
-                        @Html.DropDownListFor(m => m.sprints[i].members[j].role, new SelectList(Model.roleList, "Value", "Text"), "Select Role", new { @onchange = "this.form.submit();" })
-
-                    </td>
-                    <td>
-                        @Html.TextBoxFor(m => m.sprints[i].members[j].name)
-                        @Html.HiddenFor(m => m.sprints[i].members[j].name)
-                    </td>
-                    <td>
-                        @Html.TextBoxFor(m => m.sprints[i].members[j].sprintDays)
-                        @Html.HiddenFor(m => m.sprints[i].members[j].sprintDays)
-                    </td>
-                    <td>
-                        @Html.TextBoxFor(m => m.sprints[i].members[j].percentWork)
-                        @Html.HiddenFor(m => m.sprints[i].members[j].percentWork)
-                    </td>
-
-                    <td>
-                        @Html.TextBoxFor(m => m.sprints[i].members[j].totalHours)
-                        @Html.HiddenFor(m => m.sprints[i].members[j].totalHours)
-                    </td>
-                    <td>
-                        @Html.TextBoxFor(m => m.sprints[i].members[j].standupDuration)
-                        @Html.HiddenFor(m => m.sprints[i].members[j].standupDuration)
-                    </td>
-                    <td>
-                        @Html.TextBoxFor(m => m.sprints[i].members[j].standUps)
-                        @Html.HiddenFor(m => m.sprints[i].members[j].standUps)
-                    </td>
-                    <td>
-                        @Html.TextBoxFor(m => m.sprints[i].members[j].misc)
-                        @Html.HiddenFor(m => m.sprints[i].members[j].misc)
-                    </td>
-                    <td>
-                        @Html.TextBoxFor(m => m.sprints[i].members[j].timeOff)
-                        @Html.HiddenFor(m => m.sprints[i].members[j].timeOff)
-                    </td>
-                    <td>
-                        @Html.TextBoxFor(m => m.sprints[i].members[j].nonDevHours)
-                        @Html.HiddenFor(m => m.sprints[i].members[j].nonDevHours)
-                    </td>
-                    <td>
-                        @Html.TextBoxFor(m => m.sprints[i].members[j].totalAvailable)
-                        @Html.HiddenFor(m => m.sprints[i].members[j].totalAvailable)
-                    </td>
+                    <th>Role</th>
+                    <th>Name</th>
+                    <th>Sprint Days</th>
+                    <th>% Work</th>
+                    <th>Total Hours</th>
+                    <th>Standup Duration</th>
+                    <th>Standups</th>
+                    <th>Misc</th>
+                    <th>Time Off</th>
+                    <th>Non Dev Hours</th>
+                    <th>Total Available</th>
                 </tr>
                 }
-
-
-                </tr>
-
                 <tr>
-                    <input type="submit" name="command" value="Add Member" id="1" />
+                    <th>Sprint @i</th>
                 </tr>
-                <input type="hidden" name="buttonIndex" value=1 id="1" />
+                <tr>
+                    @for (int j = 0; j < Model.sprints[i].members.Count(); j++)
+                    {
+                    <tr>
+                        <td>
+                            @Html.DropDownListFor(m => m.sprints[i].members[j].role, new SelectList(Model.roleList, "Value", "Text"), "Select Role", new { @onchange = "this.form.submit();" })
+
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.sprints[i].members[j].name)
+                            @Html.HiddenFor(m => m.sprints[i].members[j].name)
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.sprints[i].members[j].sprintDays)
+                            @Html.HiddenFor(m => m.sprints[i].members[j].sprintDays)
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.sprints[i].members[j].percentWork)
+                            @Html.HiddenFor(m => m.sprints[i].members[j].percentWork)
+                        </td>
+
+                        <td>
+                            @Html.TextBoxFor(m => m.sprints[i].members[j].totalHours)
+                            @Html.HiddenFor(m => m.sprints[i].members[j].totalHours)
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.sprints[i].members[j].standupDuration)
+                            @Html.HiddenFor(m => m.sprints[i].members[j].standupDuration)
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.sprints[i].members[j].standUps)
+                            @Html.HiddenFor(m => m.sprints[i].members[j].standUps)
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.sprints[i].members[j].misc)
+                            @Html.HiddenFor(m => m.sprints[i].members[j].misc)
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.sprints[i].members[j].timeOff)
+                            @Html.HiddenFor(m => m.sprints[i].members[j].timeOff)
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.sprints[i].members[j].nonDevHours)
+                            @Html.HiddenFor(m => m.sprints[i].members[j].nonDevHours)
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.sprints[i].members[j].totalAvailable)
+                            @Html.HiddenFor(m => m.sprints[i].members[j].totalAvailable)
+                        </td>
+                    </tr>
+                    }
+
+
+                    </tr>
+
+                    <tr>
+                        <input type="submit" name="command" value="Add Member" id=@i onclick="setIndex(this.id)" />
+                        @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
+                    </tr>
+                </table>
         }
 
-    </table>
+
+
     <input type="submit" name="command" id="command" value="Add Sprint" />
 
+    }
 
-}
+
+
+
+
+
+    <script type="text/javascript">
+
+
+        function setIndex(e) {
+            document.getElementById('buttonIndex').value = e;
+        }
+
+    </script>

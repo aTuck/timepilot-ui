@@ -116,9 +116,9 @@ namespace TimePilot.Controllers
         }
 
         [HttpPost]
-        public ActionResult Resource(ResourceCapacityViewModel RCModel, string command, int buttonIndex)
+        public ActionResult Resource(ResourceCapacityViewModel RCModel, string command)
         {
-            ModelState.Clear();
+           ModelState.Clear();
             RCModel.roleList = createRoleList();
             setDefaultValues(RCModel);
 
@@ -126,7 +126,7 @@ namespace TimePilot.Controllers
             {
 
                 Member member = new Member();
-                RCModel.sprints[buttonIndex].members.Add(member);
+                RCModel.sprints[RCModel.buttonIndex].members.Add(member);
 
             }
 
@@ -151,11 +151,6 @@ namespace TimePilot.Controllers
             mResourceViewModel.roleList = createRoleList();
             return View(mResourceViewModel);
         }
-
-
-
-
-
 
         private List<Story> deleteSelectedStories(StoryViewModel model)
         {

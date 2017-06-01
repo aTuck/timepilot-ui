@@ -14,5 +14,7 @@ namespace TimePilot.Web.ViewModels
         public float avgPerSprint { get; set; }
         public float avgPerWeek { get; set; }
         public float totalDevCapacity { get; set; }
+        public int buttonIndex { get; set; }
     }
+
 }
