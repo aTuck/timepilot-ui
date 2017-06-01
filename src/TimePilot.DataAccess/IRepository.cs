@@ -9,9 +9,9 @@ namespace TimePilot.DataAccess
 {
     public interface IRepository<T> where T : class
     {
-        IList<T> GetAll();
-        IList<T> GetAllByForeignId(T t);
-        T GetById(string t);
+        List<T> GetAll();
+        List<T> GetAllByForeignId(T t);
+        T GetById(T t);
         bool Update(T t);
         bool Delete(T t);
         bool Add(T t);

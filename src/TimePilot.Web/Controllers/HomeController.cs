@@ -13,12 +13,11 @@ namespace TimePilot.Controllers
         ApiHelper apiHelper = new ApiHelper();
         private string projectJson;
         private string storyJson;
-        ProjectViewModel mProjectViewModel = new ProjectViewModel();
-        StoryViewModel mStoryViewModel = new StoryViewModel();
+        ProjectViewModel ProjectVM = new ProjectViewModel();
+        StoryViewModel StoryVM = new StoryViewModel();
         ResourceCapacityViewModel mResourceViewModel = new ResourceCapacityViewModel();
         //IEnumerable<SelectListItem> roleList;
         private static int hoursPerDay = 8;
-        List<TimePilot.Entities.Project.Project> projects = new List<TimePilot.Entities.Project.Project>();
         List<Story> stories = new List<Story>();
         public static string SelectedProject;
 
@@ -39,12 +38,13 @@ namespace TimePilot.Controllers
 
         public void bindStoryDataToViewModel()
         {
-            mStoryViewModel.mStoryList = stories;
+            StoryVM.mStoryList = stories;
         }
 
         public void bindProjectDataToViewModel()
         {
-            mProjectViewModel.ProjectList = projects;
+            List<TimePilot.Entities.Project.Project> projects = ProjDB.GetAll();
+            ProjectVM.ProjectList = projects;
         }
 
         public void receiveProjectData()
@@ -60,17 +60,12 @@ namespace TimePilot.Controllers
 
         public ActionResult Index()
         {
-            receiveProjectData();
-            projects = apiHelper.parseProjectData(projectJson);
-            // This populates database, currently the database is populated and this will
-            // violate primary key constraint as it will try to add duplicate projects
-            // TODO: Add logic in controller to check if project exists before trying to add it
-            for (int i = 0; i < projects.Count; i++)
-            {
-                Populate(projects[i]);
-            }
+            /* Populate should only be called by a button, is called every
+             * page load for now until button is implemented             */
+            Populate();
+            /*-----------------------------------------------------------*/
             bindProjectDataToViewModel();
-            return View(mProjectViewModel);
+            return View(ProjectVM);
         }
 
         [HttpPost]
@@ -81,16 +76,26 @@ namespace TimePilot.Controllers
             return RedirectToAction("Story", "Home");
         }
 
-        private void Populate(Entities.Project.Project proj)
+        /* Iterates through projects grabbed from API call
+         * If it's in the database, do nothing
+         * If it's not in the database, add it */
+        private void Populate()
         {
-            TimePilot.Entities.Project.Project temp = ProjDB.GetById(proj.ProjectKey);
-            if (temp.ProjectKey == proj.ProjectKey)
+            receiveProjectData();
+            List<TimePilot.Entities.Project.Project> projects = apiHelper.parseProjectData(projectJson);
+
+            TimePilot.Entities.Project.Project temp;
+            for (int i = 0; i < projects.Count; i++)
             {
-                return;
-            }
-            else
-            {
-                ProjDB.Add(proj);
+                temp = ProjDB.GetById(projects[i]);
+                if (temp.ProjectKey == projects[i].ProjectKey)
+                {
+                    return;
+                }
+                else
+                {
+                    ProjDB.Add(projects[i]);
+                }
             }
         }
 
@@ -100,8 +105,8 @@ namespace TimePilot.Controllers
             stories = apiHelper.parseStoryData(storyJson);
             convertStoryPointToInt(stories);
             bindStoryDataToViewModel();
-            sumStoryPoints(mStoryViewModel);
-            return View(mStoryViewModel);
+            sumStoryPoints(StoryVM);
+            return View(StoryVM);
         }
 
 
