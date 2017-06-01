@@ -16,6 +16,7 @@ namespace TimePilot.Web.ViewModels
         public float totalDevCapacity { get; set; }
         public int buttonIndex { get; set; }
         public string memberIndex { get; set; }
+      
     }
 
 }
