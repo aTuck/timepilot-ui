@@ -6,6 +6,7 @@ using TimePilot.Web.ViewModels;
 using TimePilot.DataAccess.Repository;
 using TimePilot.Entities.Project;
 
+
 namespace TimePilot.Controllers
 {
     public class HomeController : Controller
@@ -16,7 +17,8 @@ namespace TimePilot.Controllers
         ProjectViewModel ProjectVM = new ProjectViewModel();
         StoryViewModel StoryVM = new StoryViewModel();
         ResourceCapacityViewModel mResourceViewModel = new ResourceCapacityViewModel();
-        //IEnumerable<SelectListItem> roleList;
+        ResultsViewModel ResultsVM = new ResultsViewModel();
+        public static int [] storypointallocation;
         private static int hoursPerDay = 8;
         List<Story> stories = new List<Story>();
         public static string SelectedProject;
@@ -106,18 +108,32 @@ namespace TimePilot.Controllers
             convertStoryPointToInt(stories);
             bindStoryDataToViewModel();
             sumStoryPoints(StoryVM);
+            if (StoryVM.StorypointSum != null)
+            {
+
+                storypointallocation = StoryVM.StorypointSum;
+
+            }
+
             return View(StoryVM);
         }
 
 
 
         [HttpPost]
-        public ActionResult Story(StoryViewModel modelmodel)
+        public ActionResult Story(StoryViewModel model)
         {
             ModelState.Clear();
-            modelmodel.mStoryList = deleteSelectedStories(modelmodel);
-            sumStoryPoints(modelmodel);
-            return View(modelmodel);
+            model.mStoryList = deleteSelectedStories(model);
+            sumStoryPoints(model);
+            if (model.StorypointSum != null)
+            {
+
+                storypointallocation = model.StorypointSum;
+
+            }
+
+            return View(model);
         }
 
         [HttpPost]
@@ -173,12 +189,64 @@ namespace TimePilot.Controllers
             return View(RCModel);
         }
 
+        
+
+        public void calculateTotalDays(ResultsViewModel model)
+        {
+            
+            for (int i = 0; i < model.storypointAllocation.Length; i++)
+            {
+                
+                    model.Total[i] = model.numberOfStories[i] * model.DaysPerPt[i];
+                
+
+            }
+
+
+        }
+
         public ActionResult Resource()
         {
             originateResourceCapacity();
             mResourceViewModel.roleList = createRoleList();
             return View(mResourceViewModel);
         }
+
+
+        public ActionResult Result()
+        {
+            ResultsVM.DaysPerPt = new int[6];
+            ResultsVM.Total = new int[6];
+            ResultsVM.numberOfStories = new int[6];
+            if (storypointallocation != null)
+            {
+                ResultsVM.numberOfStories = storypointallocation;
+            }
+
+            ResultsVM.storypointAllocation = new int[6];
+            ResultsVM.storypointAllocation[0] = 1;
+            ResultsVM.storypointAllocation[1] = 3;
+            ResultsVM.storypointAllocation[2] = 5;
+            ResultsVM.storypointAllocation[3] = 8;
+            ResultsVM.storypointAllocation[4] = 13;
+            ResultsVM.storypointAllocation[5] = 21;
+           
+
+
+            return View(ResultsVM);
+
+        }
+
+        [HttpPost]
+        public ActionResult Result(ResultsViewModel model)
+        {
+            ModelState.Clear();
+            calculateTotalDays(model);
+
+            return View(model);
+
+        }
+
 
         private List<Story> deleteSelectedStories(StoryViewModel model)
         {
