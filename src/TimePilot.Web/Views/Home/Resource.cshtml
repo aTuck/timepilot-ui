@@ -55,7 +55,7 @@
                     {
                     <tr>
                         <td>
-                            @Html.DropDownListFor(m => m.sprints[i].members[j].role, new SelectList(Model.roleList, "Value", "Text"), "Select Role", new { id = @i.ToString() + @j.ToString(), @onchange = "setMemberIndex(this.id); this.form.submit()" })
+                            @Html.DropDownListFor(m => m.sprints[i].members[j].role, new SelectList(Model.roleList, "Value", "Text"), "Select Role", new { id = @i.ToString() + @j.ToString(), @onchange = "setMemberIndex(this.id); this.form.submit()"})
                             @Html.HiddenFor(m=>m.memberIndex, new { id = "memberIndex"})
                         </td>
                         <td>
@@ -72,7 +72,7 @@
                         </td>
 
                         <td>
-                            @Html.TextBoxFor(m => m.sprints[i].members[j].totalHours)
+                            @Html.TextBoxFor(m => m.sprints[i].members[j].totalHours, new { @readonly = true })
                             @Html.HiddenFor(m => m.sprints[i].members[j].totalHours)
                         </td>
                         <td>
@@ -80,7 +80,7 @@
                             @Html.HiddenFor(m => m.sprints[i].members[j].standupDuration)
                         </td>
                         <td>
-                            @Html.TextBoxFor(m => m.sprints[i].members[j].standUps)
+                            @Html.TextBoxFor(m => m.sprints[i].members[j].standUps, new { @readonly = true })
                             @Html.HiddenFor(m => m.sprints[i].members[j].standUps)
                         </td>
                         <td>
@@ -92,11 +92,11 @@
                             @Html.HiddenFor(m => m.sprints[i].members[j].timeOff)
                         </td>
                         <td>
-                            @Html.TextBoxFor(m => m.sprints[i].members[j].nonDevHours)
+                            @Html.TextBoxFor(m => m.sprints[i].members[j].nonDevHours, new { @readonly = true })
                             @Html.HiddenFor(m => m.sprints[i].members[j].nonDevHours)
                         </td>
                         <td>
-                            @Html.TextBoxFor(m => m.sprints[i].members[j].totalAvailable)
+                            @Html.TextBoxFor(m => m.sprints[i].members[j].totalAvailable, new { @readonly = true })
                             @Html.HiddenFor(m => m.sprints[i].members[j].totalAvailable)
                         </td>
                     </tr>
