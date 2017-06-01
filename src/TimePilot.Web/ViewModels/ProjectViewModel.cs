@@ -11,8 +11,6 @@ namespace TimePilot.Web.ViewModels
     public class ProjectViewModel
     {
         public string SelectedProject { get; set; }
-        public string Key { get; set; }
-        public string Name { get; set; }
         public List<TimePilot.Entities.Project.Project> ProjectList { get; set; }
     }
 }

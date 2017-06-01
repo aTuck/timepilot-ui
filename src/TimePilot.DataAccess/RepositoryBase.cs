@@ -18,7 +18,7 @@ namespace TimePilot.DataAccess
         protected RepositoryBase()
         {
             _dbContext = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
-            //_maxResults = int.Parse(ConfigurationManager.AppSettings["MaxResults"]);
+            _maxResults = int.Parse(ConfigurationManager.AppSettings["MaxResults"]);
         }
 
         protected IDbConnection dbContext

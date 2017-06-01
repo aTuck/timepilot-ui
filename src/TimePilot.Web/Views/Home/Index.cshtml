@@ -16,24 +16,63 @@
     <div class="pre-project-container">
         <h2 class="project-header">PROJECTS</h2>
         <div class="project-controls">
-            <p class="sort-project-info">Sort Project By:</p>
+            <p class="controls-label">Sort Project By:</p>
             <select class="sort-method">
                 <option onchange="">Name A-Z</option>
                 <option>Name Z-A</option>
                 <option>Newest Updated</option>
                 <option>Oldest Updated</option>
             </select>
+            <p class="controls-label">Search:</p>
+            <input id="search-box" onkeyup="filter()"/>
         </div>
     </div>
     <div class="project-container">
         @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @id = "projectForm" }))
         {
             @Html.DropDownListFor(m => m.SelectedProject,
-                                new SelectList(Model.ProjectList, "ProjectKey", "Name"),
+                                new SelectList(Model.ProjectList, "ProjectKey", "Summary"),
                                 new { size = "25", @class = "projectList", @id = "projectList" })
             <input type="submit" value="Stories Page" onclick="this.form.submit()" class="button" />
         }
     </div>
 </div>
 
+<!-- Filters dropdown list based on search box-->
+<script>
+function filter() {
+    // Declare variables
+    var input, filter, ul, li, a, i;
+    input = document.getElementById('search-box');
+    filter = input.value.toUpperCase();
+    select = document.getElementById('projectList');
+    option = select.getElementsByTagName('option');
+
+    // Loop through all list items, and hide those who don't match the search query
+    for (i = 0; i < option.length; i++) {
+        if (option[i].innerHTML.toUpperCase().indexOf(filter) > -1) {
+            option[i].style.display = "";
+        } else {
+            option[i].style.display = "none";
+        }
+    }
+}
+</script>
+
+<!-- Attempt autocomplete menu
+<script>
+    $("document").ready(function () {
+        var projects = @Html.Raw(Json.Encode(Model.ProjectList));
+        var availableTags = [];
+        $projects.each(projects, function(i, proj){
+            availableTags.push(proj.Summary);
+        })
+        $("#search-box").change((function() {
+            $("#search-box").autocomplete({
+                source: availableTags
+            });
+        }))
+    });
+</script>
+-->
 

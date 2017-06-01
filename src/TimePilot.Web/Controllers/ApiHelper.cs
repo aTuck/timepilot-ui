@@ -69,7 +69,7 @@ namespace TimePilot.Controllers
                 TimePilot.Entities.Project.Project project = new TimePilot.Entities.Project.Project();
                 dynamic item = data[i];
                 project.ProjectKey = (string)item.key;
-                project.Name = (string)item.name;
+                project.Summary = (string)item.name;
                 projects.Add(project);
             }
             return projects;
