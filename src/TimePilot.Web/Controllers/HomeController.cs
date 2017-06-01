@@ -294,107 +294,111 @@ namespace TimePilot.Controllers
         //i = sprint index j = member index
         public void setDefaultValues(ResourceCapacityViewModel model, int i, int j)
         {
-            
-                        switch (model.sprints[i].members[j].role)
-                        {
 
-                            case "leadDev":
-
-                                model.sprints[i].members[j].sprintDays = 10;
-                                model.sprints[i].members[j].percentWork = 50;
-                                model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
-                                model.sprints[i].members[j].standupDuration = 0.25F;
-                                model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays*model.sprints[i].members[j].standupDuration;
-                                model.sprints[i].members[j].misc = 6;
-                                model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc+ model.sprints[i].members[j].standUps;
-                                model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
-                                break;
-
-                            case "seniorDev":
-
-                                model.sprints[i].members[j].sprintDays = 10;
-                                model.sprints[i].members[j].percentWork = 70;
-                                model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
-                                model.sprints[i].members[j].standupDuration = 0.25F;
-                                model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
-                                model.sprints[i].members[j].misc = 5;
-                                model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
-                                model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
-                                break;
-
-                            case "intermediateDev":
-
-                                model.sprints[i].members[j].sprintDays = 10;
-                                model.sprints[i].members[j].percentWork = 80;
-                                model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
-                                model.sprints[i].members[j].standupDuration = 0.25F;
-                                model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
-                                model.sprints[i].members[j].misc = 4;
-                                model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
-                                model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
-                                break;
-                            case "juniorDev":
-
-                                model.sprints[i].members[j].sprintDays = 10;
-                                model.sprints[i].members[j].percentWork = 90;
-                                model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
-                                model.sprints[i].members[j].standupDuration = 0.25F;
-                                model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
-                                model.sprints[i].members[j].misc =4;
-                                model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
-                                model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
-                                break;
-
-                            case "leadQA":
-
-                                model.sprints[i].members[j].sprintDays = 10;
-                                model.sprints[i].members[j].percentWork = 50;
-                                model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
-                                model.sprints[i].members[j].standupDuration = 0.25F;
-                                model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
-                                model.sprints[i].members[j].misc = 6;
-                                model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
-                                model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
-                                break;
-
-                            case "intermediateQA":
-
-                                model.sprints[i].members[j].sprintDays = 10;
-                                model.sprints[i].members[j].percentWork = 70;
-                                model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
-                                model.sprints[i].members[j].standupDuration = 0.25F;
-                                model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
-                                model.sprints[i].members[j].misc = 5;
-                                model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
-                                model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
-                                break;
-                            case "seniorQA":
-
-                                model.sprints[i].members[j].sprintDays = 10;
-                                model.sprints[i].members[j].percentWork =80;
-                                model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
-                                model.sprints[i].members[j].standupDuration = 0.25F;
-                                model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
-                                model.sprints[i].members[j].misc = 4;
-                                model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
-                                model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
-                                break;
-
-                            case "juniorQA":
-
-                                model.sprints[i].members[j].sprintDays = 10;
-                                model.sprints[i].members[j].percentWork = 90;
-                                model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
-                                model.sprints[i].members[j].standupDuration = 0.25F;
-                                model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
-                                model.sprints[i].members[j].misc = 4;
-                                model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
-                                model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
-                                break;
-                        }
 
             
 
+                switch (model.sprints[i].members[j].role)
+                {
+
+                    case "leadDev":
+
+                        model.sprints[i].members[j].sprintDays = 10;
+                        model.sprints[i].members[j].percentWork = 50;
+                        model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
+                        model.sprints[i].members[j].standupDuration = 0.25F;
+                        model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
+                        model.sprints[i].members[j].misc = 6;
+                        model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
+                        model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
+                        break;
+
+                    case "seniorDev":
+
+                        model.sprints[i].members[j].sprintDays = 10;
+                        model.sprints[i].members[j].percentWork = 70;
+                        model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
+                        model.sprints[i].members[j].standupDuration = 0.25F;
+                        model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
+                        model.sprints[i].members[j].misc = 5;
+                        model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
+                        model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
+                        break;
+
+                    case "intermediateDev":
+
+                        model.sprints[i].members[j].sprintDays = 10;
+                        model.sprints[i].members[j].percentWork = 80;
+                        model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
+                        model.sprints[i].members[j].standupDuration = 0.25F;
+                        model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
+                        model.sprints[i].members[j].misc = 4;
+                        model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
+                        model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
+                        break;
+                    case "juniorDev":
+
+                        model.sprints[i].members[j].sprintDays = 10;
+                        model.sprints[i].members[j].percentWork = 90;
+                        model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
+                        model.sprints[i].members[j].standupDuration = 0.25F;
+                        model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
+                        model.sprints[i].members[j].misc = 4;
+                        model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
+                        model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
+                        break;
+
+                    case "leadQA":
+
+                        model.sprints[i].members[j].sprintDays = 10;
+                        model.sprints[i].members[j].percentWork = 50;
+                        model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
+                        model.sprints[i].members[j].standupDuration = 0.25F;
+                        model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
+                        model.sprints[i].members[j].misc = 6;
+                        model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
+                        model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
+                        break;
+
+                    case "intermediateQA":
+
+                        model.sprints[i].members[j].sprintDays = 10;
+                        model.sprints[i].members[j].percentWork = 70;
+                        model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
+                        model.sprints[i].members[j].standupDuration = 0.25F;
+                        model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
+                        model.sprints[i].members[j].misc = 5;
+                        model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
+                        model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
+                        break;
+                    case "seniorQA":
+
+                        model.sprints[i].members[j].sprintDays = 10;
+                        model.sprints[i].members[j].percentWork = 80;
+                        model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
+                        model.sprints[i].members[j].standupDuration = 0.25F;
+                        model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
+                        model.sprints[i].members[j].misc = 4;
+                        model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
+                        model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
+                        break;
+
+                    case "juniorQA":
+
+                        model.sprints[i].members[j].sprintDays = 10;
+                        model.sprints[i].members[j].percentWork = 90;
+                        model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
+                        model.sprints[i].members[j].standupDuration = 0.25F;
+                        model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
+                        model.sprints[i].members[j].misc = 4;
+                        model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
+                        model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
+                        break;
+        
+
+
+            }
+            model.memberIndex = null;
 
                     }
 
