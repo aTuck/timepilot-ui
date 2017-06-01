@@ -13,12 +13,10 @@ namespace TimePilot.Controllers
         ApiHelper apiHelper = new ApiHelper();
         private string projectJson;
         private string storyJson;
-
         ProjectViewModel ProjectVM = new ProjectViewModel();
         StoryViewModel StoryVM = new StoryViewModel();
         ResourceCapacityViewModel mResourceViewModel = new ResourceCapacityViewModel();
         //IEnumerable<SelectListItem> roleList;
-
         private static int hoursPerDay = 8;
         List<Story> stories = new List<Story>();
         public static string SelectedProject;
@@ -128,7 +126,7 @@ namespace TimePilot.Controllers
             ModelState.Clear();
             RCModel.roleList = createRoleList();
             calculateAvailability(RCModel);
-
+            calculateRCMainValues(RCModel);
 
             if (RCModel.memberIndex != null)
             {
@@ -217,7 +215,31 @@ namespace TimePilot.Controllers
 
 
 
+        public void calculateRCMainValues(ResourceCapacityViewModel model)
+        {
 
+            for (int i = 0; i < model.sprints.Count; i++)
+            {
+
+                for (int j = 0; j < model.sprints[i].members.Count; j++)
+                {
+
+
+                    model.totalDevCapacity = model.totalDevCapacity + model.sprints[i].members[j].totalAvailable;
+
+
+                }
+
+
+
+            }
+
+
+            model.avgPerSprint = model.totalDevCapacity / model.sprints.Count;
+            model.avgPerWeek = model.avgPerSprint / 2;
+
+
+        }
 
 
 
