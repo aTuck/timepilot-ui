@@ -45,10 +45,21 @@
                     <th>Time Off</th>
                     <th>Non Dev Hours</th>
                     <th>Total Available</th>
+                    <th>Delete</th>
                 </tr>
                 }
                 <tr>
                     <th>Sprint @i</th>
+
+                    <td>
+                        <input type="submit" name="command" value="Add Member" id=@i onclick="setButtonIndex(this.id)" class ="button" />
+                        @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
+                    </td>
+
+                    <td>
+                        <input type="submit" name="command" id=@i value="Delete Sprint" class="button" onclick="setButtonIndex(this.id)"/>
+                        @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
+                    </td>
                 </tr>
                 <tr>
                     @for (int j = 0; j < Model.sprints[i].members.Count(); j++)
@@ -99,30 +110,31 @@
                             @Html.TextBoxFor(m => m.sprints[i].members[j].totalAvailable, new { @readonly = true })
                             @Html.HiddenFor(m => m.sprints[i].members[j].totalAvailable)
                         </td>
+                        <td>
+                           
+                            @Html.CheckBoxFor(m=>m.sprints[i].members[j].isSelectedToDelete)
+                            @Html.HiddenFor(m => m.sprints[i].members[j].isSelectedToDelete)
+
+                        </td>
                     </tr>
                     }
 
                 
 
-                    <tr>
-                        <input type="submit" name="command" value="Add Member"  id=@i onclick="setButtonIndex(this.id)" />
-                        @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
-                    </tr>
-                <tr>
-                </table>
                 
-        }
+                </table>
 
-    <input type="submit" name="command" id="command" value="Add Sprint" />
-    <input type="submit" name="command" id="command" value="Recalculate Values" />
     }
+
+    <input type="button" value="Previous" onclick="location.href='@Url.Action("Story", "Home")'" class="button" />
+    <input type="submit" name="command" id="command" value="Add Sprint" class="button"/>
+    <input type="submit" name="command" id="command" value="Recalculate Values" class="button" />
+    <input type="submit" name="command" value="Delete Selected" onclick="this.form.submit();" class="button" />
+}
 
 <p>Total DEV Capacity: @Model.totalDevCapacity</p>
 <p>Average Per Sprint: @Model.avgPerSprint</p>
 <p>Average Per Week: @Model.avgPerWeek</p>
-
-
-
 
 
     <script type="text/javascript">
