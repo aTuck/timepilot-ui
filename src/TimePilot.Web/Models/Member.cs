@@ -20,5 +20,6 @@ namespace TimePilot.Web.Models
         public float totalAvailable { get; set; }
         public int memberCount { get; set; }
         public List<MemberSprintData> memberSprintData { get; set; }
+        public Boolean isSelectedToDelete { get; set; }
     }
 }

@@ -126,7 +126,7 @@ namespace TimePilot.Controllers
             ModelState.Clear();
             RCModel.roleList = createRoleList();
             calculateAvailability(RCModel);
-            calculateRCMainValues(RCModel);
+            
 
             if (RCModel.memberIndex != null)
             {
@@ -155,6 +155,21 @@ namespace TimePilot.Controllers
 
             }
 
+            if (command != null && command.Equals("Delete Selected"))
+            {
+
+                deleteSelectedMembers(RCModel);
+
+            }
+
+            if (command != null && command.Equals("Delete Sprint"))
+            {
+
+                deleteSprint(RCModel);
+
+            }
+            calculateRCMainValues(RCModel);
+
             return View(RCModel);
         }
 
@@ -180,11 +195,42 @@ namespace TimePilot.Controllers
         }
 
 
+        private void deleteSelectedMembers (ResourceCapacityViewModel model)
+        {
+
+            for (int i = 0; i < model.sprints.Count; i++)
+            {
+
+                for (int j = 0; j < model.sprints[i].members.Count; j++)
+                {
+
+                    if (model.sprints[i].members.Count > 1 && model.sprints[i].members[j].isSelectedToDelete)
+                    {
 
 
+                        model.sprints[i].members.RemoveAt(j);
+                        j--;
 
 
+                    }
 
+
+                }
+
+            }
+
+        }
+
+        
+        private void deleteSprint (ResourceCapacityViewModel model)
+
+        {
+            if (model.sprints.Count > 1)
+            {
+                model.sprints.RemoveAt(model.buttonIndex);
+            }
+
+        }
 
         public void calculateAvailability(ResourceCapacityViewModel model)
         {
