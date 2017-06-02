@@ -5,6 +5,7 @@ using TimePilot.Web.Models;
 using TimePilot.Web.ViewModels;
 using TimePilot.DataAccess.Repository;
 using TimePilot.Entities.Project;
+using System.Linq;
 
 namespace TimePilot.Controllers
 {
@@ -41,9 +42,22 @@ namespace TimePilot.Controllers
             StoryVM.mStoryList = stories;
         }
 
-        public void bindProjectDataToViewModel()
+        public void bindProjectDataToViewModel(string sortOrder)
         {
-            List<TimePilot.Entities.Project.Project> projects = ProjDB.GetAll();
+            List<TimePilot.Entities.Project.Project> projects = new List<TimePilot.Entities.Project.Project>();
+            projects = ProjDB.GetAll();
+            switch (sortOrder)
+            {
+                case "order_desc":
+                    projects = projects.OrderByDescending(p => p.Summary).ToList();
+                    break;
+                case "order_asc":
+                    projects = projects.OrderBy(p => p.Summary).ToList();
+                    break;
+                default:
+                    projects = projects.OrderBy(p => p.Summary).ToList();
+                    break;
+            }
             ProjectVM.ProjectList = projects;
         }
 
@@ -64,7 +78,13 @@ namespace TimePilot.Controllers
              * page load for now until button is implemented             */
             Populate();
             /*-----------------------------------------------------------*/
-            bindProjectDataToViewModel();
+            bindProjectDataToViewModel("order_desc");
+            return View(ProjectVM);
+        }
+
+        public ActionResult SortedIndex(string sortOrder)
+        {
+            bindProjectDataToViewModel(sortOrder);
             return View(ProjectVM);
         }
 

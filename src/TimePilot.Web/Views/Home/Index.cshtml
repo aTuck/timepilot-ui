@@ -17,12 +17,13 @@
         <h2 class="project-header">PROJECTS</h2>
         <div class="project-controls">
             <p class="controls-label">Sort Project By:</p>
-            <select class="sort-method">
-                <option onchange="">Name A-Z</option>
-                <option>Name Z-A</option>
-                <option>Newest Updated</option>
-                <option>Oldest Updated</option>
-            </select>
+
+            @Html.DropDownList("SortBy", new SelectListItem[]
+            {
+                new SelectListItem() { Text = "Name A-Z", Value = Url.Action("SortedIndex", "Home", new { sortOrder = "order_desc" })},
+                new SelectListItem() { Text = "Name Z-A", Value = Url.Action("SortedIndex", "Home", new { sortOrder = "order_asc" })},
+            },  new { @onChange = "this.form.submit()" })
+
             <p class="controls-label">Search:</p>
             <input id="search-box" onkeyup="filter()"/>
         </div>
@@ -42,7 +43,7 @@
 <script>
 function filter() {
     // Declare variables
-    var input, filter, ul, li, a, i;
+    var input, filter, select, option, i;
     input = document.getElementById('search-box');
     filter = input.value.toUpperCase();
     select = document.getElementById('projectList');
@@ -59,7 +60,7 @@ function filter() {
 }
 </script>
 
-<!-- Attempt autocomplete menu
+<!-- Attempt at autocomplete menu
 <script>
     $("document").ready(function () {
         var projects = @Html.Raw(Json.Encode(Model.ProjectList));
