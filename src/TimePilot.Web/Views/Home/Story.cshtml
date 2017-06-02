@@ -24,6 +24,8 @@
             </select>
         </div>
     </div>
+    @using (Html.BeginForm("Story", "Home", FormMethod.Post))
+    {
     <div class="stories-container">
         @if (Model.mStoryList.Count < 1)
         {
@@ -31,8 +33,8 @@
         }
         else
         {
-            using (Html.BeginForm("Story", "Home", FormMethod.Post))
-            {
+          
+                <h1>@Model.totalNumberStoryPoints</h1>
                 <table class="table-hover">
                     <tr>
                         <th>Story ID</th>
@@ -63,16 +65,12 @@
                     }
                 </table>
                 <input type="submit" value="Delete Selected" onclick="this.form.submit();" class="button" />
+                <input type="submit" value="Apply Changes" onclick="this.form.submit();" class="button" />
+
             }
-        }
     </div>
+    <input type="submit" value="Previous" onclick="location.href='@Url.Action("Index", "Home")'" class="button" />
+    <input name = "command" type="submit" value="Resource Capacity Page" onclick="this.form.submit(); location.href='@Url.Action("Resource", "Home")';" class="button" />
+        }
 </div>
 
-<input type="submit" value="Previous" onclick="location.href='@Url.Action("Index", "Home")'" class="button" />
-<input type="submit" value="Resoure Capacity" onclick="location.href='@Url.Action("Resource", "Home")'" class="button" />
-<p>1 point: @Model.StorypointSum[0]</p>
-<p>3 point: @Model.StorypointSum[1]</p>
-<p>5 point: @Model.StorypointSum[2]</p>
-<p>8 point: @Model.StorypointSum[3]</p>
-<p>13 point: @Model.StorypointSum[4]</p>
-<p>21 point:  @Model.StorypointSum[5]</p>

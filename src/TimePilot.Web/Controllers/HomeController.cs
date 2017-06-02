@@ -5,6 +5,8 @@ using TimePilot.Web.Models;
 using TimePilot.Web.ViewModels;
 using TimePilot.DataAccess.Repository;
 using TimePilot.Entities.Project;
+using System.Linq;
+
 
 namespace TimePilot.Controllers
 {
@@ -16,8 +18,13 @@ namespace TimePilot.Controllers
         ProjectViewModel ProjectVM = new ProjectViewModel();
         StoryViewModel StoryVM = new StoryViewModel();
         ResourceCapacityViewModel mResourceViewModel = new ResourceCapacityViewModel();
-        //IEnumerable<SelectListItem> roleList;
+        ResultsViewModel ResultsVM = new ResultsViewModel();
+        public static int [] storypointallocation;
+        public static float totalAvailablility;
+        public static float AvgCapactiyperWeek;
+        public static float totalStoryPoints;
         private static int hoursPerDay = 8;
+
         List<Story> stories = new List<Story>();
         public static string SelectedProject;
 
@@ -43,7 +50,8 @@ namespace TimePilot.Controllers
 
         public void bindProjectDataToViewModel()
         {
-            List<TimePilot.Entities.Project.Project> projects = ProjDB.GetAll();
+            List<TimePilot.Entities.Project.Project> projects = new List<TimePilot.Entities.Project.Project>();
+            projects = ProjDB.GetAll();
             ProjectVM.ProjectList = projects;
         }
 
@@ -99,6 +107,48 @@ namespace TimePilot.Controllers
             }
         }
 
+
+        public void setHoursEstimationValues(ResultsViewModel model)
+        {
+
+
+            int SumOfTotalDays = 0;
+            for (int i = 0; i < model.storypointAllocation.Length; i++)
+            {
+
+                SumOfTotalDays = SumOfTotalDays + model.Total[i];
+
+            }
+
+            model.TotalHours = SumOfTotalDays * hoursPerDay;                                    
+            model.ReleaseAndHardening = model.SprintLength;
+            model.TotalDevQA = model.TotalHours * (1F + model.Contingency/100F);
+            model.AvgCapacitiyperWeek = AvgCapactiyperWeek;
+            model.TotalWeeks = model.TotalDevQA / AvgCapactiyperWeek;
+            model.ProjectDurationWeeks = model.ReleaseAndHardening + model.TotalWeeks;
+
+
+            
+
+
+        }
+
+        public void setVelocityValidationValues(ResultsViewModel model)
+        {
+
+            model.totalStoryPoints = totalStoryPoints;
+            model.totalPointsVelocity = totalStoryPoints * (1F + model.Contingency / 100F);
+            
+            if (model.TeamVelocity > 0)
+            {
+                model.TotalSprints = model.totalStoryPoints / model.TeamVelocity;
+            }
+            model.TotalWeeksVelocity = model.TotalSprints * model.SprintLength;
+            model.projectDurationWeeksVelocity = model.TotalWeeksVelocity + model.ReleaseAndHardening;
+
+        }
+
+
         public ActionResult Story()
         {
             receiveStoryData();
@@ -106,18 +156,69 @@ namespace TimePilot.Controllers
             convertStoryPointToInt(stories);
             bindStoryDataToViewModel();
             sumStoryPoints(StoryVM);
+            if (StoryVM.StorypointSum != null)
+            {
+
+                storypointallocation = StoryVM.StorypointSum;
+
+            }
+            calculateTotalStoryPoints(StoryVM);
             return View(StoryVM);
         }
 
 
 
         [HttpPost]
-        public ActionResult Story(StoryViewModel modelmodel)
+        public ActionResult Story(StoryViewModel model, string command)
         {
             ModelState.Clear();
-            modelmodel.mStoryList = deleteSelectedStories(modelmodel);
-            sumStoryPoints(modelmodel);
-            return View(modelmodel);
+            model.mStoryList = deleteSelectedStories(model);
+            sumStoryPoints(model);
+            if (model.StorypointSum != null)
+            {
+
+                storypointallocation = model.StorypointSum;
+
+            }
+            calculateTotalStoryPoints(model);
+            totalStoryPoints = model.totalNumberStoryPoints;
+
+
+            if (command != null && command.Equals("Resource Capacity Page"))
+            {
+                calculateTotalStoryPoints(model);
+                totalStoryPoints = model.totalNumberStoryPoints;
+                return RedirectToAction("Resource", "Home");
+
+            }
+
+
+
+
+
+
+
+
+            return View(model);
+        }
+
+        public void calculateTotalStoryPoints (StoryViewModel model)
+        {
+
+            int sumofPoints = 0;
+            for (int i = 0; i < model.mStoryList.Count; i++)
+            {
+
+
+                sumofPoints = sumofPoints + model.mStoryList[i].IntStoryPoint;
+
+
+
+            }
+
+            model.totalNumberStoryPoints = sumofPoints;
+
+
         }
 
         [HttpPost]
@@ -169,8 +270,25 @@ namespace TimePilot.Controllers
 
             }
             calculateRCMainValues(RCModel);
-
+            totalAvailablility = RCModel.totalDevCapacity;
+            AvgCapactiyperWeek = RCModel.avgPerWeek;
             return View(RCModel);
+        }
+
+        
+
+        public void calculateTotalDays(ResultsViewModel model)
+        {
+            
+            for (int i = 0; i < model.storypointAllocation.Length; i++)
+            {
+                
+                    model.Total[i] = model.numberOfStories[i] * model.DaysPerPt[i];
+                
+
+            }
+
+
         }
 
         public ActionResult Resource()
@@ -179,6 +297,46 @@ namespace TimePilot.Controllers
             mResourceViewModel.roleList = createRoleList();
             return View(mResourceViewModel);
         }
+
+
+        public ActionResult Result()
+        {
+            ResultsVM.sprintLengthList = createSprintLengthList();
+            ResultsVM.DaysPerPt = new int[6];
+            ResultsVM.Total = new int[6];
+            ResultsVM.numberOfStories = new int[6];
+            if (storypointallocation != null)
+            {
+                ResultsVM.numberOfStories = storypointallocation;
+            }
+
+            ResultsVM.storypointAllocation = new int[6];
+            ResultsVM.storypointAllocation[0] = 1;
+            ResultsVM.storypointAllocation[1] = 3;
+            ResultsVM.storypointAllocation[2] = 5;
+            ResultsVM.storypointAllocation[3] = 8;
+            ResultsVM.storypointAllocation[4] = 13;
+            ResultsVM.storypointAllocation[5] = 21;
+
+            setVelocityValidationValues(ResultsVM);
+
+            return View(ResultsVM);
+
+        }
+
+        [HttpPost]
+        public ActionResult Result(ResultsViewModel model)
+        {
+            ModelState.Clear();
+            model.sprintLengthList = createSprintLengthList();
+            calculateTotalDays(model);
+            setHoursEstimationValues(model);
+            setVelocityValidationValues(model);
+
+            return View(model);
+
+        }
+
 
         private List<Story> deleteSelectedStories(StoryViewModel model)
         {
@@ -242,20 +400,14 @@ namespace TimePilot.Controllers
                 {
 
 
-
-
                     model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
                     model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
                     model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
                     model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours - model.sprints[i].members[j].timeOff;
 
-
                 }
 
-
-
             }
-
 
         }      
 
@@ -467,7 +619,22 @@ namespace TimePilot.Controllers
             }
         }
 
+        private IEnumerable<SelectListItem> createSprintLengthList()
+        {
 
+            List<SelectListItem> mySprintLengthList = new List<SelectListItem>();
+            SelectListItem sprintLength2 = new SelectListItem() { Text = "2", Value = "2", Selected = false };
+            SelectListItem sprintLength3 = new SelectListItem() { Text = "3", Value = "3", Selected = false };
+            mySprintLengthList.Add(sprintLength2);
+            mySprintLengthList.Add(sprintLength3);
+
+            IEnumerable<SelectListItem> myEnumSprintLengthList = mySprintLengthList;
+            return myEnumSprintLengthList;
+
+
+        }
+
+        
 
         private IEnumerable<SelectListItem> createRoleList()
         {

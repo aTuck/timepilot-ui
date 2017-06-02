@@ -17,9 +17,9 @@
         <h2 class="project-header">PROJECTS</h2>
         <div class="project-controls">
             <p class="controls-label">Sort Project By:</p>
-            <select class="sort-method">
-                <option onchange="">Name A-Z</option>
-                <option>Name Z-A</option>
+            <select id="sort-order">
+                <option value="desc">Name A-Z</option>
+                <option value="asc">Name Z-A</option>
                 <option>Newest Updated</option>
                 <option>Oldest Updated</option>
             </select>
@@ -42,7 +42,7 @@
 <script>
 function filter() {
     // Declare variables
-    var input, filter, ul, li, a, i;
+    var input, filter, select, option, i;
     input = document.getElementById('search-box');
     filter = input.value.toUpperCase();
     select = document.getElementById('projectList');
@@ -57,9 +57,31 @@ function filter() {
         }
     }
 }
+
+window.onload=function() {
+    document.getElementById("sort-order").onchange = function () {
+        var tmpAry = new Array();
+        sortOrder = this.value;
+        selElem = document.getElementById("projectList");
+        for (var i = 0; i < selElem.options.length; i++) {
+            tmpAry[i] = new Array();
+            tmpAry[i][0] = selElem.options[i].text;
+            tmpAry[i][1] = selElem.options[i].value;
+        }
+        sortOrder == "desc" ? tmpAry.sort() : tmpAry.reverse()
+        while (selElem.options.length > 0) {
+            selElem.options[0] = null;
+        }
+        for (var i = 0; i < tmpAry.length; i++) {
+            var op = new Option(tmpAry[i][0], tmpAry[i][1]);
+            selElem.options[i] = op;
+        }
+        return;
+    }
+}
 </script>
 
-<!-- Attempt autocomplete menu
+<!-- Attempt at autocomplete menu
 <script>
     $("document").ready(function () {
         var projects = @Html.Raw(Json.Encode(Model.ProjectList));
