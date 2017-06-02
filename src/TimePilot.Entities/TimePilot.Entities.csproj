@@ -112,6 +112,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Project\Project.cs" />
+    <Compile Include="Project\Story.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <PropertyGroup>
@@ -157,4 +158,3 @@
   </Target>
   -->
 </Project>
-

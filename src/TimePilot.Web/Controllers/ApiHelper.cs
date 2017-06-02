@@ -40,19 +40,19 @@ namespace TimePilot.Controllers
             return Convert.ToBase64String(byteCredentials);
         }
 
-        public List<Story> parseStoryData(string jsonString)
+        public List<TimePilot.Entities.Story> parseStoryData(string jsonString)
         {
-            List<Story> stories = new List<Story>();
+            List<TimePilot.Entities.Story> stories = new List<TimePilot.Entities.Story>();
             JObject results = JObject.Parse(jsonString);
 
             foreach (var result in results["issues"])
             {
-                Story story = new Story();
+                TimePilot.Entities.Story story = new TimePilot.Entities.Story();
 
-                story.Key = (string)result["key"];
+                story.StoryID = (int)result["id"];
+                story.StoryKey = (string)result["key"];
                 story.Summary = (string)result["fields"]["summary"];
-                story.Description = (string)result["fields"]["description"];
-                story.StoryPoint = (string)result["fields"]["customfield_10013"];
+                story.StoryPoints = (int?)result["fields"]["customfield_10013"] ?? 0;
 
                 stories.Add(story);
             }
