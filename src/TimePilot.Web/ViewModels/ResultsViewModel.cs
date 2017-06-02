@@ -14,9 +14,19 @@ namespace TimePilot.Web.ViewModels
         public int [] DaysPerPt { get; set; }
         public int [] Total { get; set; }
         public int TotalDays { get; set; }
-        public int TotalHours { get; set; }
-
-
-
+        public float TotalHours { get; set; }
+        public float TotalWeeks { get; set; }
+        public int SprintLength { get; set; }
+        public float TotalDevQA { get; set; }
+        public float AvgCapacitiyperWeek { get; set; }
+        public float ProjectDurationWeeks { get; set; }
+        public int ReleaseAndHardening { get; set; }
+        public float Contingency { get; set; }
+        public float totalStoryPoints { get; set; }
+        public float TeamVelocity { get; set; }
+        public float TotalSprints { get; set; }
+        public float TotalWeeksVelocity { get; set; }
+        public float projectDurationWeeksVelocity { get; set; }
+        public float totalPointsVelocity { get; set; }
     }
 }
