@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace TimePilot.Web.ViewModels
 {
@@ -9,10 +10,10 @@ namespace TimePilot.Web.ViewModels
     {
 
 
-        public int [] storypointAllocation { get; set; }
-        public int [] numberOfStories { get; set; }
-        public int [] DaysPerPt { get; set; }
-        public int [] Total { get; set; }
+        public int[] storypointAllocation { get; set; }
+        public int[] numberOfStories { get; set; }
+        public int[] DaysPerPt { get; set; }
+        public int[] Total { get; set; }
         public int TotalDays { get; set; }
         public float TotalHours { get; set; }
         public float TotalWeeks { get; set; }
@@ -28,5 +29,6 @@ namespace TimePilot.Web.ViewModels
         public float TotalWeeksVelocity { get; set; }
         public float projectDurationWeeksVelocity { get; set; }
         public float totalPointsVelocity { get; set; }
+        public IEnumerable<SelectListItem> sprintLengthList {get;set;}
     }
 }
