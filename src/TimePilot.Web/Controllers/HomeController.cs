@@ -5,6 +5,7 @@ using TimePilot.Web.Models;
 using TimePilot.Web.ViewModels;
 using TimePilot.DataAccess.Repository;
 using TimePilot.Entities.Project;
+using System.Linq;
 
 
 namespace TimePilot.Controllers
@@ -49,7 +50,8 @@ namespace TimePilot.Controllers
 
         public void bindProjectDataToViewModel()
         {
-            List<TimePilot.Entities.Project.Project> projects = ProjDB.GetAll();
+            List<TimePilot.Entities.Project.Project> projects = new List<TimePilot.Entities.Project.Project>();
+            projects = ProjDB.GetAll();
             ProjectVM.ProjectList = projects;
         }
 
