@@ -81,8 +81,10 @@
                 <td>Total Weeks: @Model.TotalWeeks</td>               
             </tr>
             <tr>
-                <td>20% Contingency: @Model.Contingency</td>
-                <td>Sprint Length: @Model.SprintLength</td>                
+                <td>
+                Contingency:  @Html.TextBoxFor(m => m.Contingency, new { @onchange = "this.form.submit();" })
+                @Html.HiddenFor(m => m.Contingency) </td>                    
+                <td>Sprint Length: @Html.DropDownListFor(m => m.SprintLength, new SelectList(Model.sprintLengthList, "Value", "Text"), "Sprint Length", new { @onchange = "this.form.submit()" })</td>                
             </tr>
             <tr>
                 <td>Total Dev & QA Hours: @Model.TotalDevQA</td>                
@@ -105,9 +107,9 @@
         <table>
 
             <tr>
-                <td>Total Number of Story Points: @Model.totalPointsVelocity </td>
+              <td>Total Number of Story Points: @Model.totalStoryPoints </td>
                 <td>
-                    @Html.TextBoxFor(m => m.TeamVelocity, new { @onchange = "this.form.submit();" })
+                    Team Velocity: @Html.TextBoxFor(m => m.TeamVelocity, new { @onchange = "this.form.submit();" })
                     @Html.HiddenFor(m => m.TeamVelocity)
                 </td>
             </tr>
@@ -116,7 +118,7 @@
                 <td>Total Sprints Reuired to Complete: @Model.TotalSprints</td>
             </tr>
             <tr>
-                <td>Total: @Model.Total</td>
+                <td>Total: @Model.totalPointsVelocity</td>
                 <td>Total Weeks: @Model.TotalWeeksVelocity</td>
             </tr>
             <tr>
