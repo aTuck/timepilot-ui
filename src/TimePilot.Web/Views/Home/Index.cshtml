@@ -17,13 +17,12 @@
         <h2 class="project-header">PROJECTS</h2>
         <div class="project-controls">
             <p class="controls-label">Sort Project By:</p>
-
-            @Html.DropDownList("SortBy", new SelectListItem[]
-            {
-                new SelectListItem() { Text = "Name A-Z", Value = Url.Action("SortedIndex", "Home", new { sortOrder = "order_desc" })},
-                new SelectListItem() { Text = "Name Z-A", Value = Url.Action("SortedIndex", "Home", new { sortOrder = "order_asc" })},
-            },  new { @onChange = "this.form.submit()" })
-
+            <select id="sort-order">
+                <option value="desc">Name A-Z</option>
+                <option value="asc">Name Z-A</option>
+                <option>Newest Updated</option>
+                <option>Oldest Updated</option>
+            </select>
             <p class="controls-label">Search:</p>
             <input id="search-box" onkeyup="filter()"/>
         </div>
@@ -56,6 +55,28 @@ function filter() {
         } else {
             option[i].style.display = "none";
         }
+    }
+}
+
+window.onload=function() {
+    document.getElementById("sort-order").onchange = function () {
+        var tmpAry = new Array();
+        sortOrder = this.value;
+        selElem = document.getElementById("projectList");
+        for (var i = 0; i < selElem.options.length; i++) {
+            tmpAry[i] = new Array();
+            tmpAry[i][0] = selElem.options[i].text;
+            tmpAry[i][1] = selElem.options[i].value;
+        }
+        sortOrder == "desc" ? tmpAry.sort() : tmpAry.reverse()
+        while (selElem.options.length > 0) {
+            selElem.options[0] = null;
+        }
+        for (var i = 0; i < tmpAry.length; i++) {
+            var op = new Option(tmpAry[i][0], tmpAry[i][1]);
+            selElem.options[i] = op;
+        }
+        return;
     }
 }
 </script>

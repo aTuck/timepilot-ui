@@ -44,22 +44,10 @@ namespace TimePilot.Controllers
             StoryVM.mStoryList = stories;
         }
 
-        public void bindProjectDataToViewModel(string sortOrder)
+        public void bindProjectDataToViewModel()
         {
             List<TimePilot.Entities.Project.Project> projects = new List<TimePilot.Entities.Project.Project>();
             projects = ProjDB.GetAll();
-            switch (sortOrder)
-            {
-                case "order_desc":
-                    projects = projects.OrderByDescending(p => p.Summary).ToList();
-                    break;
-                case "order_asc":
-                    projects = projects.OrderBy(p => p.Summary).ToList();
-                    break;
-                default:
-                    projects = projects.OrderBy(p => p.Summary).ToList();
-                    break;
-            }
             ProjectVM.ProjectList = projects;
         }
 
@@ -80,13 +68,7 @@ namespace TimePilot.Controllers
              * page load for now until button is implemented             */
             Populate();
             /*-----------------------------------------------------------*/
-            bindProjectDataToViewModel("order_desc");
-            return View(ProjectVM);
-        }
-
-        public ActionResult SortedIndex(string sortOrder)
-        {
-            bindProjectDataToViewModel(sortOrder);
+            bindProjectDataToViewModel();
             return View(ProjectVM);
         }
 
