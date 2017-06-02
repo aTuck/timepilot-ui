@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing.Printing;
-using System.Dynamic;
-using System.Linq;
-using System.Web;
 
 namespace TimePilot.Entities.Project
 {

@@ -32,7 +32,7 @@
     @using (Html.BeginForm("Story", "Home", FormMethod.Post))
     {
     <div class="stories-container">
-        @if (Model.mStoryList.Count < 1)
+        @if (Model.StoryList.Count < 1)
         {
             <h3> There are no stories for this project </h3>
         }
@@ -47,24 +47,20 @@
                         <th>Story Points</th>
                         <th>Delete Story</th>
                     </tr>
-                    @for (int i = 0; i < Model.mStoryList.Count(); i++)
+                    @for (int i = 0; i < Model.StoryList.Count(); i++)
                     {
                         <tr>
                             <td>
-                                @Html.Label("Key", @Model.mStoryList[i].Key)
-                                @Html.HiddenFor(m => m.mStoryList[i].Key)
+                                @Html.Label("Key", @Model.StoryList[i].StoryKey)
+                                @Html.HiddenFor(m => m.StoryList[i].StoryKey)
                             </td>
                             <td>
-                                @Html.Label("Summary", @Model.mStoryList[i].Summary)
-                                @Html.HiddenFor(listmodel => listmodel.mStoryList[i].Summary)
+                                @Html.Label("Summary", @Model.StoryList[i].Summary)
+                                @Html.HiddenFor(m => m.StoryList[i].Summary)
                             </td>
                             <td>
-                                @Html.TextBoxFor(listmodel => listmodel.mStoryList[i].IntStoryPoint, new { @class = "storyPoint", @onchange = "" })
-                                @Html.HiddenFor(m => m.mStoryList[i].IntStoryPoint)
-                            </td>
-                            <td>
-                                @Html.CheckBoxFor(listmodel => listmodel.mStoryList[i].isSelectedToDelete)
-                                @Html.HiddenFor(m => m.mStoryList[i].isSelectedToDelete)
+                                @Html.TextBoxFor(m => m.StoryList[i].StoryPoints, new { @class = "storyPoint", @onchange = "" })
+                                @Html.HiddenFor(m => m.StoryList[i].StoryPoints)
                             </td>
                         </tr>
                     }

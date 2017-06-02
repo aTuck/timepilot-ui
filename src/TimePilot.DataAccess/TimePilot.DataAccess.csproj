@@ -136,6 +136,7 @@
     <Compile Include="RepositoryBase.cs" />
     <Compile Include="Repository\IProjectRepository.cs" />
     <Compile Include="Repository\ProjectRepository.cs" />
+    <Compile Include="Repository\StoryRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TimePilot.Entities\TimePilot.Entities.csproj">
@@ -168,7 +169,6 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -177,4 +177,3 @@
   </Target>
   -->
 </Project>
-
