@@ -20,7 +20,11 @@ namespace TimePilot.Controllers
         ResourceCapacityViewModel mResourceViewModel = new ResourceCapacityViewModel();
         ResultsViewModel ResultsVM = new ResultsViewModel();
         public static int [] storypointallocation;
+        public static float totalAvailablility;
+        public static float AvgCapactiyperWeek;
+        public static float totalStoryPoints;
         private static int hoursPerDay = 8;
+
         List<Story> stories = new List<Story>();
         public static string SelectedProject;
 
@@ -103,6 +107,50 @@ namespace TimePilot.Controllers
             }
         }
 
+
+        public void setHoursEstimationValues(ResultsViewModel model)
+        {
+
+
+            int SumOfTotalDays = 0;
+            for (int i = 0; i < model.storypointAllocation.Length; i++)
+            {
+
+                SumOfTotalDays = SumOfTotalDays + model.Total[i];
+
+            }
+
+            model.TotalHours = SumOfTotalDays * hoursPerDay;            
+            model.SprintLength = 2;
+            model.Contingency = 20;
+            model.ReleaseAndHardening = 2;
+            model.TotalDevQA = model.TotalHours * (1F + model.Contingency/100F);
+            model.AvgCapacitiyperWeek = AvgCapactiyperWeek;
+            model.TotalWeeks = model.TotalDevQA / AvgCapactiyperWeek;
+            model.ProjectDurationWeeks = model.ReleaseAndHardening + model.TotalWeeks;
+
+
+            
+
+
+        }
+
+        public void setVelocityValidation(ResultsViewModel model)
+        {
+
+            model.totalStoryPoints = totalStoryPoints;
+            model.totalPointsVelocity = totalStoryPoints * (1F + model.Contingency / 100F);
+            model.TeamVelocity = 0;
+            if (model.TeamVelocity > 0)
+            {
+                model.TotalSprints = model.totalStoryPoints / model.TeamVelocity;
+            }
+            model.TotalWeeksVelocity = model.TotalSprints * model.SprintLength;
+            model.projectDurationWeeksVelocity = model.TotalWeeksVelocity + model.ReleaseAndHardening;
+
+        }
+
+
         public ActionResult Story()
         {
             receiveStoryData();
@@ -134,8 +182,29 @@ namespace TimePilot.Controllers
                 storypointallocation = model.StorypointSum;
 
             }
+            calculateTotalStoryPoints(model);
+            totalStoryPoints = model.totalNumberStoryPoints;
 
             return View(model);
+        }
+
+        public void calculateTotalStoryPoints (StoryViewModel model)
+        {
+
+            int sumofPoints = 0;
+            for (int i = 0; i < model.mStoryList.Count; i++)
+            {
+
+
+                sumofPoints = sumofPoints + model.mStoryList[i].IntStoryPoint;
+
+
+
+            }
+
+            model.totalNumberStoryPoints = sumofPoints;
+
+
         }
 
         [HttpPost]
@@ -187,7 +256,8 @@ namespace TimePilot.Controllers
 
             }
             calculateRCMainValues(RCModel);
-
+            totalAvailablility = RCModel.totalDevCapacity;
+            AvgCapactiyperWeek = RCModel.avgPerWeek;
             return View(RCModel);
         }
 
@@ -244,7 +314,7 @@ namespace TimePilot.Controllers
         {
             ModelState.Clear();
             calculateTotalDays(model);
-
+            setHoursEstimationValues(model);
             return View(model);
 
         }

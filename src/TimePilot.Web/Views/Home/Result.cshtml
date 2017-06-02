@@ -30,7 +30,7 @@
 </div>
     
 
-<h2>HOURS ESTIMATION</h2>
+<h2>Conversion Rate</h2>
 
 @using (Html.BeginForm("Result", "Home", FormMethod.Post))
 {
@@ -41,7 +41,7 @@
         <th>Story pt</th>
         <th># of Stories</th>
         <th>Days/St pt</th>
-        <th>Total</th>
+        <th>Total Days</th>
     </tr>
     
    
@@ -66,9 +66,71 @@
             </td>
 
         </tr>
-
     }
 
 
+
 </table>
-}
+
+<h2>Hours Estimation</h2>
+
+        <table>
+
+            <tr>
+                <td>Total Hours: @Model.TotalHours</td>
+                <td>Total Weeks: @Model.TotalWeeks</td>               
+            </tr>
+            <tr>
+                <td>20% Contingency: @Model.Contingency</td>
+                <td>Sprint Length: @Model.SprintLength</td>                
+            </tr>
+            <tr>
+                <td>Total Dev & QA Hours: @Model.TotalDevQA</td>                
+                <td>Release & Hardening: @Model.ReleaseAndHardening</td>
+            </tr>
+            <tr>
+                <td>Average Capacity Per Week: @Model.AvgCapacitiyperWeek</td>
+                <td>Project Duration Weeks: @Model.ProjectDurationWeeks</td>
+            </tr>
+
+
+
+
+
+        </table>
+
+<h2>Velocity Validation</h2>
+
+
+        <table>
+
+            <tr>
+                <td>Total Number of Story Points: @Model.totalPointsVelocity </td>
+                <td>
+                    @Html.TextBoxFor(m => m.TeamVelocity, new { @onchange = "this.form.submit();" })
+                    @Html.HiddenFor(m => m.TeamVelocity)
+                </td>
+            </tr>
+            <tr>
+                <td>Contingency: @Model.Contingency</td>
+                <td>Total Sprints Reuired to Complete: @Model.TotalSprints</td>
+            </tr>
+            <tr>
+                <td>Total: @Model.Total</td>
+                <td>Total Weeks: @Model.TotalWeeksVelocity</td>
+            </tr>
+            <tr>
+                <td>Release & Hardening: @Model.ReleaseAndHardening</td>
+                <td>Project Duration Weeks: @Model.projectDurationWeeksVelocity</td>
+
+            </tr>
+
+
+
+        </table>
+        
+
+
+
+    }
+    }
