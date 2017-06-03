@@ -5,7 +5,37 @@
     ViewBag.Title = "Story";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<body>
 
+    <style>
+       .modal
+       {
+    width: 500px;
+    height: 160px;
+    background-color: white;
+    position: absolute;
+    border: 2px solid black;
+    margin: auto;
+    border-radius: 10px
+       }
+       .modalstuff{
+           padding: 30px;
+           margin:auto;
+           text-align: center;
+           
+       }
+       .modal h2{
+           font-size: 24px;
+           
+           display:block;
+       }
+
+       .btn{
+           text-align: center;
+           margin: 10px;
+       }
+   
+    </style>
 <div class="container">
     <div class="flex-container-header">
         <h1>Time Pilot</h1>
@@ -68,11 +98,50 @@
     </div>
 </div>
 
-<input type="submit" value="Previous" onclick="location.href='@Url.Action("Index", "Home")'" class="button" />
-<input type="submit" value="Resoure Capacity" onclick="location.href='@Url.Action("Resource", "Home")'" class="button" />
+<input type="submit" value="Previous" onclick="location.href='@Url.Action("Index", "Home")'" class="button" id="BackButton"/>
+<input type="submit" value="Resource Capacity" onclick="return StoryPointValidation();" class="button toggleModal" id="ResourceCapacityButton" />
 <p>1 point: @Model.StorypointSum[0]</p>
 <p>3 point: @Model.StorypointSum[1]</p>
 <p>5 point: @Model.StorypointSum[2]</p>
 <p>8 point: @Model.StorypointSum[3]</p>
 <p>13 point: @Model.StorypointSum[4]</p>
 <p>21 point:  @Model.StorypointSum[5]</p>
+
+ <div class="modal" id="MyModal">
+     <div class="modalstuff">
+         <header>
+             <h2>
+                 One or more stories on this page has zero story points
+             </h2>
+         </header>
+         <button class="btn closebutton" id="closebutton"> Edit Stories </button>
+         <button class="btn proceedbutton" id="continuebutton"> Continue </button>
+     </div>
+</div>
+
+    <script>
+        function StoryPointValidation() {
+            var zeros = @Html.Raw(Json.Encode(Model.ZeroStoryFlag));
+            if(zeros == true)
+            {
+                //return alert("You have stories with 0 Story points");
+                var modal = document.getElementById('MyModal');
+                var closebutton = document.getElementById('closebutton')
+                var continuebutton = document.getElementById('continuebutton')
+                modal.style.display = "block";
+                closebutton.onclick = function() {
+                    modal.style.display = "none";
+                }
+                continuebutton.onclick = function()
+                {
+                    location.href = "@Url.Action("Resource", "Home")";
+                }
+            }
+            else
+            {
+                location.href = "@Url.Action("Resource", "Home")";
+            }
+    }
+
+    </script>
+</body>

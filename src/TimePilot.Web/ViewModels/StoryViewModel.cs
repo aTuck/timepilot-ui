@@ -12,5 +12,7 @@ namespace TimePilot.ViewModels
     {
         public int[] StorypointSum { get; set; }
         public List<Story> mStoryList { get; set; }
+
+        public Boolean ZeroStoryFlag { get; set;}
     }
 }

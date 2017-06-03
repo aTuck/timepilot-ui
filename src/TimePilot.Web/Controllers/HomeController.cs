@@ -70,7 +70,14 @@ namespace TimePilot.Controllers
         {
             SelectedProject = model.SelectedProject;
             // On button click form is posted and redirects to Story view
-            return RedirectToAction("Story", "Home");
+            if (model.SelectedProject == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                return RedirectToAction("Story", "Home");
+            }
         }
 
         public ActionResult Story()
@@ -310,6 +317,14 @@ namespace TimePilot.Controllers
             pointArray[6] = noneOftheAbove;
 
             model.StorypointSum = pointArray;
+            if (noneOftheAbove > 0)
+            {
+                model.ZeroStoryFlag = true;
+            }
+            else
+            {
+                model.ZeroStoryFlag = false;
+            }
         }
 
         private void convertStoryPointToInt(List<Story> mlist)

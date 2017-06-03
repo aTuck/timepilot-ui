@@ -7,33 +7,34 @@
     ViewBag.Title = "Home Page - Time Pilot";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<div class="container">
-    <div class="flex-container-header">
-        <h1>Time Pilot</h1>
-        <p><a class="activebread">Project Selection ></a><a class="deactivebread"> Story Points > Resource Capacity > Conversion Rate & Results</a></p>
-    </div>
-    <div class="pre-project-container">
-        <h2 class="project-header">PROJECTS</h2>
-        <div class="project-controls">
-            <p class="sort-project-info">Sort Project By:</p>
-            <select class="sort-method">
-                <option onchange="">Name A-Z</option>
-                <option>Name Z-A</option>
-                <option>Newest Updated</option>
-                <option>Oldest Updated</option>
-            </select>
+<body>
+   
+    <div class="container">
+        <div class="flex-container-header">
+            <h1>Time Pilot</h1>
+            <p><a class="activebread">Project Selection ></a><a class="deactivebread"> Story Points > Resource Capacity > Conversion Rate & Results</a></p>
         </div>
-    </div>
-    <div class="project-container">
-        @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @id = "projectForm" }))
-        {
-            @Html.DropDownListFor(m => m.SelectedProject,
+        <div class="pre-project-container">
+            <h2 class="project-header">PROJECTS</h2>
+            <div class="project-controls">
+                <p class="sort-project-info">Sort Project By:</p>
+                <select class="sort-method">
+                    <option onchange="">Name A-Z</option>
+                    <option>Name Z-A</option>
+                    <option>Newest Updated</option>
+                    <option>Oldest Updated</option>
+                </select>
+            </div>
+        </div>
+        <div class="project-container">
+            @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @id = "projectForm", @onsubmit = "return displayerrorwindow()" }))
+            {
+                @Html.DropDownListFor(m => m.SelectedProject,
                                 new SelectList(Model.ProjectList, "Key", "Name"),
                                 new { size = "25", @class = "projectList", @id = "projectList" })
-            <input type="submit" value="Stories Page" onclick="this.form.submit()" class="button" />
-        }
+                <input type="submit" value="Stories Page" class="button" id="submit" />
+            }
+        </div>
     </div>
-</div>
-
-
+ 
+</body>
