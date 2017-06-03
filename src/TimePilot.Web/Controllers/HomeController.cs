@@ -45,6 +45,8 @@ namespace TimePilot.Controllers
 
         public void bindStoryDataToViewModel()
         {
+            List<TimePilot.Entities.Story> justtestingthis = new List<TimePilot.Entities.Story>();
+            justtestingthis = StoryDB.GetAllByForeignId(SelectedProject);
             StoryVM.StoryList = stories;
         }
 

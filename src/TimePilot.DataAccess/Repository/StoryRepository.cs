@@ -15,18 +15,22 @@ namespace TimePilot.DataAccess.Repository
             string sql = @"SELECT TOP (@maxRows) * from story";
 
             //maxRows = this._maxResults, hardcoded to 1000 for now due to maxResults being null
-            List<Story> projects = dbContext.Query<Story>(sql, new { maxRows = _maxResults }).ToList();
-            return projects;
+            List<Story> stories = dbContext.Query<Story>(sql, new { maxRows = _maxResults }).ToList();
+            return stories;
         }
 
-        public List<Story> GetAllByForeignId(Story t)
+        public List<Story> GetAllByForeignId(string ProjectKey)
         {
-            throw new NotImplementedException();
+            string sql = @"SELECT * from story where ProjectKey = @pk";
+
+            //maxRows = this._maxResults, hardcoded to 1000 for now due to maxResults being null
+            List<Story> stories = dbContext.Query<Story>(sql, new { pk = ProjectKey}).ToList();
+            return stories;
         }
 
 
-        /* Returns a project object with the same key as 'key'
-         * Returns a project object with key = null if a project with 'key' was not found */
+        /* Returns a story object with the same id as 'id'
+         * Returns a story object with id = -1 if a story with 'id' was not found */
         public Story GetById(Story story)
         {
             // This will be the return value if no ID was found
@@ -49,15 +53,14 @@ namespace TimePilot.DataAccess.Repository
             throw new NotImplementedException();
         }
 
-        /* Deletes a project from the project table
+        /* Deletes a story from the story table
          * Returns true if successful delete
-         * Returns false if not successful delete (likely project wasn't found)*/
-
+         * Returns false if not successful delete (likely story wasn't found)*/
         public bool Delete(Story story)
         {
-            string sql = @"DELETE from project where ProjectKey = @k";
-            List<Story> projects = dbContext.Query<Story>(sql, new { k = story.ProjectKey }).ToList();
-            if (projects.Count <= 0)
+            string sql = @"DELETE from story where StoryID = @id";
+            List<Story> stories = dbContext.Query<Story>(sql, new { id = story.StoryID }).ToList();
+            if (stories.Count <= 0)
             {
                 return false;
             }
@@ -67,7 +70,7 @@ namespace TimePilot.DataAccess.Repository
             }
         }
 
-        /* Adds a project to the project table
+        /* Adds a story to the story table
          * Always returns true */
         public bool Add(Story story)
         {
@@ -75,12 +78,12 @@ namespace TimePilot.DataAccess.Repository
             string sql = @"INSERT INTO story (StoryID, StoryKey, Summary, StoryPoints, Projectkey) 
                            VALUES (@id, @k, @s, @p, @pk)";
 
-            //Do a query sending sql string and assigning "@p" variable in sql string to the t object passed in
+            //Do a query sending sql string and assigning variables in sql string to the story object passed in
             dbContext.Query(sql, new { id = story.StoryID, k = story.StoryKey,
                                        s = story.Summary, p = story.StoryPoints,
                                        pk = story.ProjectKey}).ToList();
 
-            //Project didn't exist, now it does
+            //Story didn't exist, now it does
             return true;
         }
     }
