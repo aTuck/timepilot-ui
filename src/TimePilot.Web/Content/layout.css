@@ -203,13 +203,15 @@ h1:hover{
     align-items: center;
     justify-content: space-between;
     background: linear-gradient(#7ebbbf,#85ced3);
-    height: 40px;
     padding: 0px 25px;
+    width: 100%;
     bottom: 0;
     position: absolute;
-    width: 100%;
-    overflow: hidden;
     box-sizing:border-box;
+}
+
+.push, .flex-container-footer{
+    height: 55px;
 }
 
 #logo{
@@ -224,4 +226,9 @@ h1:hover{
 #logo:hover{
     transform: scale(1.1);
     cursor:pointer;
+}
+
+.footer{
+    justify-content: center;
+    align-items: center;
 }

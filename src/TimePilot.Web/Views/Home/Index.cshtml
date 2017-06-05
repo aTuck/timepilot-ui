@@ -8,38 +8,38 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container">
-    <div class="flex-container-header">
-        <h1>Time Pilot</h1>
-        <p>
-            <a class="activebread">Project Selection</a> >
-            <a class="deactivebread">Story Points</a> >
-            <a class="deactivebread">Resource Capacity</a> >
-            <a class="deactivebread">Conversion Rate & Results</a>
-        </p>
-    </div>
-    <div class="pre-project-container">
-        <h2 class="project-header">PROJECTS</h2>
-        <div class="project-controls">
-            <p class="controls-label">Sort Project By:</p>
-            <select id="sort-order">
-                <option value="desc">Name A-Z</option>
-                <option value="asc">Name Z-A</option>
-            </select>
-            <p class="controls-label">Search:</p>
-            <input id="search-box"/>
-        </div>
-    </div>
-    <div class="project-container">
-        @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @id = "projectForm" }))
-        {
-            @Html.DropDownListFor(m => m.SelectedProject,
-                                new SelectList(Model.ProjectList, "ProjectKey", "Summary"),
-                                new { size = "25", @class = "projectList", @id = "projectList" })
-            <input type="submit" value="Stories Page" onclick="this.form.submit()" class="button" />
-        }
+
+<div class="flex-container-header">
+    <h1>Time Pilot</h1>
+    <p>
+        <a class="activebread">Project Selection</a> >
+        <a class="deactivebread">Story Points</a> >
+        <a class="deactivebread">Resource Capacity</a> >
+        <a class="deactivebread">Conversion Rate & Results</a>
+    </p>
+</div>
+<div class="pre-project-container">
+    <h2 class="project-header">PROJECTS</h2>
+    <div class="project-controls">
+        <p class="controls-label">Sort Project By:</p>
+        <select id="sort-order">
+            <option value="desc">Name A-Z</option>
+            <option value="asc">Name Z-A</option>
+        </select>
+        <p class="controls-label">Search:</p>
+        <input id="search-box"/>
     </div>
 </div>
+<div class="project-container">
+    @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @id = "projectForm" }))
+    {
+        @Html.DropDownListFor(m => m.SelectedProject,
+                            new SelectList(Model.ProjectList, "ProjectKey", "Summary"),
+                            new { size = "25", @class = "projectList", @id = "projectList" })
+        <input type="submit" value="Stories Page" onclick="this.form.submit()" class="button" />
+    }
+</div>
+
 
 <script>
 //Filters dropwdown list based on search box input

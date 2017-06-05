@@ -7,6 +7,11 @@
 td, th {
     text-align: left;
     padding: 8px;
+    width: 0px;
+}
+
+tr {
+    width:auto;
 }
 
 label{
@@ -71,4 +76,7 @@ input:hover{
     border-radius:4px;
 }
 
+.buttons-container{
+    margin-bottom:45px;
+}
 

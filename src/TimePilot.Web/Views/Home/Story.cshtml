@@ -6,31 +6,31 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container">
-    <div class="flex-container-header">
-        <h1>Time Pilot</h1>
-        <p>
-            <a class="pre-activebread" href="Index">Project Selection</a> >
-            <a class="activebread">Story Points</a> >
-            <a class="deactivebread">Resource Capacity</a> >
-            <a class="deactivebread">Conversion Rate & Results</a>
-        </p>
-    </div>
 
-    <div class="pre-project-container">
-        <h2 class="project-header">STORIES</h2>
-        <div class="project-controls">
-            <p class="sort-project-info">Sort Story By:</p>
-            <select class="sort-method">
-                <option onchange="">Name A-Z</option>
-                <option>Name Z-A</option>
-                <option>Newest Updated</option>
-                <option>Oldest Updated</option>
-            </select>
-        </div>
+<div class="flex-container-header">
+    <h1>Time Pilot</h1>
+    <p>
+        <a class="pre-activebread" href="Index">Project Selection</a> >
+        <a class="activebread">Story Points</a> >
+        <a class="deactivebread">Resource Capacity</a> >
+        <a class="deactivebread">Conversion Rate & Results</a>
+    </p>
+</div>
+
+<div class="pre-project-container">
+    <h2 class="project-header">STORIES</h2>
+    <div class="project-controls">
+        <p class="sort-project-info">Sort Story By:</p>
+        <select class="sort-method">
+            <option onchange="">Name A-Z</option>
+            <option>Name Z-A</option>
+            <option>Newest Updated</option>
+            <option>Oldest Updated</option>
+        </select>
     </div>
-    @using (Html.BeginForm("Story", "Home", FormMethod.Post))
-    {
+</div>
+@using (Html.BeginForm("Story", "Home", FormMethod.Post))
+{
     <div class="stories-container">
         @if (Model.StoryList.Count < 1)
         {
@@ -38,40 +38,40 @@
         }
         else
         {
-          
-                <h1>@Model.totalNumberStoryPoints</h1>
-                <table class="table-hover">
+            <h1>@Model.totalNumberStoryPoints</h1>
+            <table class="table-hover">
+                <tr>
+                    <th>Story ID</th>
+                    <th>Story Summary</th>
+                    <th>Story Points</th>
+                    <th>Delete Story</th>
+                </tr>
+                @for (int i = 0; i < Model.StoryList.Count(); i++)
+                {
                     <tr>
-                        <th>Story ID</th>
-                        <th>Story Summary</th>
-                        <th>Story Points</th>
-                        <th>Delete Story</th>
+                        <td>
+                            @Html.Label("Key", @Model.StoryList[i].StoryKey)
+                            @Html.HiddenFor(m => m.StoryList[i].StoryKey)
+                        </td>
+                        <td>
+                            @Html.Label("Summary", @Model.StoryList[i].Summary)
+                            @Html.HiddenFor(m => m.StoryList[i].Summary)
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.StoryList[i].StoryPoints, new { @class = "storyPoint", @onchange = "" })
+                            @Html.HiddenFor(m => m.StoryList[i].StoryPoints)
+                        </td>
                     </tr>
-                    @for (int i = 0; i < Model.StoryList.Count(); i++)
-                    {
-                        <tr>
-                            <td>
-                                @Html.Label("Key", @Model.StoryList[i].StoryKey)
-                                @Html.HiddenFor(m => m.StoryList[i].StoryKey)
-                            </td>
-                            <td>
-                                @Html.Label("Summary", @Model.StoryList[i].Summary)
-                                @Html.HiddenFor(m => m.StoryList[i].Summary)
-                            </td>
-                            <td>
-                                @Html.TextBoxFor(m => m.StoryList[i].StoryPoints, new { @class = "storyPoint", @onchange = "" })
-                                @Html.HiddenFor(m => m.StoryList[i].StoryPoints)
-                            </td>
-                        </tr>
-                    }
-                </table>
-                <input type="submit" value="Delete Selected" onclick="this.form.submit();" class="button" />
-                <input type="submit" value="Apply Changes" onclick="this.form.submit();" class="button" />
-
-            }
-    </div>
-    <input type="submit" value="Previous" onclick="location.href='@Url.Action("Index", "Home")'" class="button" />
-    <input name = "command" type="submit" value="Resource Capacity Page" onclick="this.form.submit(); location.href='@Url.Action("Resource", "Home")';" class="button" />
+                }
+            </table>
         }
-</div>
+    </div>
+    <div class="buttons-container">
+        <input type="submit" value="Previous" onclick="location.href='@Url.Action("Index", "Home")'" class="button" />
+        <input name="command" type="submit" value="Resource Capacity Page" onclick="this.form.submit(); location.href='@Url.Action("Resource", "Home")';" class="button" />
+        <input type="submit" value="Delete Selected" onclick="this.form.submit();" class="button" />
+        <input type="submit" value="Apply Changes" onclick="this.form.submit();" class="button" />
+    </div>
+} 
+
 
