@@ -485,32 +485,37 @@ namespace TimePilot.Controllers
             int point21 = 0;
             int noneOftheAbove = 0;
             int[] pointArray = new int[7];
-            for (int i = 0; i < model.StoryList.Count; i++)
+
+            if (model.StoryList != null)
             {
-                switch (model.StoryList[i].StoryPoints)
+                for (int i = 0; i < model.StoryList.Count; i++)
                 {
-                    case 1:
-                        point1 = point1 + 1;
-                        break;
-                    case 3:
-                        point3 = point3 + 1;
-                        break;
-                    case 5:
-                        point5 = point5 + 1;
-                        break;
-                    case 8:
-                        point8 = point8 + 1;
-                        break;
-                    case 13:
-                        point13 = point13 + 1;
-                        break;
-                    case 21:
-                        point21 = point21 + 1;
-                        break;
-                    default:
-                        noneOftheAbove = noneOftheAbove + 1;
-                        break;
+                    switch (model.StoryList[i].StoryPoints)
+                    {
+                        case 1:
+                            point1 = point1 + 1;
+                            break;
+                        case 3:
+                            point3 = point3 + 1;
+                            break;
+                        case 5:
+                            point5 = point5 + 1;
+                            break;
+                        case 8:
+                            point8 = point8 + 1;
+                            break;
+                        case 13:
+                            point13 = point13 + 1;
+                            break;
+                        case 21:
+                            point21 = point21 + 1;
+                            break;
+                        default:
+                            noneOftheAbove = noneOftheAbove + 1;
+                            break;
+                    }
                 }
+
             }
             pointArray[0] = point1;
             pointArray[1] = point3;

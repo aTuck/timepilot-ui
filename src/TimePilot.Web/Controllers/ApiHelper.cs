@@ -45,18 +45,22 @@ namespace TimePilot.Controllers
             List<TimePilot.Entities.Story> stories = new List<TimePilot.Entities.Story>();
             JObject results = JObject.Parse(jsonString);
 
-            foreach (var result in results["issues"])
+            if (jsonString != null)
             {
-                TimePilot.Entities.Story story = new TimePilot.Entities.Story();
+                foreach (var result in results["issues"])
+                {
+                    TimePilot.Entities.Story story = new TimePilot.Entities.Story();
 
-                story.StoryID = (int)result["id"];
-                story.StoryKey = (string)result["key"];
-                story.Summary = (string)result["fields"]["summary"];
-                story.StoryPoints = (int?)result["fields"]["customfield_10013"] ?? 0;
+                    story.StoryID = (int)result["id"];
+                    story.StoryKey = (string)result["key"];
+                    story.Summary = (string)result["fields"]["summary"];
+                    story.StoryPoints = (int?)result["fields"]["customfield_10013"] ?? 0;
 
-                stories.Add(story);
+                    stories.Add(story);
+                }
             }
             return stories;
+
         }
 
         public List<TimePilot.Entities.Project.Project> parseProjectData(string jsonString)
