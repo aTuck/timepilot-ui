@@ -1,6 +1,6 @@
 ﻿html{
     position: relative;
-    min-width: 750px;
+    min-width: 100px;
     min-height: 100%;
     overflow-x: hidden;
 }

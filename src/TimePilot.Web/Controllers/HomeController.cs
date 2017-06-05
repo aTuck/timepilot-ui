@@ -22,7 +22,6 @@ namespace TimePilot.Controllers
         public static float AvgCapactiyperWeek;
         public static float totalStoryPoints;
         private static int hoursPerDay = 8;
-
         List<TimePilot.Entities.Story> stories = new List<TimePilot.Entities.Story>();
         List<Project> projects = new List<Project>();
         public static string SelectedProject;
@@ -201,11 +200,16 @@ namespace TimePilot.Controllers
         public void calculateTotalStoryPoints (StoryViewModel model)
         {
             int sumofPoints = 0;
-            for (int i = 0; i < model.StoryList.Count; i++)
+
+            if (model.StoryList != null)
             {
-                sumofPoints = sumofPoints + model.StoryList[i].StoryPoints;
+
+                for (int i = 0; i < model.StoryList.Count; i++)
+                {
+                    sumofPoints = sumofPoints + model.StoryList[i].StoryPoints;
+                }
+                model.totalNumberStoryPoints = sumofPoints;
             }
-            model.totalNumberStoryPoints = sumofPoints;
         }
 
         [HttpPost]
