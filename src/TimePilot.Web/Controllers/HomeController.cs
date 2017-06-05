@@ -4,9 +4,7 @@ using System.Web.Mvc;
 using TimePilot.Web.Models;
 using TimePilot.Web.ViewModels;
 using TimePilot.DataAccess.Repository;
-using TimePilot.Entities.Project;
-using System.Linq;
-
+using TimePilot.Entities;
 
 namespace TimePilot.Controllers
 {
@@ -25,10 +23,12 @@ namespace TimePilot.Controllers
         public static float totalStoryPoints;
         private static int hoursPerDay = 8;
 
-        List<Story> stories = new List<Story>();
+        List<TimePilot.Entities.Story> stories = new List<TimePilot.Entities.Story>();
+        List<TimePilot.Entities.Project.Project> projects = new List<TimePilot.Entities.Project.Project>();
         public static string SelectedProject;
 
         ProjectRepository ProjDB = new ProjectRepository();
+        StoryRepository StoryDB = new StoryRepository();
 
         public void originateResourceCapacity()
         {
@@ -45,12 +45,13 @@ namespace TimePilot.Controllers
 
         public void bindStoryDataToViewModel()
         {
-            StoryVM.mStoryList = stories;
+            List<TimePilot.Entities.Story> justtestingthis = new List<TimePilot.Entities.Story>();
+            justtestingthis = StoryDB.GetAllByForeignId(SelectedProject);
+            StoryVM.StoryList = stories;
         }
 
         public void bindProjectDataToViewModel()
         {
-            List<TimePilot.Entities.Project.Project> projects = new List<TimePilot.Entities.Project.Project>();
             projects = ProjDB.GetAll();
             ProjectVM.ProjectList = projects;
         }
@@ -70,7 +71,7 @@ namespace TimePilot.Controllers
         {
             /* Populate should only be called by a button, is called every
              * page load for now until button is implemented             */
-            Populate();
+            ProjectPopulate();
             /*-----------------------------------------------------------*/
             bindProjectDataToViewModel();
             return View(ProjectVM);
@@ -87,10 +88,10 @@ namespace TimePilot.Controllers
         /* Iterates through projects grabbed from API call
          * If it's in the database, do nothing
          * If it's not in the database, add it */
-        private void Populate()
+        private void ProjectPopulate()
         {
             receiveProjectData();
-            List<TimePilot.Entities.Project.Project> projects = apiHelper.parseProjectData(projectJson);
+            projects = apiHelper.parseProjectData(projectJson);
 
             TimePilot.Entities.Project.Project temp;
             for (int i = 0; i < projects.Count; i++)
@@ -108,45 +109,80 @@ namespace TimePilot.Controllers
         }
 
 
-       
+        public void setHoursEstimationValues(ResultsViewModel model)
+        {
+            int SumOfTotalDays = 0;
+            for (int i = 0; i < model.storypointAllocation.Length; i++)
+            {
+                SumOfTotalDays = SumOfTotalDays + model.Total[i];
+            }
+            model.TotalHours = SumOfTotalDays * hoursPerDay;                                    
+            model.ReleaseAndHardening = model.SprintLength;
+            model.TotalDevQA = model.TotalHours * (1F + model.Contingency/100F);
+            model.AvgCapacitiyperWeek = AvgCapactiyperWeek;
+            model.TotalWeeks = model.TotalDevQA / AvgCapactiyperWeek;
+            model.ProjectDurationWeeks = model.ReleaseAndHardening + model.TotalWeeks;
+        }
+
+        public void setVelocityValidationValues(ResultsViewModel model)
+        {
+
+            model.totalStoryPoints = totalStoryPoints;
+            model.totalPointsVelocity = totalStoryPoints * (1F + model.Contingency / 100F);
+            
+            if (model.TeamVelocity > 0)
+            {
+                model.TotalSprints = model.totalStoryPoints / model.TeamVelocity;
+            }
+            model.TotalWeeksVelocity = model.TotalSprints * model.SprintLength;
+            model.projectDurationWeeksVelocity = model.TotalWeeksVelocity + model.ReleaseAndHardening;
+
+        }
+
 
         public ActionResult Story()
         {
-            receiveStoryData();
-            stories = apiHelper.parseStoryData(storyJson);
-            convertStoryPointToInt(stories);
+            StoryPopulate();
+            //convertStoryPointToInt(stories);
             bindStoryDataToViewModel();
             sumStoryPoints(StoryVM);
             if (StoryVM.StorypointSum != null)
             {
-
                 storypointallocation = StoryVM.StorypointSum;
-
             }
             calculateTotalStoryPoints(StoryVM);
             return View(StoryVM);
         }
 
-
+        private void StoryPopulate()
+        {
+            receiveStoryData();
+            stories = apiHelper.parseStoryData(storyJson);
+            TimePilot.Entities.Story temp;
+            for (int i = 0; i < stories.Count; i++)
+            {
+                stories[i].ProjectKey = SelectedProject;
+                temp = StoryDB.GetById(stories[i]);
+                if (temp.StoryID == stories[i].StoryID)
+                {
+                    return;
+                }
+                else
+                {
+                    StoryDB.Add(stories[i]);
+                }
+            }
+        }
 
         [HttpPost]
         public ActionResult Story(StoryViewModel model, string command)
         {
             ModelState.Clear();
-            if (command != null && command == "Delete Selected")
-            {
-                model.mStoryList = deleteSelectedStories(model);
-            }
-
-            if (model.mStoryList != null)
-            {
-                sumStoryPoints(model);
-            }
+            //model.StoryList = deleteSelectedStories(model);
+            sumStoryPoints(model);
             if (model.StorypointSum != null)
             {
-
                 storypointallocation = model.StorypointSum;
-
             }
             calculateTotalStoryPoints(model);
             totalStoryPoints = model.totalNumberStoryPoints;
@@ -159,17 +195,17 @@ namespace TimePilot.Controllers
                 return RedirectToAction("Resource", "Home");
 
             }
-
-
             return View(model);
         }
 
-    
-        public ActionResult Resource()
+        public void calculateTotalStoryPoints (StoryViewModel model)
         {
-            mResourceViewModel.roleList = createRoleList();
-            originateResourceCapacity();            
-            return View(mResourceViewModel);
+            int sumofPoints = 0;
+            for (int i = 0; i < model.StoryList.Count; i++)
+            {
+                sumofPoints = sumofPoints + model.StoryList[i].StoryPoints;
+            }
+            model.totalNumberStoryPoints = sumofPoints;
         }
 
         [HttpPost]
@@ -178,7 +214,7 @@ namespace TimePilot.Controllers
             ModelState.Clear();
             RCModel.roleList = createRoleList();
             calculateAvailability(RCModel);
-
+            
 
             if (RCModel.memberIndex != null)
             {
@@ -209,9 +245,7 @@ namespace TimePilot.Controllers
 
             if (command != null && command.Equals("Delete Selected"))
             {
-
                 deleteSelectedMembers(RCModel);
-
             }
 
             if (command != null && command.Equals("Delete Sprint"))
@@ -226,6 +260,22 @@ namespace TimePilot.Controllers
             return View(RCModel);
         }
 
+        
+
+        public void calculateTotalDays(ResultsViewModel model)
+        {
+            for (int i = 0; i < model.storypointAllocation.Length; i++)
+            {
+                    model.Total[i] = model.numberOfStories[i] * model.DaysPerPt[i];               
+            }
+        }
+
+        public ActionResult Resource()
+        {
+            originateResourceCapacity();
+            mResourceViewModel.roleList = createRoleList();
+            return View(mResourceViewModel);
+        }
 
         public ActionResult Result()
         {
@@ -249,7 +299,6 @@ namespace TimePilot.Controllers
             setVelocityValidationValues(ResultsVM);
 
             return View(ResultsVM);
-
         }
 
         [HttpPost]
@@ -265,10 +314,9 @@ namespace TimePilot.Controllers
 
         }
 
-
-        private List<Story> deleteSelectedStories(StoryViewModel model)
+        /*private List<TimePilot.Entities.Story> deleteSelectedStories(StoryViewModel model)
         {
-            List<Story> myList = model.mStoryList;
+            List<TimePilot.Entities.Story> myList = model.StoryList;
             for (int i = 0; i < myList.Count; i++)
             {
                 if (myList[i].isSelectedToDelete)
@@ -278,38 +326,25 @@ namespace TimePilot.Controllers
                 }
             }
             return myList;
-        }
+        }*/
 
-
-        private void deleteSelectedMembers (ResourceCapacityViewModel model)
+        private void deleteSelectedMembers(ResourceCapacityViewModel model)
         {
-
             for (int i = 0; i < model.sprints.Count; i++)
             {
-
                 for (int j = 0; j < model.sprints[i].members.Count; j++)
                 {
-
                     if (model.sprints[i].members.Count > 1 && model.sprints[i].members[j].isSelectedToDelete)
                     {
-
-
                         model.sprints[i].members.RemoveAt(j);
                         j--;
-
-
                     }
-
-
                 }
-
             }
-
         }
 
-        
-        private void deleteSprint (ResourceCapacityViewModel model)
 
+        private void deleteSprint (ResourceCapacityViewModel model)
         {
             if (model.sprints.Count > 1)
             {
@@ -320,201 +355,125 @@ namespace TimePilot.Controllers
 
         public void calculateAvailability(ResourceCapacityViewModel model)
         {
-
             for (int i = 0; i < model.sprints.Count; i++)
             {
-
                 for (int j = 0; j < model.sprints[i].members.Count; j++)
                 {
-
-
                     model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
                     model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
                     model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
                     model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours - model.sprints[i].members[j].timeOff;
-
                 }
-
             }
-
         }      
-
-
 
         public void calculateRCMainValues(ResourceCapacityViewModel model)
         {
-
             for (int i = 0; i < model.sprints.Count; i++)
             {
-
                 for (int j = 0; j < model.sprints[i].members.Count; j++)
                 {
-
-
                     model.totalDevCapacity = model.totalDevCapacity + model.sprints[i].members[j].totalAvailable;
-
-
                 }
-
-
-
             }
-
-
             model.avgPerSprint = model.totalDevCapacity / model.sprints.Count;
             model.avgPerWeek = model.avgPerSprint / 2;
-
-
         }
-
-        public void calculateTotalStoryPoints(StoryViewModel model)
-        {
-
-            int sumofPoints = 0;
-            for (int i = 0; i < model.mStoryList.Count; i++)
-            {
-
-
-                sumofPoints = sumofPoints + model.mStoryList[i].IntStoryPoint;
-
-
-
-            }
-
-            model.totalNumberStoryPoints = sumofPoints;
-
-
-        }
-
-        public void calculateTotalDays(ResultsViewModel model)
-        {
-
-            for (int i = 0; i < model.storypointAllocation.Length; i++)
-            {
-
-                model.Total[i] = model.numberOfStories[i] * model.DaysPerPt[i];
-
-
-            }
-
-
-        }
-
-
-
 
         //i = sprint index j = member index
         public void setDefaultValues(ResourceCapacityViewModel model, int i, int j)
         {
+            switch (model.sprints[i].members[j].role)
+            {
+                case "leadDev":
+                    model.sprints[i].members[j].sprintDays = 10;
+                    model.sprints[i].members[j].percentWork = 50;
+                    model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
+                    model.sprints[i].members[j].standupDuration = 0.25F;
+                    model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
+                    model.sprints[i].members[j].misc = 6;
+                    model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
+                    model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
+                    break;
 
+                case "seniorDev":
+                    model.sprints[i].members[j].sprintDays = 10;
+                    model.sprints[i].members[j].percentWork = 70;
+                    model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
+                    model.sprints[i].members[j].standupDuration = 0.25F;
+                    model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
+                    model.sprints[i].members[j].misc = 5;
+                    model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
+                    model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
+                    break;
 
-            
+                case "intermediateDev":
+                    model.sprints[i].members[j].sprintDays = 10;
+                    model.sprints[i].members[j].percentWork = 80;
+                    model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
+                    model.sprints[i].members[j].standupDuration = 0.25F;
+                    model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
+                    model.sprints[i].members[j].misc = 4;
+                    model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
+                    model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
+                    break;
 
-                switch (model.sprints[i].members[j].role)
-                {
+                case "juniorDev":
+                    model.sprints[i].members[j].sprintDays = 10;
+                    model.sprints[i].members[j].percentWork = 90;
+                    model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
+                    model.sprints[i].members[j].standupDuration = 0.25F;
+                    model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
+                    model.sprints[i].members[j].misc = 4;
+                    model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
+                    model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
+                    break;
 
-                    case "leadDev":
+                case "leadQA":
+                    model.sprints[i].members[j].sprintDays = 10;
+                    model.sprints[i].members[j].percentWork = 50;
+                    model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
+                    model.sprints[i].members[j].standupDuration = 0.25F;
+                    model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
+                    model.sprints[i].members[j].misc = 6;
+                    model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
+                    model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
+                    break;
 
-                        model.sprints[i].members[j].sprintDays = 10;
-                        model.sprints[i].members[j].percentWork = 50;
-                        model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
-                        model.sprints[i].members[j].standupDuration = 0.25F;
-                        model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
-                        model.sprints[i].members[j].misc = 6;
-                        model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
-                        model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
-                        break;
+                case "intermediateQA":
+                    model.sprints[i].members[j].sprintDays = 10;
+                    model.sprints[i].members[j].percentWork = 70;
+                    model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
+                    model.sprints[i].members[j].standupDuration = 0.25F;
+                    model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
+                    model.sprints[i].members[j].misc = 5;
+                    model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
+                    model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
+                    break;
 
-                    case "seniorDev":
+                case "seniorQA":
+                    model.sprints[i].members[j].sprintDays = 10;
+                    model.sprints[i].members[j].percentWork = 80;
+                    model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
+                    model.sprints[i].members[j].standupDuration = 0.25F;
+                    model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
+                    model.sprints[i].members[j].misc = 4;
+                    model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
+                    model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
+                    break;
 
-                        model.sprints[i].members[j].sprintDays = 10;
-                        model.sprints[i].members[j].percentWork = 70;
-                        model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
-                        model.sprints[i].members[j].standupDuration = 0.25F;
-                        model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
-                        model.sprints[i].members[j].misc = 5;
-                        model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
-                        model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
-                        break;
-
-                    case "intermediateDev":
-
-                        model.sprints[i].members[j].sprintDays = 10;
-                        model.sprints[i].members[j].percentWork = 80;
-                        model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
-                        model.sprints[i].members[j].standupDuration = 0.25F;
-                        model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
-                        model.sprints[i].members[j].misc = 4;
-                        model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
-                        model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
-                        break;
-                    case "juniorDev":
-
-                        model.sprints[i].members[j].sprintDays = 10;
-                        model.sprints[i].members[j].percentWork = 90;
-                        model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
-                        model.sprints[i].members[j].standupDuration = 0.25F;
-                        model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
-                        model.sprints[i].members[j].misc = 4;
-                        model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
-                        model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
-                        break;
-
-                    case "leadQA":
-
-                        model.sprints[i].members[j].sprintDays = 10;
-                        model.sprints[i].members[j].percentWork = 50;
-                        model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
-                        model.sprints[i].members[j].standupDuration = 0.25F;
-                        model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
-                        model.sprints[i].members[j].misc = 6;
-                        model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
-                        model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
-                        break;
-
-                    case "intermediateQA":
-
-                        model.sprints[i].members[j].sprintDays = 10;
-                        model.sprints[i].members[j].percentWork = 70;
-                        model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
-                        model.sprints[i].members[j].standupDuration = 0.25F;
-                        model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
-                        model.sprints[i].members[j].misc = 5;
-                        model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
-                        model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
-                        break;
-                    case "seniorQA":
-
-                        model.sprints[i].members[j].sprintDays = 10;
-                        model.sprints[i].members[j].percentWork = 80;
-                        model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
-                        model.sprints[i].members[j].standupDuration = 0.25F;
-                        model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
-                        model.sprints[i].members[j].misc = 4;
-                        model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
-                        model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
-                        break;
-
-                    case "juniorQA":
-
-                        model.sprints[i].members[j].sprintDays = 10;
-                        model.sprints[i].members[j].percentWork = 90;
-                        model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
-                        model.sprints[i].members[j].standupDuration = 0.25F;
-                        model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
-                        model.sprints[i].members[j].misc = 4;
-                        model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
-                        model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
-                        break;
-        
-
-
+                case "juniorQA":
+                    model.sprints[i].members[j].sprintDays = 10;
+                    model.sprints[i].members[j].percentWork = 90;
+                    model.sprints[i].members[j].totalHours = model.sprints[i].members[j].sprintDays * (model.sprints[i].members[j].percentWork / 100) * hoursPerDay;
+                    model.sprints[i].members[j].standupDuration = 0.25F;
+                    model.sprints[i].members[j].standUps = model.sprints[i].members[j].sprintDays * model.sprints[i].members[j].standupDuration;
+                    model.sprints[i].members[j].misc = 4;
+                    model.sprints[i].members[j].nonDevHours = model.sprints[i].members[j].misc + model.sprints[i].members[j].standUps;
+                    model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
+                    break;
             }
-            model.memberIndex = null;
-
-                    }
-
-        
+        }
        
         private void sumStoryPoints(StoryViewModel model)
         {
@@ -526,9 +485,9 @@ namespace TimePilot.Controllers
             int point21 = 0;
             int noneOftheAbove = 0;
             int[] pointArray = new int[7];
-            for (int i = 0; i < model.mStoryList.Count; i++)
+            for (int i = 0; i < model.StoryList.Count; i++)
             {
-                switch (model.mStoryList[i].IntStoryPoint)
+                switch (model.StoryList[i].StoryPoints)
                 {
                     case 1:
                         point1 = point1 + 1;
@@ -564,7 +523,7 @@ namespace TimePilot.Controllers
             model.StorypointSum = pointArray;
         }
 
-        private void convertStoryPointToInt(List<Story> mlist)
+        /*private void convertStoryPointToInt(List<TimePilot.Entities.Story> mlist)
         {
             for (int i = 0; i < mlist.Count; i++)
             {
@@ -577,54 +536,10 @@ namespace TimePilot.Controllers
                     mlist[i].IntStoryPoint = 0;
                 }
             }
-        }
-
-
-        public void setHoursEstimationValues(ResultsViewModel model)
-        {
-
-
-            int SumOfTotalDays = 0;
-            for (int i = 0; i < model.storypointAllocation.Length; i++)
-            {
-
-                SumOfTotalDays = SumOfTotalDays + model.Total[i];
-
-            }
-
-            model.TotalHours = SumOfTotalDays * hoursPerDay;
-            model.ReleaseAndHardening = model.SprintLength;
-            model.TotalDevQA = model.TotalHours * (1F + model.Contingency / 100F);
-            model.AvgCapacitiyperWeek = AvgCapactiyperWeek;
-            model.TotalWeeks = model.TotalDevQA / AvgCapactiyperWeek;
-            model.ProjectDurationWeeks = model.ReleaseAndHardening + model.TotalWeeks;
-
-
-
-
-
-        }
-
-        public void setVelocityValidationValues(ResultsViewModel model)
-        {
-
-            model.totalStoryPoints = totalStoryPoints;
-            model.totalPointsVelocity = totalStoryPoints * (1F + model.Contingency / 100F);
-
-            if (model.TeamVelocity > 0)
-            {
-                model.TotalSprints = model.totalStoryPoints / model.TeamVelocity;
-            }
-            model.TotalWeeksVelocity = model.TotalSprints * model.SprintLength;
-            model.projectDurationWeeksVelocity = model.TotalWeeksVelocity + model.ReleaseAndHardening;
-
-        }
-
-
+        }*/
 
         private IEnumerable<SelectListItem> createSprintLengthList()
         {
-
             List<SelectListItem> mySprintLengthList = new List<SelectListItem>();
             SelectListItem sprintLength2 = new SelectListItem() { Text = "2", Value = "2", Selected = false };
             SelectListItem sprintLength3 = new SelectListItem() { Text = "3", Value = "3", Selected = false };
@@ -633,15 +548,10 @@ namespace TimePilot.Controllers
 
             IEnumerable<SelectListItem> myEnumSprintLengthList = mySprintLengthList;
             return myEnumSprintLengthList;
-
-
         }
-
-        
 
         private IEnumerable<SelectListItem> createRoleList()
         {
-
             List<SelectListItem> myRoleList = new List<SelectListItem>();
             SelectListItem LeadDev = new SelectListItem() { Text = "Lead Dev", Value = "leadDev", Selected = false };
             SelectListItem SeniorDev = new SelectListItem() { Text = "Senior Dev", Value = "seniorDev", Selected = false };
@@ -663,14 +573,8 @@ namespace TimePilot.Controllers
 
             IEnumerable<SelectListItem> myEnumRoleList = myRoleList;
             return myEnumRoleList;
-
         }
-
     }
-
-
-
-
 }
 
 

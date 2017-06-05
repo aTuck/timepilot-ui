@@ -24,7 +24,6 @@ namespace TimePilot.DataAccess.Repository
             throw new NotImplementedException();
         }
 
-
         /* Returns a project object with the same key as 'key'
          * Returns a project object with key = null if a project with 'key' was not found */
         public Project GetById(Project proj)

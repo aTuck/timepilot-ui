@@ -24,75 +24,78 @@
     }
 </style>
 
-<div class="flex-container-header">
-    <h1>Time Pilot</h1>
-    <p><class="pre-activebread">Project Selection > Story Points > Resource Capacity ><a class="activebread">Conversion Rate & Results</a></p>
-</div>
-    
-<br />
-<h1>Results</h1>
+<div class="container">
 
-<br />
+    <div class="flex-container-header">
+        <h1>Time Pilot</h1>
+        <p>
+            <a class="pre-activebread" href="Index">Project Selection</a> >
+            <a class="pre-activebread" href="Story">Story Points</a> >
+            <a class="pre-activebread" href="Resource">Resource Capacity</a> >
+            <a class="activebread">Conversion Rate & Results</a>
+        </p>
+    </div>
 
-<br />
-<h2>Conversion Rate</h2>
 
-@using (Html.BeginForm("Result", "Home", FormMethod.Post))
-{
-<table id="myTable">
+    <h2>Conversion Rate</h2>
 
- 
-    <tr>
-        <th>Story pt</th>
-        <th># of Stories</th>
-        <th>Days/St pt</th>
-        <th>Total Days</th>
-    </tr>
-    
-   
-    @for (int i = 0; i < Model.storypointAllocation.Length; i++)
+    @using (Html.BeginForm("Result", "Home", FormMethod.Post))
     {
-        <tr>
-            <td>
-            @Model.storypointAllocation[i]
-            @Html.HiddenFor(m => m.storypointAllocation[i])
-            </td>
-            <td>
-            @Model.numberOfStories[i]
-            @Html.HiddenFor(m => m.numberOfStories[i])
-            </td>
-            <td>
-                @Html.TextBoxFor(m => m.DaysPerPt[i], new { @onchange = "this.form.submit();" })
-                @Html.HiddenFor(m => m.DaysPerPt[i])    
-            </td>
-            <td>
-                @Html.TextBoxFor(m => m.Total[i], new { @readonly = true }) 
-                @Html.HiddenFor(m => m.Total[i])
-            </td>
-
-        </tr>
-    }
+        <table id="myTable">
 
 
+            <tr>
+                <th>Story pt</th>
+                <th># of Stories</th>
+                <th>Days/St pt</th>
+                <th>Total Days</th>
+            </tr>
 
-</table>
-<br />
-<h2>Hours Estimation</h2>
+
+            @for (int i = 0; i < Model.storypointAllocation.Length; i++)
+            {
+                <tr>
+                    <td>
+                        @Model.storypointAllocation[i]
+                        @Html.HiddenFor(m => m.storypointAllocation[i])
+                    </td>
+                    <td>
+                        @Model.numberOfStories[i]
+                        @Html.HiddenFor(m => m.numberOfStories[i])
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(m => m.DaysPerPt[i], new { @onchange = "this.form.submit();" })
+                        @Html.HiddenFor(m => m.DaysPerPt[i])
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(m => m.Total[i], new { @readonly = true })
+                        @Html.HiddenFor(m => m.Total[i])
+                    </td>
+
+                </tr>
+            }
+
+
+
+        </table>
+
+        <h2>Hours Estimation</h2>
 
         <table>
 
             <tr>
                 <td>Total Hours: @Model.TotalHours</td>
-                <td>Total Weeks: @Model.TotalWeeks</td>               
+                <td>Total Weeks: @Model.TotalWeeks</td>
             </tr>
             <tr>
                 <td>
-                Contingency:  @Html.TextBoxFor(m => m.Contingency, new { @onchange = "this.form.submit();" })
-                @Html.HiddenFor(m => m.Contingency) </td>                    
-                <td>Sprint Length: @Html.DropDownListFor(m => m.SprintLength, new SelectList(Model.sprintLengthList, "Value", "Text"), "Sprint Length", new { @onchange = "this.form.submit()" })</td>                
+                    Contingency:  @Html.TextBoxFor(m => m.Contingency, new { @onchange = "this.form.submit();" })
+                    @Html.HiddenFor(m => m.Contingency)
+                </td>
+                <td>Sprint Length: @Html.DropDownListFor(m => m.SprintLength, new SelectList(Model.sprintLengthList, "Value", "Text"), "Sprint Length", new { @onchange = "this.form.submit()" })</td>
             </tr>
             <tr>
-                <td>Total Dev & QA Hours: @Model.TotalDevQA</td>                
+                <td>Total Dev & QA Hours: @Model.TotalDevQA</td>
                 <td>Release & Hardening: @Model.ReleaseAndHardening</td>
             </tr>
             <tr>
@@ -105,14 +108,14 @@
 
 
         </table>
-        <br />
-<h2>Velocity Validation</h2>
+
+        <h2>Velocity Validation</h2>
 
 
         <table>
 
             <tr>
-              <td>Total Number of Story Points: @Model.totalStoryPoints </td>
+                <td>Total Number of Story Points: @Model.totalStoryPoints </td>
                 <td>
                     Team Velocity: @Html.TextBoxFor(m => m.TeamVelocity, new { @onchange = "this.form.submit();" })
                     @Html.HiddenFor(m => m.TeamVelocity)
@@ -120,7 +123,7 @@
             </tr>
             <tr>
                 <td>Contingency: @Model.Contingency</td>
-                <td>Total Sprints Reuired to Complete: @Model.TotalSprints</td>
+                <td>Total Sprints Required to Complete: @Model.TotalSprints</td>
             </tr>
             <tr>
                 <td>Total: @Model.totalPointsVelocity</td>
@@ -138,8 +141,7 @@
 
 
 
-        <input type="button" value="Previous" onclick="location.href='@Url.Action("Resource", "Home")';" class="button" />
-        <input type="button" value="Home Screen" onclick="location.href='@Url.Action("Index", "Home")';" class="button" />
 
-}
     }
+    }
+</div>

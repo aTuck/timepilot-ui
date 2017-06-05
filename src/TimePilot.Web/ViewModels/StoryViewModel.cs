@@ -12,6 +12,6 @@ namespace TimePilot.Web.ViewModels
     {
         public int[] StorypointSum { get; set; }
         public int totalNumberStoryPoints { get; set; }
-        public List<Story> mStoryList { get; set; }
+        public List<TimePilot.Entities.Story> StoryList { get; set; }
     }
 }

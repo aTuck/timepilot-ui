@@ -9,6 +9,10 @@ td, th {
     padding: 8px;
 }
 
+label{
+    font-weight:100;
+}
+
 tr:nth-child(even) {
     background-color: #e2fdff;
 }
