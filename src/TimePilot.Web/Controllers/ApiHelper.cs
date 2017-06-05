@@ -45,10 +45,9 @@ namespace TimePilot.Controllers
             List<TimePilot.Entities.Story> stories = new List<TimePilot.Entities.Story>();
             JObject results = JObject.Parse(jsonString);
 
-            if (!jsonString.Contains("error") && !jsonString.Contains("does not exist"))
+
+            if (jsonString.Contains("issues"))
             {
-
-
                 foreach (var result in results["issues"])
                 {
                     TimePilot.Entities.Story story = new TimePilot.Entities.Story();
@@ -60,8 +59,8 @@ namespace TimePilot.Controllers
 
                     stories.Add(story);
                 }
-
             }
+
             return stories;
         }
 
