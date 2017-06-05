@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace TimePilot.Models
+namespace TimePilot.Web.Models
 {
     public class Member
     {
@@ -20,5 +20,6 @@ namespace TimePilot.Models
         public float totalAvailable { get; set; }
         public int memberCount { get; set; }
         public List<MemberSprintData> memberSprintData { get; set; }
+        public Boolean isSelectedToDelete { get; set; }
     }
 }

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using TimePilot.Models;
+using TimePilot.Web.Models;
 
-namespace TimePilot.ViewModels
+namespace TimePilot.Web.ViewModels
 {
     public class ResourceCapacityViewModel
     {
@@ -14,5 +14,9 @@ namespace TimePilot.ViewModels
         public float avgPerSprint { get; set; }
         public float avgPerWeek { get; set; }
         public float totalDevCapacity { get; set; }
+        public int buttonIndex { get; set; }
+        public string memberIndex { get; set; }
+      
     }
+
 }

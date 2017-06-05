@@ -10,7 +10,7 @@ using System.Data.SqlClient;
 
 namespace TimePilot.DataAccess
 {
-    public abstract class RepositoryBase :IDisposable
+    public abstract class RepositoryBase : IDisposable
     {
         protected readonly IDbConnection _dbContext;
         protected readonly int _maxResults;

@@ -4,11 +4,12 @@
 <html>
 
 <head>
-    @Styles.Render("~/Content/css")
     <link href="~/Content/bootstrap.css" rel="stylesheet" />
     <link href="~/Content/layout.css" rel="stylesheet" />
     <link href="~/Content/resource.css" rel="stylesheet" />
     <link href="~/Content/story.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.12.4.js"></script>
+    <script src="~/Scripts/jquery-ui-1.12.1.js"></script>
     <meta name="viewport" content="width=device-width" charset="utf-8" />
     <title> @ViewBag.Title </title>
 </head>
@@ -29,9 +30,9 @@
             @Html.Label("Story Points >",
            new { @class = currentPage == "home-story" ? "activebread" : "deactivebread" })
             @Html.Label("Resource Capacity >",
-           new { @class = currentPage == "home-placeholder1" ? "activebread" : "deactivebread" })
+           new { @class = currentPage == "home-resource" ? "activebread" : "deactivebread" })
             @Html.Label("Conversion Rate & Results",
-           new { @class = currentPage == "home-placeholder2" ? "activebread" : "deactivebread" })
+           new { @class = currentPage == "home-result" ? "activebread" : "deactivebread" })
         </p>
     </header>
     -->

@@ -1,4 +1,4 @@
-﻿@using TimePilot.ViewModels
+﻿@using TimePilot.Web.ViewModels
 @model StoryViewModel
 
 @{
@@ -39,7 +39,12 @@
 <div class="container">
     <div class="flex-container-header">
         <h1>Time Pilot</h1>
-        <p><a class="pre-activebread">Project Selection ></a><a class="activebread"> Story Points ></a> <a class="deactivebread"> Resource Capacity > Conversion Rate & Results</a></p>
+        <p>
+            <a class="pre-activebread" href="Index">Project Selection</a> >
+            <a class="activebread">Story Points</a> >
+            <a class="deactivebread">Resource Capacity</a> >
+            <a class="deactivebread">Conversion Rate & Results</a>
+        </p>
     </div>
 
     <div class="pre-project-container">
@@ -54,15 +59,17 @@
             </select>
         </div>
     </div>
+    @using (Html.BeginForm("Story", "Home", FormMethod.Post))
+    {
     <div class="stories-container">
-        @if (Model.mStoryList.Count < 1)
+        @if (Model.StoryList.Count < 1)
         {
             <h3> There are no stories for this project </h3>
         }
         else
         {
-            using (Html.BeginForm("Story", "Home", FormMethod.Post))
-            {
+          
+                <h1>@Model.totalNumberStoryPoints</h1>
                 <table class="table-hover">
                     <tr>
                         <th>Story ID</th>
@@ -70,34 +77,35 @@
                         <th>Story Points</th>
                         <th>Delete Story</th>
                     </tr>
-                    @for (int i = 0; i < Model.mStoryList.Count(); i++)
+                    @for (int i = 0; i < Model.StoryList.Count(); i++)
                     {
                         <tr>
                             <td>
-                                @Html.Label("Key", @Model.mStoryList[i].Key)
-                                @Html.HiddenFor(m => m.mStoryList[i].Key)
+                                @Html.Label("Key", @Model.StoryList[i].StoryKey)
+                                @Html.HiddenFor(m => m.StoryList[i].StoryKey)
                             </td>
                             <td>
-                                @Html.Label("Summary", @Model.mStoryList[i].Summary)
-                                @Html.HiddenFor(listmodel => listmodel.mStoryList[i].Summary)
+                                @Html.Label("Summary", @Model.StoryList[i].Summary)
+                                @Html.HiddenFor(m => m.StoryList[i].Summary)
                             </td>
                             <td>
-                                @Html.TextBoxFor(listmodel => listmodel.mStoryList[i].IntStoryPoint, new { @class = "storyPoint", @onchange = "" })
-                                @Html.HiddenFor(m => m.mStoryList[i].IntStoryPoint)
-                            </td>
-                            <td>
-                                @Html.CheckBoxFor(listmodel => listmodel.mStoryList[i].isSelectedToDelete)
-                                @Html.HiddenFor(m => m.mStoryList[i].isSelectedToDelete)
+                                @Html.TextBoxFor(m => m.StoryList[i].StoryPoints, new { @class = "storyPoint", @onchange = "" })
+                                @Html.HiddenFor(m => m.StoryList[i].StoryPoints)
                             </td>
                         </tr>
                     }
                 </table>
                 <input type="submit" value="Delete Selected" onclick="this.form.submit();" class="button" />
+                <input type="submit" value="Apply Changes" onclick="this.form.submit();" class="button" />
+
             }
-        }
     </div>
+    <input type="submit" value="Previous" onclick="location.href='@Url.Action("Index", "Home")'" class="button" />
+    <input name = "command" type="submit" value="Resource Capacity Page" onclick="this.form.submit(); location.href='@Url.Action("Resource", "Home")';" class="button" />
+        }
 </div>
 
+<<<<<<< HEAD
 <input type="submit" value="Previous" onclick="location.href='@Url.Action("Index", "Home")'" class="button" id="BackButton"/>
 <input type="submit" value="Resource Capacity" onclick="return StoryPointValidation();" class="button toggleModal" id="ResourceCapacityButton" />
 <p>1 point: @Model.StorypointSum[0]</p>
@@ -145,3 +153,5 @@
 
     </script>
 </body>
+=======
+>>>>>>> new-develop

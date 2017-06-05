@@ -1,5 +1,5 @@
 ﻿
-@using TimePilot.ViewModels
+@using TimePilot.Web.ViewModels
 @using TimePilot.Controllers
 @model ProjectViewModel
 
@@ -7,6 +7,7 @@
     ViewBag.Title = "Home Page - Time Pilot";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<<<<<<< HEAD
 <body>
    
     <div class="container">
@@ -31,10 +32,107 @@
             {
                 @Html.DropDownListFor(m => m.SelectedProject,
                                 new SelectList(Model.ProjectList, "Key", "Name"),
+=======
+
+<div class="container">
+    <div class="flex-container-header">
+        <h1>Time Pilot</h1>
+        <p>
+            <a class="activebread">Project Selection</a> >
+            <a class="deactivebread">Story Points</a> >
+            <a class="deactivebread">Resource Capacity</a> >
+            <a class="deactivebread">Conversion Rate & Results</a>
+        </p>
+    </div>
+    <div class="pre-project-container">
+        <h2 class="project-header">PROJECTS</h2>
+        <div class="project-controls">
+            <p class="controls-label">Sort Project By:</p>
+            <select id="sort-order">
+                <option value="desc">Name A-Z</option>
+                <option value="asc">Name Z-A</option>
+                <option>Newest Updated</option>
+                <option>Oldest Updated</option>
+            </select>
+            <p class="controls-label">Search:</p>
+            <input id="search-box" onkeyup="filter()"/>
+        </div>
+    </div>
+    <div class="project-container">
+        @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @id = "projectForm" }))
+        {
+            @Html.DropDownListFor(m => m.SelectedProject,
+                                new SelectList(Model.ProjectList, "ProjectKey", "Summary"),
+>>>>>>> new-develop
                                 new { size = "25", @class = "projectList", @id = "projectList" })
                 <input type="submit" value="Stories Page" class="button" id="submit" />
             }
         </div>
     </div>
+<<<<<<< HEAD
  
 </body>
+=======
+</div>
+
+<!-- Filters dropdown list based on search box-->
+<script>
+function filter() {
+    // Declare variables
+    var input, filter, select, option, i;
+    input = document.getElementById('search-box');
+    filter = input.value.toUpperCase();
+    select = document.getElementById('projectList');
+    option = select.getElementsByTagName('option');
+
+    // Loop through all list items, and hide those who don't match the search query
+    for (i = 0; i < option.length; i++) {
+        if (option[i].innerHTML.toUpperCase().indexOf(filter) > -1) {
+            option[i].style.display = "";
+        } else {
+            option[i].style.display = "none";
+        }
+    }
+}
+
+window.onload=function() {
+    document.getElementById("sort-order").onchange = function () {
+        var tmpAry = new Array();
+        sortOrder = this.value;
+        selElem = document.getElementById("projectList");
+        for (var i = 0; i < selElem.options.length; i++) {
+            tmpAry[i] = new Array();
+            tmpAry[i][0] = selElem.options[i].text;
+            tmpAry[i][1] = selElem.options[i].value;
+        }
+        sortOrder == "desc" ? tmpAry.sort() : tmpAry.reverse()
+        while (selElem.options.length > 0) {
+            selElem.options[0] = null;
+        }
+        for (var i = 0; i < tmpAry.length; i++) {
+            var op = new Option(tmpAry[i][0], tmpAry[i][1]);
+            selElem.options[i] = op;
+        }
+        return;
+    }
+}
+</script>
+
+<!-- Attempt at autocomplete menu
+<script>
+    $("document").ready(function () {
+        var projects = @Html.Raw(Json.Encode(Model.ProjectList));
+        var availableTags = [];
+        $projects.each(projects, function(i, proj){
+            availableTags.push(proj.Summary);
+        })
+        $("#search-box").change((function() {
+            $("#search-box").autocomplete({
+                source: availableTags
+            });
+        }))
+    });
+</script>
+-->
+
+>>>>>>> new-develop
