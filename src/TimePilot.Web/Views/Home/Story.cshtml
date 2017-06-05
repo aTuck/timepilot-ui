@@ -26,6 +26,7 @@
     </div>
     @using (Html.BeginForm("Story", "Home", FormMethod.Post))
     {
+    <h2>Story Points: @Model.totalNumberStoryPoints</h2>
     <div class="stories-container">
         @if (Model.mStoryList.Count < 1)
         {
@@ -34,7 +35,7 @@
         else
         {
           
-                <h1>@Model.totalNumberStoryPoints</h1>
+                
                 <table class="table-hover">
                     <tr>
                         <th>Story ID</th>
@@ -64,7 +65,7 @@
                         </tr>
                     }
                 </table>
-                <input type="submit" value="Delete Selected" onclick="this.form.submit();" class="button" />
+                <input type="submit" name="command" value="Delete Selected" onclick="this.form.submit();" class="button" />
                 <input type="submit" value="Apply Changes" onclick="this.form.submit();" class="button" />
 
             }

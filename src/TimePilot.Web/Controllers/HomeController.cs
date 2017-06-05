@@ -108,46 +108,7 @@ namespace TimePilot.Controllers
         }
 
 
-        public void setHoursEstimationValues(ResultsViewModel model)
-        {
-
-
-            int SumOfTotalDays = 0;
-            for (int i = 0; i < model.storypointAllocation.Length; i++)
-            {
-
-                SumOfTotalDays = SumOfTotalDays + model.Total[i];
-
-            }
-
-            model.TotalHours = SumOfTotalDays * hoursPerDay;                                    
-            model.ReleaseAndHardening = model.SprintLength;
-            model.TotalDevQA = model.TotalHours * (1F + model.Contingency/100F);
-            model.AvgCapacitiyperWeek = AvgCapactiyperWeek;
-            model.TotalWeeks = model.TotalDevQA / AvgCapactiyperWeek;
-            model.ProjectDurationWeeks = model.ReleaseAndHardening + model.TotalWeeks;
-
-
-            
-
-
-        }
-
-        public void setVelocityValidationValues(ResultsViewModel model)
-        {
-
-            model.totalStoryPoints = totalStoryPoints;
-            model.totalPointsVelocity = totalStoryPoints * (1F + model.Contingency / 100F);
-            
-            if (model.TeamVelocity > 0)
-            {
-                model.TotalSprints = model.totalStoryPoints / model.TeamVelocity;
-            }
-            model.TotalWeeksVelocity = model.TotalSprints * model.SprintLength;
-            model.projectDurationWeeksVelocity = model.TotalWeeksVelocity + model.ReleaseAndHardening;
-
-        }
-
+       
 
         public ActionResult Story()
         {
@@ -172,8 +133,15 @@ namespace TimePilot.Controllers
         public ActionResult Story(StoryViewModel model, string command)
         {
             ModelState.Clear();
-            model.mStoryList = deleteSelectedStories(model);
-            sumStoryPoints(model);
+            if (command != null && command == "Delete Selected")
+            {
+                model.mStoryList = deleteSelectedStories(model);
+            }
+
+            if (model.mStoryList != null)
+            {
+                sumStoryPoints(model);
+            }
             if (model.StorypointSum != null)
             {
 
@@ -193,32 +161,15 @@ namespace TimePilot.Controllers
             }
 
 
-
-
-
-
-
-
             return View(model);
         }
 
-        public void calculateTotalStoryPoints (StoryViewModel model)
+    
+        public ActionResult Resource()
         {
-
-            int sumofPoints = 0;
-            for (int i = 0; i < model.mStoryList.Count; i++)
-            {
-
-
-                sumofPoints = sumofPoints + model.mStoryList[i].IntStoryPoint;
-
-
-
-            }
-
-            model.totalNumberStoryPoints = sumofPoints;
-
-
+            mResourceViewModel.roleList = createRoleList();
+            originateResourceCapacity();            
+            return View(mResourceViewModel);
         }
 
         [HttpPost]
@@ -227,7 +178,7 @@ namespace TimePilot.Controllers
             ModelState.Clear();
             RCModel.roleList = createRoleList();
             calculateAvailability(RCModel);
-            
+
 
             if (RCModel.memberIndex != null)
             {
@@ -273,29 +224,6 @@ namespace TimePilot.Controllers
             totalAvailablility = RCModel.totalDevCapacity;
             AvgCapactiyperWeek = RCModel.avgPerWeek;
             return View(RCModel);
-        }
-
-        
-
-        public void calculateTotalDays(ResultsViewModel model)
-        {
-            
-            for (int i = 0; i < model.storypointAllocation.Length; i++)
-            {
-                
-                    model.Total[i] = model.numberOfStories[i] * model.DaysPerPt[i];
-                
-
-            }
-
-
-        }
-
-        public ActionResult Resource()
-        {
-            originateResourceCapacity();
-            mResourceViewModel.roleList = createRoleList();
-            return View(mResourceViewModel);
         }
 
 
@@ -439,6 +367,38 @@ namespace TimePilot.Controllers
 
         }
 
+        public void calculateTotalStoryPoints(StoryViewModel model)
+        {
+
+            int sumofPoints = 0;
+            for (int i = 0; i < model.mStoryList.Count; i++)
+            {
+
+
+                sumofPoints = sumofPoints + model.mStoryList[i].IntStoryPoint;
+
+
+
+            }
+
+            model.totalNumberStoryPoints = sumofPoints;
+
+
+        }
+
+        public void calculateTotalDays(ResultsViewModel model)
+        {
+
+            for (int i = 0; i < model.storypointAllocation.Length; i++)
+            {
+
+                model.Total[i] = model.numberOfStories[i] * model.DaysPerPt[i];
+
+
+            }
+
+
+        }
 
 
 
@@ -618,6 +578,49 @@ namespace TimePilot.Controllers
                 }
             }
         }
+
+
+        public void setHoursEstimationValues(ResultsViewModel model)
+        {
+
+
+            int SumOfTotalDays = 0;
+            for (int i = 0; i < model.storypointAllocation.Length; i++)
+            {
+
+                SumOfTotalDays = SumOfTotalDays + model.Total[i];
+
+            }
+
+            model.TotalHours = SumOfTotalDays * hoursPerDay;
+            model.ReleaseAndHardening = model.SprintLength;
+            model.TotalDevQA = model.TotalHours * (1F + model.Contingency / 100F);
+            model.AvgCapacitiyperWeek = AvgCapactiyperWeek;
+            model.TotalWeeks = model.TotalDevQA / AvgCapactiyperWeek;
+            model.ProjectDurationWeeks = model.ReleaseAndHardening + model.TotalWeeks;
+
+
+
+
+
+        }
+
+        public void setVelocityValidationValues(ResultsViewModel model)
+        {
+
+            model.totalStoryPoints = totalStoryPoints;
+            model.totalPointsVelocity = totalStoryPoints * (1F + model.Contingency / 100F);
+
+            if (model.TeamVelocity > 0)
+            {
+                model.TotalSprints = model.totalStoryPoints / model.TeamVelocity;
+            }
+            model.TotalWeeksVelocity = model.TotalSprints * model.SprintLength;
+            model.projectDurationWeeksVelocity = model.TotalWeeksVelocity + model.ReleaseAndHardening;
+
+        }
+
+
 
         private IEnumerable<SelectListItem> createSprintLengthList()
         {

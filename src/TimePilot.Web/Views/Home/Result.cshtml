@@ -29,7 +29,12 @@
     <p><class="pre-activebread">Project Selection > Story Points > Resource Capacity ><a class="activebread">Conversion Rate & Results</a></p>
 </div>
     
+<br />
+<h1>Results</h1>
 
+<br />
+
+<br />
 <h2>Conversion Rate</h2>
 
 @using (Html.BeginForm("Result", "Home", FormMethod.Post))
@@ -71,7 +76,7 @@
 
 
 </table>
-
+<br />
 <h2>Hours Estimation</h2>
 
         <table>
@@ -100,7 +105,7 @@
 
 
         </table>
-
+        <br />
 <h2>Velocity Validation</h2>
 
 
@@ -130,9 +135,11 @@
 
 
         </table>
-        
 
 
 
-    }
+        <input type="button" value="Previous" onclick="location.href='@Url.Action("Resource", "Home")';" class="button" />
+        <input type="button" value="Home Screen" onclick="location.href='@Url.Action("Index", "Home")';" class="button" />
+
+}
     }
