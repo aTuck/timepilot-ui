@@ -1,7 +1,15 @@
 ﻿#table-spacer{
-    width: 300px;
+    width: 100px;
 }
 
 label{
     font-weight:100;
+}
+.resource-container {
+    width: 1000px;
+    height: 700px;
+    margin: 30px auto 0px;
+    overflow: scroll;
+    overflow-x: scroll;
+    
 }
