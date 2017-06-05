@@ -19,6 +19,7 @@ namespace TimePilot.Web.Models
         [JsonProperty("storyPoints")]
         public string StoryPoint { get; set; }
         public int IntStoryPoint { get; set; }
+        public int storyId { get; set; }
         public Boolean isSelectedToDelete { get; set; }
     }
 }

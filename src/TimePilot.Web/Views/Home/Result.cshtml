@@ -64,7 +64,7 @@
                         @Html.HiddenFor(m => m.numberOfStories[i])
                     </td>
                     <td>
-                        @Html.TextBoxFor(m => m.DaysPerPt[i], new { @onchange = "this.form.submit();" })
+                        @Html.TextBoxFor(m => m.DaysPerPt[i], new {@onchange = "this.form.submit();" })
                         @Html.HiddenFor(m => m.DaysPerPt[i])
                     </td>
                     <td>
@@ -140,8 +140,9 @@
         </table>
 
 
+        <input type="button" value="Previous" onclick="location.href='@Url.Action("Resource", "Home")'" class="button" />
+        <input type="button" value="Home" onclick="location.href='@Url.Action("Index", "Home")'" class="button" />
 
 
-    }
     }
 </div>

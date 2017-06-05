@@ -33,9 +33,9 @@
 
 @using (Html.BeginForm("Resource", "Home", FormMethod.Post))
 {
-    
-        for (int i = 0; i < Model.sprints.Count(); i++)
-        {
+
+    for (int i = 0; i < Model.sprints.Count(); i++)
+    {
             <table id="myTable">
                 @if (i == 0)
                 {
@@ -72,8 +72,8 @@
                     {
                     <tr>
                         <td>
-                            @Html.DropDownListFor(m => m.sprints[i].members[j].role, new SelectList(Model.roleList, "Value", "Text"), "Select Role", new { id = @i.ToString() + @j.ToString(), @onchange = "setMemberIndex(this.id); this.form.submit()"})
-                            @Html.HiddenFor(m=>m.memberIndex, new { id = "memberIndex"})
+                            @Html.DropDownListFor(m => m.sprints[i].members[j].role, new SelectList(Model.roleList, "Value", "Text"), "Select Role", new { id = @i.ToString() + @j.ToString(), @onchange = "setMemberIndex(this.id); this.form.submit()" })
+                            @Html.HiddenFor(m => m.memberIndex, new { id = "memberIndex" })
                         </td>
                         <td>
                             @Html.TextBoxFor(m => m.sprints[i].members[j].name)
@@ -118,16 +118,16 @@
                         </td>
                         <td>
                            
-                            @Html.CheckBoxFor(m=>m.sprints[i].members[j].isSelectedToDelete)
+                            @Html.CheckBoxFor(m => m.sprints[i].members[j].isSelectedToDelete)
                             @Html.HiddenFor(m => m.sprints[i].members[j].isSelectedToDelete)
 
                         </td>
                     </tr>
                     }
 
-                
 
-                
+
+
                 </table>
 
     }
