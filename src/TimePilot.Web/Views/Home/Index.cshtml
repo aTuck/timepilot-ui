@@ -25,8 +25,8 @@
             <select id="sort-order">
                 <option value="desc">Name A-Z</option>
                 <option value="asc">Name Z-A</option>
-                <option>Newest Updated</option>
-                <option>Oldest Updated</option>
+                <option value="newest">Newest Updated</option>
+                <option value="oldest">Oldest Updated</option>
             </select>
             <p class="controls-label">Search:</p>
             <input id="search-box" onkeyup="filter()"/>
@@ -66,19 +66,26 @@ function filter() {
 window.onload=function() {
     document.getElementById("sort-order").onchange = function () {
         var tmpAry = new Array();
+        var hiddenRef = new Array();
         sortOrder = this.value;
         selElem = document.getElementById("projectList");
         for (var i = 0; i < selElem.options.length; i++) {
+            if (selElem.options[i].style.display == "none") {
+                hiddenRef.push(selElem.options[i].value);
+            }
             tmpAry[i] = new Array();
-            tmpAry[i][0] = selElem.options[i].text;
-            tmpAry[i][1] = selElem.options[i].value;
+            tmpAry[i][0] = selElem.options[i].value;
+            tmpAry[i][1] = selElem.options[i].text;
         }
         sortOrder == "desc" ? tmpAry.sort() : tmpAry.reverse()
         while (selElem.options.length > 0) {
             selElem.options[0] = null;
         }
         for (var i = 0; i < tmpAry.length; i++) {
-            var op = new Option(tmpAry[i][0], tmpAry[i][1]);
+            var op = new Option(tmpAry[i][1], tmpAry[i][0]);
+            if (hiddenRef.includes(op.value)) {
+                op.style.display = "none";
+            }
             selElem.options[i] = op;
         }
         return;
