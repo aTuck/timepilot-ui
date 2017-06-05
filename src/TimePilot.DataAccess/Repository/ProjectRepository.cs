@@ -4,7 +4,7 @@ using System.Linq;
 using Dapper;
 using DapperExtensions;
 using System.Web;
-using TimePilot.Entities.Project;
+using TimePilot.Entities;
 
 namespace TimePilot.DataAccess.Repository
 {

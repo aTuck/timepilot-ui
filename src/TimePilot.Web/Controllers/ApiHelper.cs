@@ -9,14 +9,14 @@ using System.IO;
 using System.Text;
 using System.Net;
 using TimePilot.Web.Models;
-using TimePilot.Entities.Project;
+using TimePilot.Entities;
 using Newtonsoft.Json.Linq;
 
 namespace TimePilot.Controllers
 {
     public class ApiHelper
     {
-        List<TimePilot.Entities.Project.Project> projects = new List<TimePilot.Entities.Project.Project>();
+        List<Project> projects = new List<Project>();
 
         private const string USERNAME = "developer";
         private const string PASSWORD = "PN!M3d!a";
@@ -59,14 +59,14 @@ namespace TimePilot.Controllers
             return stories;
         }
 
-        public List<TimePilot.Entities.Project.Project> parseProjectData(string jsonString)
+        public List<Project> parseProjectData(string jsonString)
         {
-            List<TimePilot.Entities.Project.Project> projects = new List<TimePilot.Entities.Project.Project>();
+            List<Project> projects = new List<Project>();
             dynamic data = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonString);
 
             for (int i = 0; i < data.Count; i++)
             {
-                TimePilot.Entities.Project.Project project = new TimePilot.Entities.Project.Project();
+                Project project = new Project();
                 dynamic item = data[i];
                 project.ProjectKey = (string)item.key;
                 project.Summary = (string)item.name;

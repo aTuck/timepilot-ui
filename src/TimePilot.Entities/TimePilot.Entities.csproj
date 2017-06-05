@@ -111,8 +111,8 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Project\Project.cs" />
-    <Compile Include="Project\Story.cs" />
+    <Compile Include="Project.cs" />
+    <Compile Include="Story.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <PropertyGroup>
