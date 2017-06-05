@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TimePilot.Entities.Project
+namespace TimePilot.Entities
 {
     public class Project
     {

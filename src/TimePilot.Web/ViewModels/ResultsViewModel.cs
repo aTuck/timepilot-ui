@@ -8,8 +8,6 @@ namespace TimePilot.Web.ViewModels
 {
     public class ResultsViewModel
     {
-
-
         public int[] storypointAllocation { get; set; }
         public int[] numberOfStories { get; set; }
         public int[] DaysPerPt { get; set; }

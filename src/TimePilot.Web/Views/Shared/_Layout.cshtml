@@ -8,6 +8,7 @@
     <link href="~/Content/layout.css" rel="stylesheet" />
     <link href="~/Content/resource.css" rel="stylesheet" />
     <link href="~/Content/story.css" rel="stylesheet" />
+    <link href="~/Content/favicon.ico" rel="shortcut icon" />
     <script src="~/Scripts/jquery-1.12.4.js"></script>
     <script src="~/Scripts/jquery-ui-1.12.1.js"></script>
     <meta name="viewport" content="width=device-width" charset="utf-8" />
@@ -21,28 +22,31 @@
         var currentAction = ViewContext.RouteData.Values["action"] as string ?? "Index";
         var currentPage = (currentController + "-" + currentAction).ToLower();
     }
-    <!-- Dynamic header shared across views
-    <header class="flex-container-header">
-        <a id="logo" href="/">Time Pilot</a>
-        <p>
-            @Html.Label("Project Selection >",
-           new { @class = currentPage == "home-index" ? "activebread" : "deactivebread" })
-            @Html.Label("Story Points >",
-           new { @class = currentPage == "home-story" ? "activebread" : "deactivebread" })
-            @Html.Label("Resource Capacity >",
-           new { @class = currentPage == "home-resource" ? "activebread" : "deactivebread" })
-            @Html.Label("Conversion Rate & Results",
-           new { @class = currentPage == "home-result" ? "activebread" : "deactivebread" })
-        </p>
-    </header>
-    -->
 
-    @RenderBody()
+        <!-- Dynamic header shared across views
+        <header class="flex-container-header">
+            <a id="logo" href="/">Time Pilot</a>
+            <p>
+                @Html.Label("Project Selection >",
+               new { @class = currentPage == "home-index" ? "activebread" : "deactivebread" })
+                @Html.Label("Story Points >",
+               new { @class = currentPage == "home-story" ? "activebread" : "deactivebread" })
+                @Html.Label("Resource Capacity >",
+               new { @class = currentPage == "home-resource" ? "activebread" : "deactivebread" })
+                @Html.Label("Conversion Rate & Results",
+               new { @class = currentPage == "home-result" ? "activebread" : "deactivebread" })
+            </p>
+        </header>
+        -->
+    <div class="container">
+        @RenderBody()
+    </div>
 
-    <div class="flex-container-footer">
+    <div class="push"></div>
+    <footer class="flex-container-footer">
         <span class="col-md-2"> Time Pilot </span>
         <span class="col-md-8"> © 2017 PNI Digital Media Inc. All Rights Reserved</span>
         <span class="col-md-2"> Team Delta-t </span>
-    </div>
+    </footer>
 </body>
 </html>

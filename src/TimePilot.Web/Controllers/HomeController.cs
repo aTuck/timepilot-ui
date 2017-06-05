@@ -24,7 +24,7 @@ namespace TimePilot.Controllers
         private static int hoursPerDay = 8;
 
         List<TimePilot.Entities.Story> stories = new List<TimePilot.Entities.Story>();
-        List<TimePilot.Entities.Project.Project> projects = new List<TimePilot.Entities.Project.Project>();
+        List<Project> projects = new List<Project>();
         public static string SelectedProject;
 
         ProjectRepository ProjDB = new ProjectRepository();
@@ -93,7 +93,7 @@ namespace TimePilot.Controllers
             receiveProjectData();
             projects = apiHelper.parseProjectData(projectJson);
 
-            TimePilot.Entities.Project.Project temp;
+            Project temp;
             for (int i = 0; i < projects.Count; i++)
             {
                 temp = ProjDB.GetById(projects[i]);

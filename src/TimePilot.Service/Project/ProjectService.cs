@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using TimePilot.DataAccess.Repository;
+using TimePilot.Entities;
 
 namespace TimePilot.Service.Project
 {
@@ -15,27 +16,27 @@ namespace TimePilot.Service.Project
             _projectRepository = projectRepository;
         }
 
-        public IList<Entities.Project.Project> GetAll()
+        public IList<Entities.Project> GetAll()
         {
             throw new NotImplementedException();
         }
 
-        public Entities.Project.Project GetById(Entities.Project.Project project)
+        public Entities.Project GetById(Entities.Project project)
         {
             throw new NotImplementedException();
         }
 
-        public bool Update(Entities.Project.Project project)
+        public bool Update(Entities.Project project)
         {
             throw new NotImplementedException();
         }
 
-        public bool Add(Entities.Project.Project project)
+        public bool Add(Entities.Project project)
         {
             throw new NotImplementedException();
         }
 
-        public bool Delete(Entities.Project.Project project)
+        public bool Delete(Entities.Project project)
         {
             throw new NotImplementedException();
         }
