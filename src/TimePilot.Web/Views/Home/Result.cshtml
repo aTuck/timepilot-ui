@@ -92,7 +92,7 @@
                     Contingency:  @Html.TextBoxFor(m => m.Contingency, new { @onchange = "this.form.submit();" })
                     @Html.HiddenFor(m => m.Contingency)
                 </td>
-                <td>Sprint Length: @Html.DropDownListFor(m => m.SprintLength, new SelectList(Model.sprintLengthList, "Value", "Text"), "Sprint Length", new { @onchange = "this.form.submit()" })</td>
+                <td>Sprint Length: @Html.DropDownListFor(m => m.SprintLength, new SelectList(Model.sprintLengthList, "Value", "Text"), "Sprint Length", new { @onchange = "this.form.submit()"})</td>
             </tr>
             <tr>
                 <td>Total Dev & QA Hours: @Model.TotalDevQA</td>
