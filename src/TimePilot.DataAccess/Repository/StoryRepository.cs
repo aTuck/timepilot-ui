@@ -56,10 +56,10 @@ namespace TimePilot.DataAccess.Repository
         /* Deletes a story from the story table
          * Returns true if successful delete
          * Returns false if not successful delete (likely story wasn't found)*/
-        public bool Delete(Story story)
+        public bool Delete(int StoryID)
         {
             string sql = @"DELETE from story where StoryID = @id";
-            List<Story> stories = dbContext.Query<Story>(sql, new { id = story.StoryID }).ToList();
+            List<Story> stories = dbContext.Query<Story>(sql, new { id = StoryID }).ToList();
             if (stories.Count <= 0)
             {
                 return false;

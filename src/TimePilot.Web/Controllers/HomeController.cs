@@ -41,11 +41,9 @@ namespace TimePilot.Controllers
             mResourceViewModel.sprints = sprintList;
         }
 
-
         public void bindStoryDataToViewModel()
         {
-            List<TimePilot.Entities.Story> justtestingthis = new List<TimePilot.Entities.Story>();
-            justtestingthis = StoryDB.GetAllByForeignId(SelectedProject);
+            stories = StoryDB.GetAllByForeignId(SelectedProject);
             StoryVM.StoryList = stories;
         }
 
@@ -64,7 +62,6 @@ namespace TimePilot.Controllers
         {
             this.storyJson = apiHelper.getDataFromJira("https://pnimedia.jira.com/rest/api/2/search?jql=project=" + "'" + SelectedProject + "'" + "%20AND%20type%20in(story,improvement)%20and%20(Sprint=EMPTY%20OR%20Sprint%20not%20in(openSprints(),futureSprints()))%20AND%20status%20not%20in(closed,done,resolved,accepted)&fields=customfield_10013,id,description,summary&maxResults=1000");
         }
-
 
         public ActionResult Index()
         {
@@ -107,7 +104,6 @@ namespace TimePilot.Controllers
             }
         }
 
-
         public void setHoursEstimationValues(ResultsViewModel model)
         {
             int SumOfTotalDays = 0;
@@ -125,7 +121,6 @@ namespace TimePilot.Controllers
 
         public void setVelocityValidationValues(ResultsViewModel model)
         {
-
             model.totalStoryPoints = totalStoryPoints;
             model.totalPointsVelocity = totalStoryPoints * (1F + model.Contingency / 100F);
             
@@ -135,14 +130,12 @@ namespace TimePilot.Controllers
             }
             model.TotalWeeksVelocity = model.TotalSprints * model.SprintLength;
             model.projectDurationWeeksVelocity = model.TotalWeeksVelocity + model.ReleaseAndHardening;
-
         }
-
 
         public ActionResult Story()
         {
-            StoryPopulate();
-            //convertStoryPointToInt(stories);
+            //StoryPopulate();
+            ModelState.Clear();
             bindStoryDataToViewModel();
             sumStoryPoints(StoryVM);
             if (StoryVM.StorypointSum != null)
@@ -153,31 +146,10 @@ namespace TimePilot.Controllers
             return View(StoryVM);
         }
 
-        private void StoryPopulate()
-        {
-            receiveStoryData();
-            stories = apiHelper.parseStoryData(storyJson);
-            TimePilot.Entities.Story temp;
-            for (int i = 0; i < stories.Count; i++)
-            {
-                stories[i].ProjectKey = SelectedProject;
-                temp = StoryDB.GetById(stories[i]);
-                if (temp.StoryID == stories[i].StoryID)
-                {
-                    return;
-                }
-                else
-                {
-                    StoryDB.Add(stories[i]);
-                }
-            }
-        }
-
         [HttpPost]
         public ActionResult Story(StoryViewModel model, string command)
         {
             ModelState.Clear();
-            //model.StoryList = deleteSelectedStories(model);
             sumStoryPoints(model);
             if (model.StorypointSum != null)
             {
@@ -197,6 +169,33 @@ namespace TimePilot.Controllers
             return View(model);
         }
 
+        public ActionResult StoryPopulate()
+        {
+            receiveStoryData();
+            stories = apiHelper.parseStoryData(storyJson);
+            TimePilot.Entities.Story temp;
+            for (int i = 0; i < stories.Count; i++)
+            {
+                stories[i].ProjectKey = SelectedProject;
+                temp = StoryDB.GetById(stories[i]);
+                if (!(temp.StoryID == stories[i].StoryID))
+                {
+                    StoryDB.Add(stories[i]);
+                }
+            }
+            return RedirectToAction("Story");
+        }
+
+        [HttpPost]
+        public ActionResult StoryDelete(int[] id)
+        {
+            foreach (var item in id)
+            {
+                StoryDB.Delete(item);
+            }
+            return RedirectToAction("Story");
+        }
+
         public void calculateTotalStoryPoints (StoryViewModel model)
         {
             int sumofPoints = 0;
@@ -210,6 +209,13 @@ namespace TimePilot.Controllers
                 }
                 model.totalNumberStoryPoints = sumofPoints;
             }
+        }
+
+        public ActionResult Resource()
+        {
+            originateResourceCapacity();
+            mResourceViewModel.roleList = createRoleList();
+            return View(mResourceViewModel);
         }
 
         [HttpPost]
@@ -264,21 +270,12 @@ namespace TimePilot.Controllers
             return View(RCModel);
         }
 
-        
-
         public void calculateTotalDays(ResultsViewModel model)
         {
             for (int i = 0; i < model.storypointAllocation.Length; i++)
             {
                     model.Total[i] = model.numberOfStories[i] * model.DaysPerPt[i];               
             }
-        }
-
-        public ActionResult Resource()
-        {
-            originateResourceCapacity();
-            mResourceViewModel.roleList = createRoleList();
-            return View(mResourceViewModel);
         }
 
         public ActionResult Result()
@@ -315,22 +312,7 @@ namespace TimePilot.Controllers
             setVelocityValidationValues(model);
 
             return View(model);
-
         }
-
-        /*private List<TimePilot.Entities.Story> deleteSelectedStories(StoryViewModel model)
-        {
-            List<TimePilot.Entities.Story> myList = model.StoryList;
-            for (int i = 0; i < myList.Count; i++)
-            {
-                if (myList[i].isSelectedToDelete)
-                {
-                    myList.RemoveAt(i);
-                    i--;
-                }
-            }
-            return myList;
-        }*/
 
         private void deleteSelectedMembers(ResourceCapacityViewModel model)
         {
@@ -346,7 +328,6 @@ namespace TimePilot.Controllers
                 }
             }
         }
-
 
         private void deleteSprint (ResourceCapacityViewModel model)
         {
@@ -531,21 +512,6 @@ namespace TimePilot.Controllers
 
             model.StorypointSum = pointArray;
         }
-
-        /*private void convertStoryPointToInt(List<TimePilot.Entities.Story> mlist)
-        {
-            for (int i = 0; i < mlist.Count; i++)
-            {
-                if (mlist[i].StoryPoint != null)
-                {
-                    mlist[i].IntStoryPoint = Convert.ToInt32(mlist[i].StoryPoint);
-                }
-                else
-                {
-                    mlist[i].IntStoryPoint = 0;
-                }
-            }
-        }*/
 
         private IEnumerable<SelectListItem> createSprintLengthList()
         {
