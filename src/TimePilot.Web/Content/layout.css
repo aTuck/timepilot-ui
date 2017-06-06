@@ -174,7 +174,13 @@ h1:hover{
     border-radius:4px;
 }
 
-.flex-container-header{
+
+
+
+
+
+
+.flex-container-header {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -184,8 +190,8 @@ h1:hover{
     box-shadow: 1px 2px 15px rgba(0,0,0,.5);
     border-radius: 10px;
     padding: 10px 25px;
-    width: 100%;
-    box-sizing:border-box
+    width: 100%;    
+    box-sizing: border-box;
 }
 
 .project-container{
