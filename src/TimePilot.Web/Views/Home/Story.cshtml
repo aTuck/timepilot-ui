@@ -7,35 +7,7 @@
 }
 <body>
 
-    <style>
-       .modal
-       {
-    width: 500px;
-    height: 160px;
-    background-color: white;
-    position: absolute;
-    border: 2px solid black;
-    margin: auto;
-    border-radius: 10px
-       }
-       .modalstuff{
-           padding: 30px;
-           margin:auto;
-           text-align: center;
-           
-       }
-       .modal h2{
-           font-size: 24px;
-           
-           display:block;
-       }
-
-       .btn{
-           text-align: center;
-           margin: 10px;
-       }
    
-    </style>
 <div class="container">
     <div class="flex-container-header">
         <h1>Time Pilot</h1>
@@ -92,6 +64,10 @@
                                 @Html.TextBoxFor(m => m.StoryList[i].StoryPoints, new { @class = "storyPoint", @onchange = "" })
                                 @Html.HiddenFor(m => m.StoryList[i].StoryPoints)
                             </td>
+                            <td>
+                                @Html.CheckBoxFor(listmodel => listmodel.mStoryList[i].isSelectedToDelete)
+                                @Html.HiddenFor(m => m.mStoryList[i].isSelectedToDelete)
+                            </td>
                         </tr>
                     }
                 </table>
@@ -100,12 +76,10 @@
 
             }
     </div>
-    <input type="submit" value="Previous" onclick="location.href='@Url.Action("Index", "Home")'" class="button" />
-    <input name = "command" type="submit" value="Resource Capacity Page" onclick="this.form.submit(); location.href='@Url.Action("Resource", "Home")';" class="button" />
+  
         }
 </div>
 
-<<<<<<< HEAD
 <input type="submit" value="Previous" onclick="location.href='@Url.Action("Index", "Home")'" class="button" id="BackButton"/>
 <input type="submit" value="Resource Capacity" onclick="return StoryPointValidation();" class="button toggleModal" id="ResourceCapacityButton" />
 <p>1 point: @Model.StorypointSum[0]</p>
@@ -115,7 +89,7 @@
 <p>13 point: @Model.StorypointSum[4]</p>
 <p>21 point:  @Model.StorypointSum[5]</p>
 
- <div class="modal" id="MyModal">
+ <div class="modal" id="MyModal" data-keyboard="false" data-backdrop="static"> <!-- Warning Pop UP HTML-->
      <div class="modalstuff">
          <header>
              <h2>
@@ -128,18 +102,20 @@
 </div>
 
     <script>
+        //Warning for 0 Story Points
         function StoryPointValidation() {
-            var zeros = @Html.Raw(Json.Encode(Model.ZeroStoryFlag));
+            var zeros = @Html.Raw(Json.Encode(Model.ZeroStoryFlag)); //This step is because apparently JS is finicky with boolean values
             if(zeros == true)
             {
-                //return alert("You have stories with 0 Story points");
                 var modal = document.getElementById('MyModal');
                 var closebutton = document.getElementById('closebutton')
                 var continuebutton = document.getElementById('continuebutton')
                 modal.style.display = "block";
                 closebutton.onclick = function() {
-                    modal.style.display = "none";
+                    modal.style.display = "none";//closes pop up 
                 }
+             
+
                 continuebutton.onclick = function()
                 {
                     location.href = "@Url.Action("Resource", "Home")";
@@ -153,5 +129,4 @@
 
     </script>
 </body>
-=======
->>>>>>> new-develop
+

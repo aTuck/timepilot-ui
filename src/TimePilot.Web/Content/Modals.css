@@ -1,0 +1,27 @@
+﻿.modal
+       {
+    width: 500px;
+    height: 160px;
+    background-color: white;
+    position: fixed;
+    border: 2px solid black;
+    margin: auto;
+    border-radius: 10px
+
+       }
+.modalstuff{
+           padding: 30px;
+           margin:auto;
+           text-align: center;
+           
+       }
+ .modal h2{
+           font-size: 24px;
+           
+           display:block;
+       }
+
+.btn {
+    text-align: center;
+    margin: 10px;
+}

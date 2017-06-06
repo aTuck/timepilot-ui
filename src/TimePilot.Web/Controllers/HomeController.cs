@@ -185,7 +185,7 @@ namespace TimePilot.Controllers
         public ActionResult Story(StoryViewModel model, string command)
         {
             ModelState.Clear();
-            //model.StoryList = deleteSelectedStories(model);
+            model.mStoryList = deleteSelectedStories(model);
             sumStoryPoints(model);
             if (model.StorypointSum != null)
             {
@@ -321,9 +321,9 @@ namespace TimePilot.Controllers
 
         }
 
-        /*private List<TimePilot.Entities.Story> deleteSelectedStories(StoryViewModel model)
+        private List<TimePilot.Web.Models.Story> deleteSelectedStories(StoryViewModel model)
         {
-            List<TimePilot.Entities.Story> myList = model.StoryList;
+            List<TimePilot.Web.Models.Story> myList = model.mStoryList;
             for (int i = 0; i < myList.Count; i++)
             {
                 if (myList[i].isSelectedToDelete)
@@ -333,7 +333,7 @@ namespace TimePilot.Controllers
                 }
             }
             return myList;
-        }*/
+        }
 
         private void deleteSelectedMembers(ResourceCapacityViewModel model)
         {
