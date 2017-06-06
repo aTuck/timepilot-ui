@@ -458,6 +458,10 @@ namespace TimePilot.Controllers
                     model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours;
                     break;
             }
+
+            model.memberIndex = "00";
+            
+
         }
        
         private void sumStoryPoints(StoryViewModel model)
