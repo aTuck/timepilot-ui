@@ -6,7 +6,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
 <div class="flex-container-header">
     <h1>Time Pilot</h1>
     <p>
@@ -79,32 +78,27 @@
     </div>
 } 
 
-
 <script>
     // JQuery to call delete action from button click
     $("#btnDelete").on("click", function (e) {
-    var confirmation = confirm("Are you sure?")
-    if (confirmation) {
-        e.preventDefault();
-        var data = [];
-        $("input[name='chkDelete']:checked").each(function () {
-            data.push($(this).val());
-        });
+        var confirmation = confirm("Are you sure?")
+        if (confirmation) {
+            e.preventDefault();
+            var data = [];
+            $("input[name='chkDelete']:checked").each(function () {
+                data.push($(this).val());
+            });
 
-        $.ajax({
-            type: "POST",
-            url: "@Url.Action("StoryDelete")",
-            data: { id: data },
-        traditional:true,
-        success: function (result) {
-            //alert("done");
-            alert("Delete Success")
-            location.reload();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("StoryDelete")",
+                data: { id: data },
+                traditional: true,
+                success: function (result) {
+                    location.reload();
+                }
+            })
         }
-    })
-    }
-    else
-        alert("Delete Cancelled")
     })
 
     // JQuery to call populate action from button click
