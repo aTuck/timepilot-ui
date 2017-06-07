@@ -36,9 +36,9 @@
 </div>
 
 <div class="resource-container">
-    
         @using (Html.BeginForm("Resource", "Home", FormMethod.Post))
         {
+            /*
             <table id="myTable">
                 <tr>
                     <th>Role</th>
@@ -60,12 +60,12 @@
                     <th>Sprint @(i + 1)</th>
 
                     <td>
-                        <input type="submit" name="command" value="Add Member" id=i onclick="setButtonIndex(this.id)" class="button" />
+                        <input type="submit" name="command" value="Add Member" id=@(i) onclick="setButtonIndex(this.id)" class="button" />
                         @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
                     </td>
 
                     <td>
-                        <input type="submit" name="command" id=i value="Delete Sprint" class="button" onclick="setButtonIndex(this.id)" />
+                        <input type="submit" name="command" id=@(i) value="Delete Sprint" class="button" onclick="setButtonIndex(this.id)" />
                         @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
                     </td>
                 </tr>
@@ -127,15 +127,40 @@
                     }
                 }
             </table>
+            */
+            for (int i = 0; i < Model.sprints.Count(); i++)
+            {
+                <div class="panel-group">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" href="#collapse@(i)">Sprint @(i+1)</a>
+                            </h4>
+                            <input type="submit" name="command" value="Add Member" id=@(i) onclick="setButtonIndex(this.id)" class="" />
+                            @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
+                            <input type="submit" name="command" id=@(i) value="Delete Sprint" class="" onclick="setButtonIndex(this.id)" />
+                            @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
+                        </div>
+                        <div id="collapse@(i)" class="panel-collapse collapse">
+                            @for (int j = 0; j < Model.sprints[i].members.Count(); j++)
+                            {
+                                <div>
+                                    @Html.DropDownListFor(m => m.sprints[i].members[j].role, new SelectList(Model.roleList, "Value", "Text", Model.sprints[i].members[j].role), "Add New Member", new { id = @i.ToString() + @j.ToString(), @onchange = "setMemberIndex(this.id); this.form.submit()" })
+                                    @Html.HiddenFor(m => m.memberIndex, new { id = "memberIndex" })
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
             <input type="submit" name="command" id="command" value="Add Sprint" class="button" />
-                <input type="submit" name="command" value="Delete Selected" onclick="this.form.submit();" class="button" />
-                <input type="button" value="Previous" onclick="location.href='@Url.Action("Story", "Home")'" class="button" />
-                <input type="submit" name="command" id="command" value="Recalculate Values" class="button" />
-                <input type="button" value="Results Page" onclick="location.href='@Url.Action("Result", "Home")'" class="button" />
+            <input type="submit" name="command" value="Delete Selected" onclick="this.form.submit();" class="button" />
+            <input type="button" value="Previous" onclick="location.href='@Url.Action("Story", "Home")'" class="button" />
+            <input type="submit" name="command" id="command" value="Recalculate Values" class="button" />
+            <input type="button" value="Results Page" onclick="location.href='@Url.Action("Result", "Home")'" class="button" />
         }
-
-
 </div>
+
 <p>Total DEV Capacity: @Model.totalDevCapacity</p>
 <p>Average Per Sprint: @Model.avgPerSprint</p>
 <p>Average Per Week: @Model.avgPerWeek</p>
@@ -147,4 +172,5 @@
         function setMemberIndex(e) {
             document.getElementById('memberIndex').value = e;
         }
+        $('.collapse').collapse("collapse");
 </script>
