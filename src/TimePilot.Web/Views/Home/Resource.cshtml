@@ -110,12 +110,14 @@
                     {
                         <tr>
                             <td>
-                                @Html.DropDownListFor(m => m.sprints[i].members[j].role, new SelectList(Model.roleList, "Value", "Text"), "Select Role", new { id = @i.ToString() + @j.ToString(), @onchange = "setMemberIndex(this.id); this.form.submit()" })
+                                @Html.DropDownListFor(m => m.sprints[i].members[j].role, new SelectList(Model.roleList, "Value", "Text", Model.sprints[i].members[j].role), "Select Role", new { id = @i.ToString() + @j.ToString(), @onchange = "setMemberIndex(this.id); this.form.submit()" })
                                 @Html.HiddenFor(m => m.memberIndex, new { id = "memberIndex" })
+                                
                             </td>
                             <td>
                                 @Html.TextBoxFor(m => m.sprints[i].members[j].name)
                                 @Html.HiddenFor(m => m.sprints[i].members[j].name)
+                                
                             </td>
                             <td>
                                 @Html.TextBoxFor(m => m.sprints[i].members[j].sprintDays)

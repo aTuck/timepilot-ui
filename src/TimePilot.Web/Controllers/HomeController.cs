@@ -213,21 +213,24 @@ namespace TimePilot.Controllers
 
         public ActionResult Resource()
         {
-            originateResourceCapacity();
             mResourceViewModel.roleList = createRoleList();
+            
+            
+                originateResourceCapacity();
+            
             return View(mResourceViewModel);
         }
 
         [HttpPost]
-        public ActionResult Resource(ResourceCapacityViewModel RCModel, string command)
+        public ActionResult Resource(ResourceCapacityViewModel RCModel, string ddlRole, string command)
         {
-            ModelState.Clear();
+            ModelState.Clear();            
             RCModel.roleList = createRoleList();
-            calculateAvailability(RCModel);
-            
+            calculateAvailability(RCModel);            
 
             if (RCModel.memberIndex != null)
             {
+                
                 string indexString = RCModel.memberIndex;
                 int SprintIndex = int.Parse(indexString[0].ToString());
                 int MemberIndex = int.Parse(indexString[1].ToString());
@@ -235,7 +238,7 @@ namespace TimePilot.Controllers
             }
             if (command != null && command.Equals("Add Member"))
             {
-
+                
                 Member member = new Member();
                 RCModel.sprints[RCModel.buttonIndex].members.Add(member);
 
@@ -243,7 +246,7 @@ namespace TimePilot.Controllers
 
             if (command != null && command.Equals("Add Sprint"))
             {
-
+                
                 Sprint sprint = new Sprint();
                 Member member = new Member();
                 List<Member> memberList = new List<Member>();
@@ -255,12 +258,13 @@ namespace TimePilot.Controllers
 
             if (command != null && command.Equals("Delete Selected"))
             {
+                
                 deleteSelectedMembers(RCModel);
             }
 
             if (command != null && command.Equals("Delete Sprint"))
             {
-
+                
                 deleteSprint(RCModel);
 
             }
@@ -296,7 +300,7 @@ namespace TimePilot.Controllers
             ResultsVM.storypointAllocation[3] = 8;
             ResultsVM.storypointAllocation[4] = 13;
             ResultsVM.storypointAllocation[5] = 21;
-
+            setHoursEstimationValues(ResultsVM);
             setVelocityValidationValues(ResultsVM);
 
             return View(ResultsVM);
@@ -520,8 +524,8 @@ namespace TimePilot.Controllers
         private IEnumerable<SelectListItem> createSprintLengthList()
         {
             List<SelectListItem> mySprintLengthList = new List<SelectListItem>();
-            SelectListItem sprintLength2 = new SelectListItem() { Text = "2", Value = "2", Selected = false };
-            SelectListItem sprintLength3 = new SelectListItem() { Text = "3", Value = "3", Selected = false };
+            SelectListItem sprintLength2 = new SelectListItem() { Text = "2", Value = "2"};
+            SelectListItem sprintLength3 = new SelectListItem() { Text = "3", Value = "3"};
             mySprintLengthList.Add(sprintLength2);
             mySprintLengthList.Add(sprintLength3);
 
@@ -532,14 +536,14 @@ namespace TimePilot.Controllers
         private IEnumerable<SelectListItem> createRoleList()
         {
             List<SelectListItem> myRoleList = new List<SelectListItem>();
-            SelectListItem LeadDev = new SelectListItem() { Text = "Lead Dev", Value = "leadDev", Selected = false };
-            SelectListItem SeniorDev = new SelectListItem() { Text = "Senior Dev", Value = "seniorDev", Selected = false };
-            SelectListItem IntermediateDev = new SelectListItem() { Text = "Intermediate Dev", Value = "intermediateDev", Selected = false };
-            SelectListItem JuniorDev = new SelectListItem() { Text = "Junior Dev", Value = "juniorDev", Selected = false };
-            SelectListItem LeadQA = new SelectListItem() { Text = "Lead QA", Value = "leadQA", Selected = false };
-            SelectListItem SeniorQA = new SelectListItem() { Text = "Senior QA", Value = "seniorQA", Selected = false };
-            SelectListItem IntermediateQA = new SelectListItem() { Text = "Intermediate QA", Value = "intermediateQA", Selected = false };
-            SelectListItem JuniorQA = new SelectListItem() { Text = "Junior QA", Value = "juniorQA", Selected = false };
+            SelectListItem LeadDev = new SelectListItem() { Text = "Lead Dev", Value = "leadDev"};
+            SelectListItem SeniorDev = new SelectListItem() { Text = "Senior Dev", Value = "seniorDev"};
+            SelectListItem IntermediateDev = new SelectListItem() { Text = "Intermediate Dev", Value = "intermediateDev"};
+            SelectListItem JuniorDev = new SelectListItem() { Text = "Junior Dev", Value = "juniorDev"};
+            SelectListItem LeadQA = new SelectListItem() { Text = "Lead QA", Value = "leadQA"};
+            SelectListItem SeniorQA = new SelectListItem() { Text = "Senior QA", Value = "seniorQA"};
+            SelectListItem IntermediateQA = new SelectListItem() { Text = "Intermediate QA", Value = "intermediateQA"};
+            SelectListItem JuniorQA = new SelectListItem() { Text = "Junior QA", Value = "juniorQA"};
 
             myRoleList.Add(LeadDev);
             myRoleList.Add(SeniorDev);
