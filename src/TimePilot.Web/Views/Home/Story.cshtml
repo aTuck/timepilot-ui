@@ -71,9 +71,9 @@
     </div>
     <div class="buttons-container">
         <input type="button" value="Previous" onclick="location.href='@Url.Action("Index", "Home")'" class="button" />
-        <input name="command" type="button" value="Resource Capacity Page" onclick="this.form.submit(); location.href='@Url.Action("Resource", "Home")';" class="button" />
-        <input type="button" value="Delete Selected" onclick="javascript:;" class="button" id="btnDelete" />
-        <input type="button" value="Apply Changes" onclick="this.form.submit();" class="button" />
+        <input name="command" id="command" type="submit" value="Resource Capacity Page" onclick="this.form.submit(); location.href='@Url.Action("Resource", "Home")';" class="button" />
+        <input type="submit" value="Delete Selected" onclick="javascript:;" class="button" id="btnDelete" />
+        <input name="command" id="command" type="submit"  value="Apply Changes" onclick="this.form.submit();" class="button" />
         <input type="button" value="Refresh Stories" onclick="location.href='@Url.Action("StoryPopulate", "Home")'" class="button" id="btnPopulate" />
     </div>
 } 
