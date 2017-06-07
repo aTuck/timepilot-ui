@@ -6,6 +6,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+
 <div class="flex-container-header">
     <h1>Time Pilot</h1>
     <p>
@@ -19,7 +20,7 @@
 <div class="pre-project-container">
     <h2 class="project-header">STORIES</h2>
     <div class="project-controls">
-        <p class="controls-label">Sort Story By:</p>
+        <p class="sort-project-info">Sort Story By:</p>
         <select class="sort-method">
             <option onchange="">Name A-Z</option>
             <option>Name Z-A</option>
@@ -71,38 +72,39 @@
     </div>
     <div class="buttons-container">
         <input type="button" value="Previous" onclick="location.href='@Url.Action("Index", "Home")'" class="button" />
-        <input name="command" type="button" value="Resource Capacity Page" onclick="this.form.submit(); location.href='@Url.Action("Resource", "Home")';" class="button" />
+        <input name="command" type="submit" value="Resource Capacity Page" onclick="this.form.submit(); location.href='@Url.Action("Resource", "Home")';" class="button" />
         <input type="button" value="Delete Selected" onclick="javascript:;" class="button" id="btnDelete" />
-        <input type="button" value="Apply Changes" onclick="this.form.submit();" class="button" />
+        <input type="submit" value="Apply Changes" onclick="this.form.submit();" class="button" />
         <input type="button" value="Refresh Stories" onclick="location.href='@Url.Action("StoryPopulate", "Home")'" class="button" id="btnPopulate" />
     </div>
 } 
 
+
 <script>
     // JQuery to call delete action from button click
     $("#btnDelete").on("click", function (e) {
-        var confirmation = confirm("Are you sure?")
-        if (confirmation) {
-            e.preventDefault();
-            var data = [];
-            $("input[name='chkDelete']:checked").each(function () {
-                data.push($(this).val());
-            });
-            if (data = []) {
-                return;
-            }
-            else {
-                $.ajax({
-                    type: "POST",
-                    url: "@Url.Action("StoryDelete")",
-                    data: { id: data },
-                    traditional: true,
-                    success: function (result) {
-                        location.reload();
-                    }
-                })
-            }
+    var confirmation = confirm("Are you sure?")
+    if (confirmation) {
+        e.preventDefault();
+        var data = [];
+        $("input[name='chkDelete']:checked").each(function () {
+            data.push($(this).val());
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("StoryDelete")",
+            data: { id: data },
+        traditional:true,
+        success: function (result) {
+            //alert("done");
+            alert("Delete Success")
+            location.reload();
         }
+    })
+    }
+    else
+        alert("Delete Cancelled")
     })
 
     // JQuery to call populate action from button click

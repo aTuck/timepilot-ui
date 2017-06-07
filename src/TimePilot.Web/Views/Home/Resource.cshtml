@@ -4,7 +4,6 @@
     ViewBag.Title = "Story";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <style>
     table {
 
@@ -28,6 +27,7 @@
 </style>
 
 
+
 <div class="flex-container-header">
     <h1>Time Pilot</h1>
     <p><a class="pre-activebread" href="Index">Project Selection</a> >
@@ -37,43 +37,16 @@
     </p>
 </div>
 
-@using (Html.BeginForm("Resource", "Home", FormMethod.Post))
-{
-    for (int i = 0; i < Model.sprints.Count(); i++)
+<body>
+    @using (Html.BeginForm("Resource", "Home", FormMethod.Post))
     {
-            <table id="myTable">
-                @if (i == 0)
-                {
-                <tr>
-                    <th>Role</th>
-                    <th>Name</th>
-                    <th>Sprint Days</th>
-                    <th>% Work</th>
-                    <th>Total Hours</th>
-                    <th>Standup Duration</th>
-                    <th>Standups</th>
-                    <th>Misc</th>
-                    <th>Time Off</th>
-                    <th>Non Dev Hours</th>
-                    <th>Total Available</th>
-                    <th>Delete</th>
-                </tr>
-                }
-                <tr>
-                    <th>Sprint @i</th>
+        <div class="resource-container" style="font-size: 10px;">
+            @for (int i = 0; i < Model.sprints.Count(); i++)
+            {
+                <table>
 
-                    <td>
-                        <input type="submit" name="command" value="Add Member" id=@i onclick="setButtonIndex(this.id)" class ="button" />
-                        @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
-                    </td>
 
-                    <td>
-                        <input type="submit" name="command" id=@i value="Delete Sprint" class="button" onclick="setButtonIndex(this.id)"/>
-                        @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
-                    </td>
-                </tr>
-                <tr>
-                    @for (int j = 0; j < Model.sprints[i].members.Count(); j++)
+                    @if (i == 0)
                     {
 
                         <tr>
@@ -110,14 +83,13 @@
                     {
                         <tr>
                             <td>
-                                @Html.DropDownListFor(m => m.sprints[i].members[j].role, new SelectList(Model.roleList, "Value", "Text", Model.sprints[i].members[j].role), "Select Role", new { id = @i.ToString() + @j.ToString(), @onchange = "setMemberIndex(this.id); this.form.submit()" })
-                                @Html.HiddenFor(m => m.memberIndex, new { id = "memberIndex" })
+                                @Html.DropDownListFor(m => m.sprints[i].members[j].role, new SelectList(Model.roleList, "Value", "Text"), "Select Role", new { id = @i.ToString() + @j.ToString(), value = Model.sprints[i].members[j].role, @onchange = "setMemberIndex(this.id); this.form.submit()" })
+                                
                                 
                             </td>
                             <td>
                                 @Html.TextBoxFor(m => m.sprints[i].members[j].name)
                                 @Html.HiddenFor(m => m.sprints[i].members[j].name)
-                                
                             </td>
                             <td>
                                 @Html.TextBoxFor(m => m.sprints[i].members[j].sprintDays)
@@ -173,12 +145,19 @@
             }
             <input type="submit" name="command" id="command" value="Add Sprint" class="button" />
             <input type="submit" name="command" value="Delete Selected" onclick="this.form.submit();" class="button" />
+        </div>
             <input type="button" value="Previous" onclick="location.href='@Url.Action("Story", "Home")'" class="button" />
 
                 <input type="submit" name="command" id="command" value="Recalculate Values" class="button" />
 
                 <input type="button" value="Results Page" onclick="location.href='@Url.Action("Result", "Home")'" class="button" />
     }
+
+</body>
+
+
+
+
 
 <p>Total DEV Capacity: @Model.totalDevCapacity</p>
 <p>Average Per Sprint: @Model.avgPerSprint</p>
