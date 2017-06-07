@@ -19,7 +19,7 @@
 <div class="pre-project-container">
     <h2 class="project-header">STORIES</h2>
     <div class="project-controls">
-        <p class="sort-project-info">Sort Story By:</p>
+        <p class="controls-label">Sort Story By:</p>
         <select class="sort-method">
             <option onchange="">Name A-Z</option>
             <option>Name Z-A</option>
@@ -71,9 +71,9 @@
     </div>
     <div class="buttons-container">
         <input type="button" value="Previous" onclick="location.href='@Url.Action("Index", "Home")'" class="button" />
-        <input name="command" type="submit" value="Resource Capacity Page" onclick="this.form.submit(); location.href='@Url.Action("Resource", "Home")';" class="button" />
+        <input name="command" type="button" value="Resource Capacity Page" onclick="this.form.submit(); location.href='@Url.Action("Resource", "Home")';" class="button" />
         <input type="button" value="Delete Selected" onclick="javascript:;" class="button" id="btnDelete" />
-        <input type="submit" value="Apply Changes" onclick="this.form.submit();" class="button" />
+        <input type="button" value="Apply Changes" onclick="this.form.submit();" class="button" />
         <input type="button" value="Refresh Stories" onclick="location.href='@Url.Action("StoryPopulate", "Home")'" class="button" id="btnPopulate" />
     </div>
 } 
@@ -88,16 +88,20 @@
             $("input[name='chkDelete']:checked").each(function () {
                 data.push($(this).val());
             });
-
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("StoryDelete")",
-                data: { id: data },
-                traditional: true,
-                success: function (result) {
-                    location.reload();
-                }
-            })
+            if (data = []) {
+                return;
+            }
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("StoryDelete")",
+                    data: { id: data },
+                    traditional: true,
+                    success: function (result) {
+                        location.reload();
+                    }
+                })
+            }
         }
     })
 
