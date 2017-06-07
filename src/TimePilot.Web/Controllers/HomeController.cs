@@ -22,7 +22,7 @@ namespace TimePilot.Controllers
         public static float AvgCapactiyperWeek;
         public static float totalStoryPoints;
         private static int hoursPerDay = 8;
-        List<TimePilot.Entities.Story> stories = new List<TimePilot.Entities.Story>();
+        List<TimePilot.Entities.Story> stories = new List<TimePilot.Entities.Story>();        
         List<Project> projects = new List<Project>();
         public static string SelectedProject;
 
@@ -159,6 +159,13 @@ namespace TimePilot.Controllers
             totalStoryPoints = model.totalNumberStoryPoints;
 
 
+            if (command != null && command.Equals("Apply Changes"))
+            {
+
+                UpdateStoryDB(model);
+
+            }
+
             if (command != null && command.Equals("Resource Capacity Page"))
             {
                 calculateTotalStoryPoints(model);
@@ -169,8 +176,34 @@ namespace TimePilot.Controllers
             return View(model);
         }
 
+        public void UpdateStoryDB(StoryViewModel model)
+        {
+
+            TimePilot.Entities.Story temp;
+            for (int i = 0; i < model.StoryList.Count; i++)
+            {
+
+                model.StoryList[i].ProjectKey = SelectedProject;
+                temp = StoryDB.GetById(model.StoryList[i]);
+                if (temp.ProjectKey == null)
+                {
+                    StoryDB.Add(model.StoryList[i]);
+                }
+                else
+                {
+
+                    StoryDB.Update(model.StoryList[i]);
+
+                }
+
+
+            }
+
+        }
+
         public ActionResult StoryPopulate()
         {
+                      
             receiveStoryData();
             stories = apiHelper.parseStoryData(storyJson);
             TimePilot.Entities.Story temp;
@@ -178,7 +211,7 @@ namespace TimePilot.Controllers
             {
                 stories[i].ProjectKey = SelectedProject;
                 temp = StoryDB.GetById(stories[i]);
-                if (!(temp.StoryID == stories[i].StoryID))
+                if (temp.ProjectKey == null)
                 {
                     StoryDB.Add(stories[i]);
                 }
@@ -189,6 +222,7 @@ namespace TimePilot.Controllers
         [HttpPost]
         public ActionResult StoryDelete(int[] id)
         {
+            
             foreach (var item in id)
             {
                 StoryDB.Delete(item);
