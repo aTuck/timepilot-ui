@@ -35,6 +35,10 @@ input[type="checkbox"]{
     height:20px;
 }
 
+input[type="submit"] {
+    margin: 0px 4px;
+}
+
 input[type="button"]{
     margin: 0px 4px;
 }
