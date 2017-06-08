@@ -5,7 +5,6 @@
     ViewBag.Title = "Story";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<body>
 
 <div class="flex-container-header">
     <h1>Time Pilot</h1>
@@ -29,6 +28,7 @@
         </select>
     </div>
 </div>
+
 @using (Html.BeginForm("Story", "Home", FormMethod.Post, new { @id = "storyForm" }))
 {
     <div class="stories-container">
@@ -78,18 +78,20 @@
         <input name="command" id="command" type="button" value="Resource Capacity Page" onclick="return StoryPointValidation();" class="button toggleModal" />
     </div>
 } 
-    <div class="modal" id="MyModal" data-keyboard="false" data-backdrop="static">
-        <!-- Warning Pop UP HTML-->
-        <div class="modalstuff">
-            <header>
-                <h2>
-                    One or more stories on this page has zero story points
-                </h2>
-            </header>
-            <button class="btn closebutton" id="closebutton"> Edit Stories </button>
-            <button class="btn proceedbutton" id="continuebutton"> Continue </button>
-        </div>
+
+<div class="modal" id="MyModal" data-keyboard="false" data-backdrop="static">
+    <!-- Warning Pop UP HTML-->
+    <div class="modalstuff">
+        <header>
+            <h2>
+                One or more stories on this page has invalid story point values
+                Valid values: 1, 2, 3, 5, 8, 13, 21
+            </h2>
+        </header>
+        <button class="btn closebutton" id="closebutton"> Edit Stories </button>
+        <button class="btn proceedbutton" id="continuebutton"> Continue </button>
     </div>
+</div>
 
 <script>
     // JQuery to call delete action from button click
@@ -135,7 +137,7 @@
     function StoryPointValidation() {
         var isInvalidInput = false;
         $("input[type=number]").each(function(){
-            if (this.value != 1 && this.value != 3 && this.value != 5 && this.value != 8 && this.value != 13 && this.value != 21)
+            if (this.value != 1 && this.value != 2 && this.value != 3 && this.value != 5 && this.value != 8 && this.value != 13 && this.value != 21)
             {
                 isInvalidInput = true;
             }
@@ -179,5 +181,4 @@
         })
     })
 </script>
-</body>
 
