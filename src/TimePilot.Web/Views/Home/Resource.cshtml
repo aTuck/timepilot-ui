@@ -38,7 +38,6 @@
 <div class="resource-container">
         @using (Html.BeginForm("Resource", "Home", FormMethod.Post))
         {
-            /*
             <table id="myTable">
                 <tr>
                     <th>Role</th>
@@ -127,7 +126,7 @@
                     }
                 }
             </table>
-            */
+
             for (int i = 0; i < Model.sprints.Count(); i++)
             {
                 <div class="panel-group">
@@ -136,9 +135,9 @@
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" href="#collapse@(i)">Sprint @(i+1)</a>
                             </h4>
-                            <input type="submit" name="command" value="Add Member" id=@(i) onclick="setButtonIndex(this.id)" class="" />
+                            <input type="submit" name="command" value="Add Member" id=@(i) onclick="setButtonIndex(this.id)" class="btn btn-default" />
                             @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
-                            <input type="submit" name="command" id=@(i) value="Delete Sprint" class="" onclick="setButtonIndex(this.id)" />
+                            <input type="submit" name="command" id=@(i) value="Delete Sprint" onclick="setButtonIndex(this.id)"  class="btn btn-default" />
                             @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
                         </div>
                         <div id="collapse@(i)" class="panel-collapse collapse">
@@ -171,6 +170,6 @@
         }
         function setMemberIndex(e) {
             document.getElementById('memberIndex').value = e;
-        }
+       } 
         $('.collapse').collapse("collapse");
 </script>

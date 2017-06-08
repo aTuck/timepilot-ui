@@ -19,7 +19,7 @@ namespace TimePilot.DataAccess.Repository
             return stories;
         }
 
-        public void deleteAll()
+        public void DeleteAll()
         {
             string sql = @"DELETE FROM story";
             dbContext.Query<Story>(sql);

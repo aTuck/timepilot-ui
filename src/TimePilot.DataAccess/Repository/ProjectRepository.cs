@@ -19,7 +19,7 @@ namespace TimePilot.DataAccess.Repository
             return projects;
         }
 
-        public List<Project> GetAllByForeignId(Project t)
+        public List<Project> GetAllByForeignId(Project proj)
         {
             throw new NotImplementedException();
         }
@@ -43,7 +43,7 @@ namespace TimePilot.DataAccess.Repository
             }
          }
 
-        public bool Update(Project t)
+        public bool Update(Project proj)
         {
             throw new NotImplementedException();
         }
@@ -67,13 +67,13 @@ namespace TimePilot.DataAccess.Repository
 
         /* Adds a project to the project table
          * Always returns true */
-        public bool Add(Project t)
+        public bool Add(Project proj)
         {
             //TSQL string to insert the project passed to this function into the project table
             string sql = @"INSERT INTO project (Projectkey, Summary, ModifiedDate) VALUES (@k, @s, @date)";
 
             //Do a query sending sql string and assigning "@p" variable in sql string to the t object passed in
-            dbContext.Query(sql, new { k = t.ProjectKey, s = t.Summary, date = DateTime.Now });
+            dbContext.Query(sql, new { k = proj.ProjectKey, s = proj.Summary, date = DateTime.Now });
 
             //Project didn't exist, now it does
             return true;
