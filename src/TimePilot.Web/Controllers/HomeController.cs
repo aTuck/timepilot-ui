@@ -186,6 +186,12 @@ namespace TimePilot.Controllers
                 {
                     StoryDB.Add(stories[i]);
                 }
+                else
+                {
+
+                    StoryDB.Update(stories[i]);
+
+                }
             }
             return RedirectToAction("Story");
         }
@@ -477,7 +483,7 @@ namespace TimePilot.Controllers
                     break;
             }
 
-            model.memberIndex = "00";
+            model.memberIndex = null;
             
 
         }
