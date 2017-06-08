@@ -78,7 +78,14 @@ namespace TimePilot.Controllers
         {
             SelectedProject = model.SelectedProject;
             // On button click form is posted and redirects to Story view
+            if (model.SelectedProject == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
             return RedirectToAction("Story", "Home");
+        }
         }
 
         /* Iterates through projects grabbed from API call
@@ -163,10 +170,7 @@ namespace TimePilot.Controllers
                 StoryUpdate(model);
             }
 
-            if (command != null && command.Equals("Resource Capacity Page"))
-            {
-                return RedirectToAction("Resource", "Home");
-            }
+           
             return View(model);
         }
 
@@ -530,6 +534,14 @@ namespace TimePilot.Controllers
             pointArray[6] = noneOftheAbove;
 
             model.StorypointSum = pointArray;
+            if (noneOftheAbove > 0)
+            {
+                model.ZeroStoryFlag = true;
+            }
+            else
+            {
+                model.ZeroStoryFlag = false;
+            }
         }
 
         private IEnumerable<SelectListItem> createSprintLengthList()
