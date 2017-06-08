@@ -7,30 +7,30 @@
 }
 <body>
 
-    <div class="flex-container-header">
-        <h1>Time Pilot</h1>
-        <p>
-            <a class="pre-activebread" href="Index">Project Selection</a> >
-            <a class="activebread">Story Points</a> >
-            <a class="deactivebread">Resource Capacity</a> >
-            <a class="deactivebread">Conversion Rate & Results</a>
-        </p>
-    </div>
+<div class="flex-container-header">
+    <h1>Time Pilot</h1>
+    <p>
+        <a class="pre-activebread" href="Index">Project Selection</a> >
+        <a class="activebread">Story Points</a> >
+        <a class="deactivebread">Resource Capacity</a> >
+        <a class="deactivebread">Conversion Rate & Results</a>
+    </p>
+</div>
 
-    <div class="pre-project-container">
-        <h2 class="project-header">STORIES</h2>
-        <div class="project-controls">
+<div class="pre-project-container">
+    <h2 class="project-header">STORIES</h2>
+    <div class="project-controls">
         <p class="controls-label">Sort Story By:</p>
-            <select class="sort-method">
-                <option onchange="">Name A-Z</option>
-                <option>Name Z-A</option>
-                <option>Newest Updated</option>
-                <option>Oldest Updated</option>
-            </select>
-        </div>
+        <select class="sort-method">
+            <option onchange="">Name A-Z</option>
+            <option>Name Z-A</option>
+            <option>Newest Updated</option>
+            <option>Oldest Updated</option>
+        </select>
     </div>
-    @using (Html.BeginForm("Story", "Home", FormMethod.Post, new { id = "Form"}))
-    {
+</div>
+@using (Html.BeginForm("Story", "Home", FormMethod.Post, new { @id = "storyForm" }))
+{
     <div class="stories-container">
         @if (Model.StoryList.Count < 1)
         {
@@ -39,43 +39,43 @@
         else
         {
             <h2>Story Points: @Model.totalNumberStoryPoints</h2>
-                <table class="table-hover">
+            <table class="table-hover">
+                <tr>
+                    <th>Story ID</th>
+                    <th>Story Summary</th>
+                    <th>Story Points</th>
+                    <th>Delete Story</th>
+                </tr>
+                @for (int i = 0; i < Model.StoryList.Count(); i++)
+                {
                     <tr>
-                        <th>Story ID</th>
-                        <th>Story Summary</th>
-                        <th>Story Points</th>
-                        <th>Delete Story</th>
-                    </tr>
-                    @for (int i = 0; i < Model.StoryList.Count(); i++)
-                    {
-                        <tr>
-                            <td>
-                                @Html.Label("Key", @Model.StoryList[i].StoryKey)
-                                @Html.HiddenFor(m => m.StoryList[i].StoryKey)
-                            </td>
-                            <td>
-                                @Html.Label("Summary", @Model.StoryList[i].Summary)
-                                @Html.HiddenFor(m => m.StoryList[i].Summary)
-                            </td>
-                            <td>
-                                @Html.TextBoxFor(m => m.StoryList[i].StoryPoints, new { @class = "storyPoint", @onchange = "" })
-                                @Html.HiddenFor(m => m.StoryList[i].StoryPoints)
-                            </td>
+                        <td>
+                            @Html.Label("Key", @Model.StoryList[i].StoryKey)
+                            @Html.HiddenFor(m => m.StoryList[i].StoryKey)
+                        </td>
+                        <td>
+                            @Html.Label("Summary", @Model.StoryList[i].Summary)
+                            @Html.HiddenFor(m => m.StoryList[i].Summary)
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.StoryList[i].StoryPoints, new { @class = "storyPoint", @type="number" })
+                            @Html.HiddenFor(m => m.StoryList[i].StoryPoints)
+                        </td>
                         <td>
                             <input class="" name="chkDelete" type="checkbox" value="@Model.StoryList[i].StoryID"/>
                             @Html.HiddenFor(m => m.StoryList[i].StoryID)
                         </td>
-                        </tr>
-                    }
-                </table>
+                    </tr>
+                }
+            </table>
         }
     </div>
     <div class="buttons-container">
         <input type="button" value="Previous" onclick="location.href='@Url.Action("Index", "Home")'" class="button" />
         <input name ="command" id="command" type="button" value="Resource Capacity Page" onclick="return StoryPointValidation();" class="button toggleModal" />
-        <input type="submit" value="Delete Selected" onclick="javascript:;" class="button" id="btnDelete" />
-        <input name="command" id="command" type="submit"  value="Apply Changes" onclick="this.form.submit();" class="button" />
-        <input type="button" value="Refresh Stories" onclick="location.href='@Url.Action("StoryPopulate", "Home")'" class="button" id="btnPopulate" />
+        <input id="btnDelete" type="submit" value="Delete Selected" onclick="javascript:;" class="button" />
+        <input id="btnUpdate" name="command" type="submit" value="Apply Changes" onclick="" class="button" />
+        <input id="btnPopulate" type="button" value="Refresh Stories" onclick="location.href='@Url.Action(" StoryPopulate", "Home" )'" class="button" />
     </div>
 } 
     <div class="modal" id="MyModal" data-keyboard="false" data-backdrop="static">
@@ -115,7 +115,7 @@
                     }
                 })
             }
-            }
+        }
     })
 
     // JQuery to call populate action from button click
@@ -127,7 +127,7 @@
             traditional:true,
             success: function (result) {
                 location.reload();
-        }
+            }
         })
     })
 
@@ -146,7 +146,7 @@
 
                 continuebutton.onclick = function()
                 {
-                    document.getElementById("Form").submit();
+                    document.getElementById("storyForm").submit();
                     location.href = "@Url.Action("Resource", "Home")";
                 }
             }
@@ -157,6 +157,20 @@
             }
     }
 
-    </script>
+
+    $("#btnUpdate").on("click", function (e) {
+        e.preventDefault();
+        var data = $('#storyForm').serialize();
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("StoryUpdate")",
+            data: data,
+            traditional:true,
+            success: function (result) {
+                location.reload();
+            }
+        })
+    })
+</script>
 </body>
 

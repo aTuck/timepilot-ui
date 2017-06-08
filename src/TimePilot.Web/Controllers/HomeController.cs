@@ -22,7 +22,7 @@ namespace TimePilot.Controllers
         public static float AvgCapactiyperWeek;
         public static float totalStoryPoints;
         private static int hoursPerDay = 8;
-        List<TimePilot.Entities.Story> stories = new List<TimePilot.Entities.Story>();
+        List<TimePilot.Entities.Story> stories = new List<TimePilot.Entities.Story>();        
         List<Project> projects = new List<Project>();
         public static string SelectedProject;
 
@@ -165,12 +165,9 @@ namespace TimePilot.Controllers
             calculateTotalStoryPoints(model);
             totalStoryPoints = model.totalNumberStoryPoints;
 
-
             if (command != null && command.Equals("Apply Changes"))
             {
-
-                UpdateStoryDB(model);
-
+                StoryUpdate(model);
             }
 
            
@@ -204,7 +201,6 @@ namespace TimePilot.Controllers
 
         public ActionResult StoryPopulate()
         {
-                      
             receiveStoryData();
             stories = apiHelper.parseStoryData(storyJson);
             TimePilot.Entities.Story temp;
@@ -221,9 +217,18 @@ namespace TimePilot.Controllers
         }
 
         [HttpPost]
+        public ActionResult StoryUpdate(StoryViewModel model)
+        {
+            foreach (var story in model.StoryList)
+            {
+                StoryDB.Update(story);
+            }
+            return RedirectToAction("Story");
+        }
+
+        [HttpPost]
         public ActionResult StoryDelete(int[] id)
         {
-            
             foreach (var item in id)
             {
                 StoryDB.Delete(item);
@@ -238,12 +243,12 @@ namespace TimePilot.Controllers
             if (model.StoryList != null)
             {
 
-            for (int i = 0; i < model.StoryList.Count; i++)
-            {
-                sumofPoints = sumofPoints + model.StoryList[i].StoryPoints;
+                for (int i = 0; i < model.StoryList.Count; i++)
+                {
+                    sumofPoints = sumofPoints + model.StoryList[i].StoryPoints;
+                }
+                model.totalNumberStoryPoints = sumofPoints;
             }
-            model.totalNumberStoryPoints = sumofPoints;
-        }
         }
 
         public ActionResult Resource()
@@ -259,10 +264,10 @@ namespace TimePilot.Controllers
         [HttpPost]
         public ActionResult Resource(ResourceCapacityViewModel RCModel, string ddlRole, string command)
         {
-            ModelState.Clear();
+            ModelState.Clear();            
             RCModel.roleList = createRoleList();
-            calculateAvailability(RCModel);
-            
+            calculateAvailability(RCModel);            
+
             if (RCModel.memberIndex != null)
             {
                 
@@ -273,7 +278,7 @@ namespace TimePilot.Controllers
             }
             if (command != null && command.Equals("Add Member"))
             {
-
+                
                 Member member = new Member();
                 RCModel.sprints[RCModel.buttonIndex].members.Add(member);
 
@@ -281,7 +286,7 @@ namespace TimePilot.Controllers
 
             if (command != null && command.Equals("Add Sprint"))
             {
-
+                
                 Sprint sprint = new Sprint();
                 Member member = new Member();
                 List<Member> memberList = new List<Member>();
@@ -299,7 +304,7 @@ namespace TimePilot.Controllers
 
             if (command != null && command.Equals("Delete Sprint"))
             {
-
+                
                 deleteSprint(RCModel);
 
             }
@@ -516,33 +521,33 @@ namespace TimePilot.Controllers
 
             if (model.StoryList != null)
             {
-            for (int i = 0; i < model.StoryList.Count; i++)
-            {
-                switch (model.StoryList[i].StoryPoints)
+                for (int i = 0; i < model.StoryList.Count; i++)
                 {
-                    case 1:
-                        point1 = point1 + 1;
-                        break;
-                    case 3:
-                        point3 = point3 + 1;
-                        break;
-                    case 5:
-                        point5 = point5 + 1;
-                        break;
-                    case 8:
-                        point8 = point8 + 1;
-                        break;
-                    case 13:
-                        point13 = point13 + 1;
-                        break;
-                    case 21:
-                        point21 = point21 + 1;
-                        break;
-                    default:
-                        noneOftheAbove = noneOftheAbove + 1;
-                        break;
+                    switch (model.StoryList[i].StoryPoints)
+                    {
+                        case 1:
+                            point1 = point1 + 1;
+                            break;
+                        case 3:
+                            point3 = point3 + 1;
+                            break;
+                        case 5:
+                            point5 = point5 + 1;
+                            break;
+                        case 8:
+                            point8 = point8 + 1;
+                            break;
+                        case 13:
+                            point13 = point13 + 1;
+                            break;
+                        case 21:
+                            point21 = point21 + 1;
+                            break;
+                        default:
+                            noneOftheAbove = noneOftheAbove + 1;
+                            break;
+                    }
                 }
-            }
 
             }
             pointArray[0] = point1;
