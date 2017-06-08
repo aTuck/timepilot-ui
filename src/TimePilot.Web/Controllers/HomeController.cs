@@ -158,20 +158,14 @@ namespace TimePilot.Controllers
             calculateTotalStoryPoints(model);
             totalStoryPoints = model.totalNumberStoryPoints;
 
-
             if (command != null && command.Equals("Apply Changes"))
             {
-
-                UpdateStoryDB(model);
-
+                StoryUpdate(model);
             }
 
             if (command != null && command.Equals("Resource Capacity Page"))
             {
-                calculateTotalStoryPoints(model);
-                totalStoryPoints = model.totalNumberStoryPoints;
                 return RedirectToAction("Resource", "Home");
-
             }
             return View(model);
         }
@@ -203,7 +197,6 @@ namespace TimePilot.Controllers
 
         public ActionResult StoryPopulate()
         {
-                      
             receiveStoryData();
             stories = apiHelper.parseStoryData(storyJson);
             TimePilot.Entities.Story temp;
@@ -220,9 +213,18 @@ namespace TimePilot.Controllers
         }
 
         [HttpPost]
+        public ActionResult StoryUpdate(StoryViewModel model)
+        {
+            foreach (var story in model.StoryList)
+            {
+                StoryDB.Update(story);
+            }
+            return RedirectToAction("Story");
+        }
+
+        [HttpPost]
         public ActionResult StoryDelete(int[] id)
         {
-            
             foreach (var item in id)
             {
                 StoryDB.Delete(item);

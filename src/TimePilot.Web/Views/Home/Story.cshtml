@@ -28,7 +28,7 @@
         </select>
     </div>
 </div>
-@using (Html.BeginForm("Story", "Home", FormMethod.Post))
+@using (Html.BeginForm("Story", "Home", FormMethod.Post, new { @id = "storyForm" }))
 {
     <div class="stories-container">
         @if (Model.StoryList.Count < 1)
@@ -57,7 +57,7 @@
                             @Html.HiddenFor(m => m.StoryList[i].Summary)
                         </td>
                         <td>
-                            @Html.TextBoxFor(m => m.StoryList[i].StoryPoints, new { @class = "storyPoint", @onchange = "" })
+                            @Html.TextBoxFor(m => m.StoryList[i].StoryPoints, new { @class = "storyPoint", @type="number" })
                             @Html.HiddenFor(m => m.StoryList[i].StoryPoints)
                         </td>
                         <td>
@@ -72,9 +72,9 @@
     <div class="buttons-container">
         <input type="button" value="Previous" onclick="location.href='@Url.Action("Index", "Home")'" class="button" />
         <input name="command" id="command" type="submit" value="Resource Capacity Page" onclick="this.form.submit(); location.href='@Url.Action("Resource", "Home")';" class="button" />
-        <input type="submit" value="Delete Selected" onclick="javascript:;" class="button" id="btnDelete" />
-        <input name="command" id="command" type="submit"  value="Apply Changes" onclick="this.form.submit();" class="button" />
-        <input type="button" value="Refresh Stories" onclick="location.href='@Url.Action("StoryPopulate", "Home")'" class="button" id="btnPopulate" />
+        <input id="btnDelete" type="submit" value="Delete Selected" onclick="javascript:;" class="button" />
+        <input id="btnUpdate" name="command"  type="submit"  value="Apply Changes" onclick="" class="button" />
+        <input id="btnPopulate" type="button" value="Refresh Stories" onclick="location.href='@Url.Action("StoryPopulate", "Home")'" class="button" />
     </div>
 } 
 
@@ -111,6 +111,20 @@
         $.ajax({
             type: "GET",
             url: "@Url.Action("StoryPopulate")",
+            traditional:true,
+            success: function (result) {
+                location.reload();
+            }
+        })
+    })
+
+    $("#btnUpdate").on("click", function (e) {
+        e.preventDefault();
+        var data = $('#storyForm').serialize();
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("StoryUpdate")",
+            data: data,
             traditional:true,
             success: function (result) {
                 location.reload();

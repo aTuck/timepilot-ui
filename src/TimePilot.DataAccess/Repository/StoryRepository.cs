@@ -19,16 +19,11 @@ namespace TimePilot.DataAccess.Repository
             return stories;
         }
 
-
         public void deleteAll()
         {
-
             string sql = @"DELETE FROM story";
             dbContext.Query<Story>(sql);
-
         }
-
-
 
         public List<Story> GetAllByForeignId(string ProjectKey)
         {
@@ -61,12 +56,9 @@ namespace TimePilot.DataAccess.Repository
 
         public bool Update(Story story)
         {
-
             string sql = @"UPDATE story SET StoryPoints = @storyPoint WHERE StoryID = @id";
             dbContext.Query<Story>(sql, new { storyPoint = story.StoryPoints, id = story.StoryID });
             return true;
-
-
         }
 
         /* Deletes a story from the story table
