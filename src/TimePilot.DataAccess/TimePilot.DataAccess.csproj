@@ -136,6 +136,7 @@
     <Compile Include="RepositoryBase.cs" />
     <Compile Include="Repository\IProjectRepository.cs" />
     <Compile Include="Repository\ProjectRepository.cs" />
+    <Compile Include="Repository\SprintRepository.cs" />
     <Compile Include="Repository\StoryRepository.cs" />
   </ItemGroup>
   <ItemGroup>

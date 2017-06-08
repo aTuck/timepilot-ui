@@ -31,8 +31,8 @@ namespace TimePilot.Controllers
         public void originateResourceCapacity()
         {
             Member member = new Member();
-            Sprint sprint = new Sprint();
-            List<Sprint> sprintList = new List<Sprint>();
+            TimePilot.Web.Models.Sprint sprint = new TimePilot.Web.Models.Sprint();
+            List<TimePilot.Web.Models.Sprint> sprintList = new List<TimePilot.Web.Models.Sprint>();
             List<Member> memberlist = new List<Member>();
             memberlist.Add(member);
             sprint.members = memberlist;
@@ -174,31 +174,6 @@ namespace TimePilot.Controllers
             return View(model);
         }
 
-        public void UpdateStoryDB(StoryViewModel model)
-        {
-
-            TimePilot.Entities.Story temp;
-            for (int i = 0; i < model.StoryList.Count; i++)
-            {
-
-                model.StoryList[i].ProjectKey = SelectedProject;
-                temp = StoryDB.GetById(model.StoryList[i]);
-                if (temp.ProjectKey == null)
-                {
-                    StoryDB.Add(model.StoryList[i]);
-                }
-                else
-                {
-
-                    StoryDB.Update(model.StoryList[i]);
-
-                }
-
-
-            }
-
-        }
-
         public ActionResult StoryPopulate()
         {
             receiveStoryData();
@@ -286,8 +261,8 @@ namespace TimePilot.Controllers
 
             if (command != null && command.Equals("Add Sprint"))
             {
-                
-                Sprint sprint = new Sprint();
+
+                TimePilot.Web.Models.Sprint sprint = new TimePilot.Web.Models.Sprint();
                 Member member = new Member();
                 List<Member> memberList = new List<Member>();
                 RCModel.sprints.Add(sprint);
