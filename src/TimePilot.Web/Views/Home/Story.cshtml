@@ -74,7 +74,7 @@
         <input type="button" value="Previous" onclick="location.href='@Url.Action("Index", "Home")'" class="button" />
         <input id="btnDelete" type="submit" value="Delete Selected" onclick="javascript:;" class="button" />
         <input id="btnUpdate" name="command" type="submit" value="Apply Changes" onclick="" class="button" />
-        <input id="btnPopulate" type="button" value="Refresh Stories" onclick="location.href='@Url.Action(" StoryPopulate", "Home" )'" class="button" />
+        <input id="btnPopulate" type="button" value="Refresh Stories" onclick="location.href='@Url.Action("StoryPopulate", "Home" )'" class="button" />
         <input name="command" id="command" type="button" value="Resource Capacity Page" onclick="return StoryPointValidation();" class="button toggleModal" />
     </div>
 } 
@@ -84,8 +84,9 @@
     <div class="modalstuff">
         <header>
             <h2>
-                One or more stories on this page has invalid story point values
-                Valid values: 1, 2, 3, 5, 8, 13, 21
+                One or more stories on this page has invalid story point values! 
+                <br />
+                Valid values: 1, 3, 5, 8, 13, 21
             </h2>
         </header>
         <button class="btn closebutton" id="closebutton"> Edit Stories </button>
@@ -137,7 +138,7 @@
     function StoryPointValidation() {
         var isInvalidInput = false;
         $("input[type=number]").each(function(){
-            if (this.value != 1 && this.value != 2 && this.value != 3 && this.value != 5 && this.value != 8 && this.value != 13 && this.value != 21)
+            if (this.value != 1 && this.value != 3 && this.value != 5 && this.value != 8 && this.value != 13 && this.value != 21)
             {
                 isInvalidInput = true;
             }
