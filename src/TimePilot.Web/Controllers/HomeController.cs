@@ -25,7 +25,6 @@ namespace TimePilot.Controllers
         List<TimePilot.Entities.Story> stories = new List<TimePilot.Entities.Story>();        
         List<Project> projects = new List<Project>();
         public static string SelectedProject;
-
         ProjectRepository ProjDB = new ProjectRepository();
         StoryRepository StoryDB = new StoryRepository();
 
@@ -133,7 +132,7 @@ namespace TimePilot.Controllers
             
             if (model.TeamVelocity > 0)
             {
-                model.TotalSprints = model.totalStoryPoints / model.TeamVelocity;
+                model.TotalSprints = model.totalPointsVelocity / model.TeamVelocity;
             }
             model.TotalWeeksVelocity = model.TotalSprints * model.SprintLength;
             model.projectDurationWeeksVelocity = model.TotalWeeksVelocity + model.ReleaseAndHardening;
@@ -150,6 +149,7 @@ namespace TimePilot.Controllers
                 storypointallocation = StoryVM.StorypointSum;
             }
             calculateTotalStoryPoints(StoryVM);
+            totalStoryPoints = StoryVM.totalNumberStoryPoints;
             return View(StoryVM);
         }
 
