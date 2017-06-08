@@ -139,7 +139,7 @@
                             <input type="submit" name="command" value="Add Member" id=@(i) onclick="setButtonIndex(this.id)" class="" />
                             @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
                             <input type="submit" name="command" id=@(i) value="Delete Sprint" class="" onclick="setButtonIndex(this.id)" />
-                            @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
+                            
                         </div>
                         <div id="collapse@(i)" class="panel-collapse collapse">
                             @for (int j = 0; j < Model.sprints[i].members.Count(); j++)
