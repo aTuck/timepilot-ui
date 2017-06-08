@@ -234,3 +234,7 @@ h1:hover{
     justify-content: center;
     align-items: center;
 }
+
+.btn:focus, .btn:active, .btn:target{
+    outline:none;
+}
