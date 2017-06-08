@@ -5,6 +5,7 @@
     ViewBag.Title = "Story";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<body>
 
 <div class="flex-container-header">
     <h1>Time Pilot</h1>
@@ -71,12 +72,24 @@
     </div>
     <div class="buttons-container">
         <input type="button" value="Previous" onclick="location.href='@Url.Action("Index", "Home")'" class="button" />
-        <input name="command" id="command" type="submit" value="Resource Capacity Page" onclick="this.form.submit(); location.href='@Url.Action("Resource", "Home")';" class="button" />
+        <input name ="command" id="command" type="button" value="Resource Capacity Page" onclick="return StoryPointValidation();" class="button toggleModal" />
         <input id="btnDelete" type="submit" value="Delete Selected" onclick="javascript:;" class="button" />
-        <input id="btnUpdate" name="command"  type="submit"  value="Apply Changes" onclick="" class="button" />
-        <input id="btnPopulate" type="button" value="Refresh Stories" onclick="location.href='@Url.Action("StoryPopulate", "Home")'" class="button" />
+        <input id="btnUpdate" name="command" type="submit" value="Apply Changes" onclick="" class="button" />
+        <input id="btnPopulate" type="button" value="Refresh Stories" onclick="location.href='@Url.Action(" StoryPopulate", "Home" )'" class="button" />
     </div>
 } 
+    <div class="modal" id="MyModal" data-keyboard="false" data-backdrop="static">
+        <!-- Warning Pop UP HTML-->
+        <div class="modalstuff">
+            <header>
+                <h2>
+                    One or more stories on this page has zero story points
+                </h2>
+            </header>
+            <button class="btn closebutton" id="closebutton"> Edit Stories </button>
+            <button class="btn proceedbutton" id="continuebutton"> Continue </button>
+        </div>
+    </div>
 
 <script>
     // JQuery to call delete action from button click
@@ -118,6 +131,33 @@
         })
     })
 
+        //Warning for 0 Story Points
+        function StoryPointValidation() {
+            var zeros = @Html.Raw(Json.Encode(Model.ZeroStoryFlag)); //This step is because apparently JS is finicky with boolean values
+            if(zeros == true)
+            {
+                var modal = document.getElementById('MyModal');
+                var closebutton = document.getElementById('closebutton')
+                var continuebutton = document.getElementById('continuebutton')
+                modal.style.display = "block";
+                closebutton.onclick = function() {
+                    modal.style.display = "none";//closes pop up 
+                }
+
+                continuebutton.onclick = function()
+                {
+                    document.getElementById("storyForm").submit();
+                    location.href = "@Url.Action("Resource", "Home")";
+                }
+            }
+            else
+            {
+                document.getElementById("Form").submit();
+                location.href = "@Url.Action("Resource", "Home")";
+            }
+    }
+
+
     $("#btnUpdate").on("click", function (e) {
         e.preventDefault();
         var data = $('#storyForm').serialize();
@@ -132,4 +172,5 @@
         })
     })
 </script>
+</body>
 
