@@ -7,8 +7,6 @@
 }
 <body>
 
-   
-<div class="container">
     <div class="flex-container-header">
         <h1>Time Pilot</h1>
         <p>
@@ -22,7 +20,7 @@
     <div class="pre-project-container">
         <h2 class="project-header">STORIES</h2>
         <div class="project-controls">
-            <p class="sort-project-info">Sort Story By:</p>
+        <p class="controls-label">Sort Story By:</p>
             <select class="sort-method">
                 <option onchange="">Name A-Z</option>
                 <option>Name Z-A</option>
@@ -31,7 +29,7 @@
             </select>
         </div>
     </div>
-    @using (Html.BeginForm("Story", "Home", FormMethod.Post))
+    @using (Html.BeginForm("Story", "Home", FormMethod.Post, new { id = "Form"}))
     {
     <div class="stories-container">
         @if (Model.StoryList.Count < 1)
@@ -40,8 +38,7 @@
         }
         else
         {
-          
-                <h1>@Model.totalNumberStoryPoints</h1>
+            <h2>Story Points: @Model.totalNumberStoryPoints</h2>
                 <table class="table-hover">
                     <tr>
                         <th>Story ID</th>
@@ -64,44 +61,76 @@
                                 @Html.TextBoxFor(m => m.StoryList[i].StoryPoints, new { @class = "storyPoint", @onchange = "" })
                                 @Html.HiddenFor(m => m.StoryList[i].StoryPoints)
                             </td>
-                            <td>
-                                @Html.CheckBoxFor(listmodel => listmodel.mStoryList[i].isSelectedToDelete)
-                                @Html.HiddenFor(m => m.mStoryList[i].isSelectedToDelete)
-                            </td>
+                        <td>
+                            <input class="" name="chkDelete" type="checkbox" value="@Model.StoryList[i].StoryID"/>
+                            @Html.HiddenFor(m => m.StoryList[i].StoryID)
+                        </td>
                         </tr>
                     }
                 </table>
-                <input type="submit" value="Delete Selected" onclick="this.form.submit();" class="button" />
-                <input type="submit" value="Apply Changes" onclick="this.form.submit();" class="button" />
-
-            }
-    </div>
-  
         }
-</div>
+    </div>
+    <div class="buttons-container">
+        <input type="button" value="Previous" onclick="location.href='@Url.Action("Index", "Home")'" class="button" />
+        <input name ="command" id="command" type="button" value="Resource Capacity Page" onclick="return StoryPointValidation();" class="button toggleModal" />
+        <input type="submit" value="Delete Selected" onclick="javascript:;" class="button" id="btnDelete" />
+        <input name="command" id="command" type="submit"  value="Apply Changes" onclick="this.form.submit();" class="button" />
+        <input type="button" value="Refresh Stories" onclick="location.href='@Url.Action("StoryPopulate", "Home")'" class="button" id="btnPopulate" />
+    </div>
+} 
+    <div class="modal" id="MyModal" data-keyboard="false" data-backdrop="static">
+        <!-- Warning Pop UP HTML-->
+        <div class="modalstuff">
+            <header>
+                <h2>
+                    One or more stories on this page has zero story points
+                </h2>
+            </header>
+            <button class="btn closebutton" id="closebutton"> Edit Stories </button>
+            <button class="btn proceedbutton" id="continuebutton"> Continue </button>
+        </div>
+    </div>
 
-<input type="submit" value="Previous" onclick="location.href='@Url.Action("Index", "Home")'" class="button" id="BackButton"/>
-<input type="submit" value="Resource Capacity" onclick="return StoryPointValidation();" class="button toggleModal" id="ResourceCapacityButton" />
-<p>1 point: @Model.StorypointSum[0]</p>
-<p>3 point: @Model.StorypointSum[1]</p>
-<p>5 point: @Model.StorypointSum[2]</p>
-<p>8 point: @Model.StorypointSum[3]</p>
-<p>13 point: @Model.StorypointSum[4]</p>
-<p>21 point:  @Model.StorypointSum[5]</p>
+<script>
+    // JQuery to call delete action from button click
+    $("#btnDelete").on("click", function (e) {
+        var confirmation = confirm("Are you sure?")
+        if (confirmation) {
+            e.preventDefault();
+            var data = [];
+            $("input[name='chkDelete']:checked").each(function () {
+                data.push($(this).val());
+            });
+            if (data.length == 0) {
+                return;
+            }
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("StoryDelete")",
+                    data: { id: data },
+                    traditional: true,
+                    success: function (result) {
+                        location.reload();
+                    }
+                })
+            }
+            }
+    })
 
- <div class="modal" id="MyModal" data-keyboard="false" data-backdrop="static"> <!-- Warning Pop UP HTML-->
-     <div class="modalstuff">
-         <header>
-             <h2>
-                 One or more stories on this page has zero story points
-             </h2>
-         </header>
-         <button class="btn closebutton" id="closebutton"> Edit Stories </button>
-         <button class="btn proceedbutton" id="continuebutton"> Continue </button>
-     </div>
-</div>
+    // JQuery to call populate action from button click
+    $("#btnPopulate").on("click", function (e) {
+        e.preventDefault();
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("StoryPopulate")",
+            traditional:true,
+            success: function (result) {
+                location.reload();
+        }
+        })
+    })
 
-    <script>
         //Warning for 0 Story Points
         function StoryPointValidation() {
             var zeros = @Html.Raw(Json.Encode(Model.ZeroStoryFlag)); //This step is because apparently JS is finicky with boolean values
@@ -114,15 +143,16 @@
                 closebutton.onclick = function() {
                     modal.style.display = "none";//closes pop up 
                 }
-             
 
                 continuebutton.onclick = function()
                 {
+                    document.getElementById("Form").submit();
                     location.href = "@Url.Action("Resource", "Home")";
                 }
             }
             else
             {
+                document.getElementById("Form").submit();
                 location.href = "@Url.Action("Resource", "Home")";
             }
     }

@@ -7,6 +7,11 @@
 td, th {
     text-align: left;
     padding: 8px;
+    width: 0px;
+}
+
+tr {
+    width:auto;
 }
 
 label{
@@ -29,6 +34,15 @@ input[type="checkbox"]{
     width:20px;
     height:20px;
 }
+
+input[type="submit"] {
+    margin: 0px 4px;
+}
+
+input[type="button"]{
+    margin: 0px 4px;
+}
+
 input:hover{
     cursor:pointer;
 }
@@ -36,7 +50,7 @@ input:hover{
 .storyPoint {
     border: none;
     width: 70px;
-    font-size: 25px;
+    font-size: 18px;
     font-weight: 700;
     background: #cbebed;
     height: 20px;
@@ -47,16 +61,11 @@ input:hover{
 }
 
 .stories-container{
-    width: 1000px;
-    height: 700px;
-    margin: 30px auto 0px;
+    width: 1140px;
+    max-height: 700px;
+    margin: 0px auto;
     overflow: scroll;
     overflow-x: hidden;
-}
-.stories-container::-webkit-scrollbar-track
-{
-	-webkit-box-shadow: inset 0 0 3px #484949;
-	border-radius:4px;
 }
 
 .stories-container::-webkit-scrollbar
@@ -71,4 +80,10 @@ input:hover{
     border-radius:4px;
 }
 
+.buttons-container{
+    display: flex;
+    justify-content: center;
+    margin-top: 25px;
+    margin-bottom:45px;
+}
 

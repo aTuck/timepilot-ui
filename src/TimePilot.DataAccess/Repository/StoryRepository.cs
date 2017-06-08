@@ -19,6 +19,17 @@ namespace TimePilot.DataAccess.Repository
             return stories;
         }
 
+
+        public void deleteAll()
+        {
+
+            string sql = @"DELETE FROM story";
+            dbContext.Query<Story>(sql);
+
+        }
+
+
+
         public List<Story> GetAllByForeignId(string ProjectKey)
         {
             string sql = @"SELECT * from story where ProjectKey = @pk";
@@ -48,18 +59,23 @@ namespace TimePilot.DataAccess.Repository
             }
         }
 
-        public bool Update(Story t)
+        public bool Update(Story story)
         {
-            throw new NotImplementedException();
+
+            string sql = @"UPDATE story SET StoryPoints = @storyPoint WHERE StoryID = @id";
+            dbContext.Query<Story>(sql, new { storyPoint = story.StoryPoints, id = story.StoryID });
+            return true;
+
+
         }
 
         /* Deletes a story from the story table
          * Returns true if successful delete
          * Returns false if not successful delete (likely story wasn't found)*/
-        public bool Delete(Story story)
+        public bool Delete(int StoryID)
         {
             string sql = @"DELETE from story where StoryID = @id";
-            List<Story> stories = dbContext.Query<Story>(sql, new { id = story.StoryID }).ToList();
+            List<Story> stories = dbContext.Query<Story>(sql, new { id = StoryID }).ToList();
             if (stories.Count <= 0)
             {
                 return false;

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using TimePilot.Web.Models;
+using TimePilot.Entities;
 
 namespace TimePilot.Web.ViewModels
 {
@@ -17,7 +17,7 @@ namespace TimePilot.Web.ViewModels
         public Boolean ZeroStoryFlag { get; set;}
 
         public int totalNumberStoryPoints { get; set; }
-        public List<TimePilot.Entities.Story> StoryList { get; set; }
-
+        public List<Story> StoryList { get; set; }
+        public bool isSelectedToDelete { get; set; }
     }
 }
