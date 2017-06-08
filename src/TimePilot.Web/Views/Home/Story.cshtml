@@ -72,10 +72,10 @@
     </div>
     <div class="buttons-container">
         <input type="button" value="Previous" onclick="location.href='@Url.Action("Index", "Home")'" class="button" />
-        <input name ="command" id="command" type="button" value="Resource Capacity Page" onclick="return StoryPointValidation();" class="button toggleModal" />
         <input id="btnDelete" type="submit" value="Delete Selected" onclick="javascript:;" class="button" />
         <input id="btnUpdate" name="command" type="submit" value="Apply Changes" onclick="" class="button" />
         <input id="btnPopulate" type="button" value="Refresh Stories" onclick="location.href='@Url.Action(" StoryPopulate", "Home" )'" class="button" />
+        <input name="command" id="command" type="button" value="Resource Capacity Page" onclick="return StoryPointValidation();" class="button toggleModal" />
     </div>
 } 
     <div class="modal" id="MyModal" data-keyboard="false" data-backdrop="static">
@@ -131,30 +131,38 @@
         })
     })
 
-        //Warning for 0 Story Points
-        function StoryPointValidation() {
-            var zeros = @Html.Raw(Json.Encode(Model.ZeroStoryFlag)); //This step is because apparently JS is finicky with boolean values
-            if(zeros == true)
+    //Warning for 0 Story Points
+    function StoryPointValidation() {
+        var isInvalidInput = false;
+        $("input[type=number]").each(function(){
+            if (this.value != 1 && this.value != 3 && this.value != 5 && this.value != 8 && this.value != 13 && this.value != 21)
             {
-                var modal = document.getElementById('MyModal');
-                var closebutton = document.getElementById('closebutton')
-                var continuebutton = document.getElementById('continuebutton')
-                modal.style.display = "block";
-                closebutton.onclick = function() {
-                    modal.style.display = "none";//closes pop up 
-                }
-
-                continuebutton.onclick = function()
-                {
-                    document.getElementById("storyForm").submit();
-                    location.href = "@Url.Action("Resource", "Home")";
-                }
+                isInvalidInput = true;
+                alert("bool flagged at"+this.value);
             }
-            else
+        })
+        
+        if(isInvalidInput)
+        {
+            var modal = document.getElementById('MyModal');
+            var closebutton = document.getElementById('closebutton')
+            var continuebutton = document.getElementById('continuebutton')
+            modal.style.display = "block";
+            closebutton.onclick = function() {
+                modal.style.display = "none";//closes pop up 
+            }
+
+            continuebutton.onclick = function()
             {
-                document.getElementById("Form").submit();
+                document.getElementById("storyForm").submit();
                 location.href = "@Url.Action("Resource", "Home")";
             }
+        }
+        else
+        {
+            document.getElementById("storyForm").submit();
+            location.href = "@Url.Action("Resource", "Home")";
+        }
     }
 
     $("#btnUpdate").on("click", function (e) {
@@ -167,6 +175,7 @@
             traditional:true,
             success: function (result) {
                 location.reload();
+                alert("Changes applied");
             }
         })
     })
