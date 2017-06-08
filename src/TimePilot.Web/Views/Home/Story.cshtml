@@ -73,7 +73,7 @@
     <div class="buttons-container">
         <input type="button" value="Previous" onclick="location.href='@Url.Action("Index", "Home")'" class="button" />
         <input id="btnDelete" type="submit" value="Delete Selected" onclick="javascript:;" class="button" />
-        <input id="btnUpdate" name="command" type="submit" value="Apply Changes" onclick="" class="button" />
+        <input id="btnUpdate" name="command" type="submit" value="Apply Changes" onclick="postStoryForm()" class="button" />
         <input id="btnPopulate" type="button" value="Refresh Stories" onclick="location.href='@Url.Action(" StoryPopulate", "Home" )'" class="button" />
         <input name="command" id="command" type="button" value="Resource Capacity Page" onclick="return StoryPointValidation();" class="button toggleModal" />
     </div>
@@ -142,43 +142,42 @@
                 isInvalidInput = true;
             }
         })
-        
+
         if(isInvalidInput)
         {
+            var data = $('#storyForm').serialize();
             var modal = document.getElementById('MyModal');
             var closebutton = document.getElementById('closebutton')
             var continuebutton = document.getElementById('continuebutton')
             modal.style.display = "block";
             closebutton.onclick = function() {
-                modal.style.display = "none";//closes pop up 
+                modal.style.display = "none";//closes pop up
             }
 
             continuebutton.onclick = function()
             {
-                document.getElementById("storyForm").submit();
+                postStoryForm();
                 location.href = "@Url.Action("Resource", "Home")";
             }
         }
         else
         {
-            document.getElementById("storyForm").submit();
+            postStoryForm();
             location.href = "@Url.Action("Resource", "Home")";
         }
     }
 
-    $("#btnUpdate").on("click", function (e) {
-        e.preventDefault();
-        var data = $('#storyForm').serialize();
-        $.ajax({
-            type: "POST",
-            url: "@Url.Action("StoryUpdate")",
-            data: data,
-            traditional:true,
-            success: function (result) {
+    function postStoryForm() {
+            var data = $('#storyForm').serialize();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("StoryUpdate")",
+                data: data,
+                traditional:true,
+                success: function (result) {
                 location.reload();
-                alert("Changes applied");
-            }
-        })
-    })
+                }
+            })
+        }
 </script>
 

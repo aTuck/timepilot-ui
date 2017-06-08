@@ -140,7 +140,6 @@ namespace TimePilot.Controllers
 
         public ActionResult Story()
         {
-            //StoryPopulate();
             ModelState.Clear();
             bindStoryDataToViewModel();
             sumStoryPoints(StoryVM);
