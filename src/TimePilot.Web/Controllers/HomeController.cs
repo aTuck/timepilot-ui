@@ -213,6 +213,17 @@ namespace TimePilot.Controllers
             return RedirectToAction("Story");
         }
 
+
+        public void copySprint(ResourceCapacityViewModel model)        
+        {
+
+            List<Member> copiedMemberList = model.sprints[model.buttonIndex].members;
+            TimePilot.Web.Models.Sprint copiedSprint = new TimePilot.Web.Models.Sprint();
+            model.sprints.Add(copiedSprint);
+            model.sprints[model.sprints.Count-1].members = copiedMemberList;
+            
+        }
+
         public void calculateTotalStoryPoints (StoryViewModel model)
         {
             int sumofPoints = 0;
@@ -260,7 +271,14 @@ namespace TimePilot.Controllers
                 RCModel.sprints[RCModel.buttonIndex].members.Add(member);
 
             }
+            if (command != null && command.Equals("Copy Sprint"))
+            {
 
+
+                copySprint(RCModel);
+
+
+            }
             if (command != null && command.Equals("Add Sprint"))
             {
 
