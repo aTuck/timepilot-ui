@@ -196,9 +196,15 @@ namespace TimePilot.Controllers
         [HttpPost]
         public ActionResult StoryUpdate(StoryViewModel model)
         {
-            foreach (var story in model.StoryList)
+
+            if (model.StoryList != null)
             {
-                StoryDB.Update(story);
+
+                foreach (var story in model.StoryList)
+                {
+                    StoryDB.Update(story);
+                }
+             
             }
             return RedirectToAction("Story");
         }
