@@ -14,7 +14,6 @@ namespace TimePilot.Controllers
         private string projectJson;
         private string storyJson;
         ProjectViewModel ProjectVM = new ProjectViewModel();
-        StoryViewModel StoryVM = new StoryViewModel();
         ResourceCapacityViewModel mResourceViewModel = new ResourceCapacityViewModel();
         ResultsViewModel ResultsVM = new ResultsViewModel();
         public static int [] storypointallocation;
@@ -40,7 +39,7 @@ namespace TimePilot.Controllers
             mResourceViewModel.sprints = sprintList;
         }
 
-        public void bindStoryDataToViewModel()
+        public void bindStoryDataToViewModel(StoryViewModel StoryVM)
         {
             stories = StoryDB.GetAllByForeignId(SelectedProject);
             StoryVM.StoryList = stories;
@@ -140,8 +139,8 @@ namespace TimePilot.Controllers
 
         public ActionResult Story()
         {
-            ModelState.Clear();
-            bindStoryDataToViewModel();
+            var StoryVM = new StoryViewModel();
+            bindStoryDataToViewModel(StoryVM);
             sumStoryPoints(StoryVM);
             if (StoryVM.StorypointSum != null)
             {
@@ -168,9 +167,7 @@ namespace TimePilot.Controllers
             {
                 StoryUpdate(model);
             }
-
-           
-            return View(model);
+            return RedirectToAction("Story");
         }
 
         public ActionResult StoryPopulate()
@@ -545,14 +542,6 @@ namespace TimePilot.Controllers
             pointArray[6] = noneOftheAbove;
 
             model.StorypointSum = pointArray;
-            if (noneOftheAbove > 0)
-            {
-                model.ZeroStoryFlag = true;
-            }
-            else
-            {
-                model.ZeroStoryFlag = false;
-            }
         }
 
         private IEnumerable<SelectListItem> createSprintLengthList()
