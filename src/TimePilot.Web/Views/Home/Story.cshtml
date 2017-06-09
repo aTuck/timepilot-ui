@@ -91,12 +91,25 @@
         </div>
     </div>
 
+    <div class="modal" id="deleteStoriesModal" data-keyboard="false" data-backdrop="static">
+        <!-- Warning Pop UP HTML-->
+        <div class="modalstuff">
+            <header>
+                <h2>
+                    Are you sure?
+                </h2>
+            </header>
+            <button class="btn closebutton" id="noButton"> No </button>
+            <button class="btn proceedbutton" id="yesButton"> Yes </button>
+        </div>
+    </div>
+
 <script>
     // JQuery to call delete action from button click
     $("#btnDelete").on("click", function (e) {
-        var confirmation = confirm("Are you sure?")
-        if (confirmation) {
-            e.preventDefault();
+        //var verification =  DeleteValidation();
+        confirmation = DeleteValidation();
+        if (confirmation!=null) {
             var data = [];
             $("input[name='chkDelete']:checked").each(function () {
                 data.push($(this).val());
@@ -104,7 +117,7 @@
             if (data.length == 0) {
                 return;
             }
-            else {
+            else if (data.length >0) {
                 $.ajax({
                     type: "POST",
                     url: "@Url.Action("StoryDelete")",
@@ -131,6 +144,25 @@
         })
     })
 
+   function DeleteValidation()
+    {
+        
+        var modal = document.getElementById('deleteStoriesModal');
+        var noButton = document.getElementById('noButton');
+        var yesButton = document.getElementById('yesButton');
+        modal.style.display = "block";
+        noButton.onclick = function() {
+            modal.style.display = "none";
+            return null;
+        }
+
+        yesButton.onclick = function()
+        {
+            modal.style.display = "none";
+            return true;
+        }
+    }
+  
         //Warning for 0 Story Points
         function StoryPointValidation() {
             var zeros = @Html.Raw(Json.Encode(Model.ZeroStoryFlag)); //This step is because apparently JS is finicky with boolean values
@@ -152,7 +184,7 @@
             }
             else
             {
-                document.getElementById("Form").submit();
+                document.getElementById("storyForm").submit();
                 location.href = "@Url.Action("Resource", "Home")";
             }
     }
