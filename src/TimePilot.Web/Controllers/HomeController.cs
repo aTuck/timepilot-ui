@@ -83,8 +83,8 @@ namespace TimePilot.Controllers
             }
             else
             {
-            return RedirectToAction("Story", "Home");
-        }
+                return RedirectToAction("Story", "Home");
+            }
         }
 
         /* Iterates through projects grabbed from API call
@@ -292,6 +292,12 @@ namespace TimePilot.Controllers
             totalAvailablility = RCModel.totalDevCapacity;
             AvgCapactiyperWeek = RCModel.avgPerWeek;
             return View(RCModel);
+        }
+
+        public ActionResult ResourceUpdate(ResourceCapacityViewModel ResourceVM)
+        {
+            //do nothing right now
+            return RedirectToAction("Resource");
         }
 
         public void calculateTotalDays(ResultsViewModel model)

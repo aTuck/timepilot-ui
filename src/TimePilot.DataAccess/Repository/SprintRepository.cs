@@ -79,11 +79,11 @@ namespace TimePilot.DataAccess.Repository
         public bool Add(Sprint sprint)
         {
             //TSQL string to insert the project passed to this function into the project table
-            string sql = @"INSERT INTO Sprint (SprintID, ProjectKey) 
-                           VALUES (@id, @pk)";
+            string sql = @"INSERT INTO Sprint (SprintID, Name, ProjectKey) 
+                           VALUES (@id, @n, @pk)";
 
             //Do a query sending sql string and assigning variables in sql string to the sprint object passed in
-            dbContext.Query(sql, new {id = sprint.SprintID, pk = sprint.ProjectKey}).ToList();
+            dbContext.Query(sql, new {id = sprint.SprintID, n = sprint.Name, pk = sprint.ProjectKey}).ToList();
 
             //Sprint didn't exist, now it does
             return true;
