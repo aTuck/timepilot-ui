@@ -36,9 +36,8 @@
 </div>
 
 <div class="resource-container">
-        @using (Html.BeginForm("Resource", "Home", FormMethod.Post))
+        @using (Html.BeginForm("Resource", "Home", FormMethod.Post, new { @id = "resourceForm" }))
         {
-            /*
             <table id="myTable">
                 <tr>
                     <th>Role</th>
@@ -54,7 +53,7 @@
                     <th>Total Available</th>
                     <th>Delete</th>
                 </tr>
-                @for (int i = 0; i< Model.sprints.Count(); i++)
+                @for (int i = 0; i < Model.sprints.Count(); i++)
                 {
                 <tr>
                     <th>Sprint @(i + 1)</th>
@@ -66,6 +65,10 @@
 
                     <td>
                         <input type="submit" name="command" id=@(i) value="Delete Sprint" class="button" onclick="setButtonIndex(this.id)" />
+                        @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
+                    </td>
+                    <td>
+                        <input type="submit" name="command" id=@(i) value="Copy Sprint" class="button" onclick="setButtonIndex(this.id)" />
                         @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
                     </td>
                 </tr>
@@ -124,10 +127,11 @@
                             @Html.HiddenFor(m => m.sprints[i].members[j].isSelectedToDelete)
                         </td>
                     </tr>
+                        }
                     }
-                }
             </table>
-            */
+
+            /*
             for (int i = 0; i < Model.sprints.Count(); i++)
             {
                 <div class="panel-group">
@@ -136,9 +140,9 @@
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" href="#collapse@(i)">Sprint @(i+1)</a>
                             </h4>
-                            <input type="submit" name="command" value="Add Member" id=@(i) onclick="setButtonIndex(this.id)" class="" />
+                            <input type="submit" name="command" value="Add Member" id=@(i) onclick="setButtonIndex(this.id)" class="btn btn-default" />
                             @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
-                            <input type="submit" name="command" id=@(i) value="Delete Sprint" class="" onclick="setButtonIndex(this.id)" />
+                            <input type="submit" name="command" id=@(i) value="Delete Sprint" onclick="setButtonIndex(this.id)"  class="btn btn-default" />
                             @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
                         </div>
                         <div id="collapse@(i)" class="panel-collapse collapse">
@@ -152,12 +156,12 @@
                         </div>
                     </div>
                 </div>
-            }
+            }*/
             <input type="submit" name="command" id="command" value="Add Sprint" class="button" />
-            <input type="submit" name="command" value="Delete Selected" onclick="this.form.submit();" class="button" />
+            <input type="submit" name="command" value="Delete Selected" class="button" />
             <input type="button" value="Previous" onclick="location.href='@Url.Action("Story", "Home")'" class="button" />
             <input type="submit" name="command" id="command" value="Recalculate Values" class="button" />
-            <input type="button" value="Results Page" onclick="location.href='@Url.Action("Result", "Home")'" class="button" />
+            <input type="button" value="Results Page" onclick="postResourceForm()" class="button" />
         }
 </div>
 
@@ -171,6 +175,20 @@
         }
         function setMemberIndex(e) {
             document.getElementById('memberIndex').value = e;
-        }
+       } 
         $('.collapse').collapse("collapse");
+
+        function postResourceForm() {
+            var data = $('#resourceForm').serialize();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ResourceUpdate")",
+                data: data,
+                traditional:true,
+                success: function (result) {
+                location.reload();
+                }
+            })
+            location.href = '@Url.Action("Result", "Home")'
+        }
 </script>

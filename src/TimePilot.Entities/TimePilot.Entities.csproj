@@ -112,6 +112,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Project.cs" />
+    <Compile Include="Sprint.cs" />
     <Compile Include="Story.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
