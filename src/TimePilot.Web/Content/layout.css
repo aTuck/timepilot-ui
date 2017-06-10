@@ -16,6 +16,7 @@ body{
 
 p{
     margin: 0px;
+    cursor: auto;
 }
 
 h1{
@@ -92,8 +93,6 @@ h1:hover{
     cursor:pointer;
 }
         
-
-
 .button{
     background: #94d0d3;
     font-family: 'Century Gothic';
@@ -101,8 +100,6 @@ h1:hover{
     border-radius: 5px;
     padding: 10px;  
     outline:none;
-    align-self:flex-end;
-    margin: 10px 0;
     border: #aaaaaa 1px;
     animation:ease-out;
     transition:0.7s;
@@ -115,7 +112,9 @@ h1:hover{
     transition:0.7s;
 }
 
-
+#submit{
+     margin: 10px 0px 10px;
+}
 
 .projectList{
     font-family: 'Century Gothic';
@@ -130,20 +129,26 @@ h1:hover{
 
 .pre-project-container{
     display: flex;
-    flex-wrap: wrap;
+    text-align: left;
     align-items: center;
     justify-content: space-between;
-    padding: 40px 0px 40px;
-    width: 1170px;
-    box-sizing:border-box;
+    padding: 40px 0px 20px 0px;
+    
+}
+.aside-right{
+    width: 50%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: end;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
 }
 
-.project-controls{
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    width:580px;
-    margin-right: 25px;
+
+#search-box{
+    width:200px;
+    cursor: text;
 }
 
 .controls-label{
@@ -198,6 +203,16 @@ h1:hover{
     background-color: black;
 }
 
+#sort-order{
+    cursor:pointer;
+}
+
+#sort-order option:hover{
+    background: pink;
+    cursor: pointer;
+}
+
+
 .flex-container-footer{
     display: flex;
     flex-direction: row;
@@ -211,6 +226,8 @@ h1:hover{
     position: absolute;
     box-sizing:border-box;
 }
+
+
 
 .push, .flex-container-footer{
     height: 55px;
@@ -237,4 +254,36 @@ h1:hover{
 
 .btn:focus, .btn:active, .btn:target{
     outline:none;
+}
+@media only screen and (max-width: 1200px) {
+  .pre-project-container {
+        flex-direction: row;   
+    }
+
+   .aside-right
+    {   
+      width: 100%;
+      display: flex; 
+      justify-content: flex-end; 
+      height: 25px 
+      
+    }
+}
+@media only screen and (max-width: 992px) {
+  .pre-project-container {
+        flex-direction: column;
+        flex-wrap: wrap;
+    }
+
+   .aside-right
+    {   
+      margin-top:10px;
+      display: flex; 
+      justify-content: center;
+      height: 30px; 
+      font-size: 13px;
+    }
+    .flex-container-footer {
+        font-size: 11px;
+    }
 }
