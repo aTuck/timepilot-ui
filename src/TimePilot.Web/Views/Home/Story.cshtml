@@ -72,7 +72,7 @@
     </div>
     <div class="buttons-container">
         <input type="button" value="Previous" onclick="location.href='@Url.Action("Index", "Home")'" class="button" />
-        <input id="btnDelete" type="submit" value="Delete Selected" onclick="javascript:;" class="button" />
+        <input id="btnDelete" type="button" value="Delete Selected" onclick="javascript:;" class="button" data-toggle="modal" data-target="#deleteStoriesModal" />
         <input id="btnUpdate" name="command" type="submit" value="Apply Changes" onclick="postStoryForm()" class="button" />
         <input id="btnPopulate" type="button" value="Refresh Stories" onclick="location.href='@Url.Action("StoryPopulate", "Home" )'" class="button" />
         <input name="command" id="command" type="button" value="Resource Capacity Page" onclick="return StoryPointValidation();" class="button toggleModal" />
@@ -94,7 +94,7 @@
         </div>
     </div>
 
-    <div class="modal" id="deleteStoriesModal" data-keyboard="false" data-backdrop="static">
+    <div class="modal fade" id="deleteStoriesModal" data-keyboard="false" role="dialog">
         <!-- Warning Pop UP HTML-->
         <div class="modalstuff">
             <header>
@@ -102,36 +102,19 @@
                     Are you sure?
                 </h2>
             </header>
-            <button class="btn closebutton" id="noButton"> No </button>
-            <button class="btn proceedbutton" id="yesButton"> Yes </button>
+            <button class="btn closebutton" id="noButton" data-dismiss="modal"> No </button>
+            <button class="btn proceedbutton" id="yesButton" data-dismiss="modal"> Yes </button>
         </div>
     </div>
 
 <script>
     // JQuery to call delete action from button click
     $("#btnDelete").on("click", function (e) {
-        //var verification =  DeleteValidation();
-        confirmation = DeleteValidation();
-        if (confirmation!=null) {
-            var data = [];
-            $("input[name='chkDelete']:checked").each(function () {
-                data.push($(this).val());
-            });
-            if (data.length == 0) {
-                return;
-            }
-            else if (data.length >0) {
-                $.ajax({
-                    type: "POST",
-                    url: "@Url.Action("StoryDelete")",
-                    data: { id: data },
-                    traditional: true,
-                    success: function (result) {
-                        location.reload();
-                    }
-                })
-            }
-        }
+        e.preventDefault();
+
+        deleteValidation((wantsToDelete) => {
+            if (wantsToDelete) { deleteStoryForm() };
+        })
     })
 
     // JQuery to call populate action from button click
@@ -146,28 +129,11 @@
             }
         })
     })
+    
 
-   function DeleteValidation()
-    {
-        
-        var modal = document.getElementById('deleteStoriesModal');
-        var noButton = document.getElementById('noButton');
-        var yesButton = document.getElementById('yesButton');
-        modal.style.display = "block";
-        noButton.onclick = function() {
-            modal.style.display = "none";
-            return null;
-        }
-
-        yesButton.onclick = function()
-        {
-            modal.style.display = "none";
-            return true;
-        }
-    }
   
-        //Warning for 0 Story Points
-        function StoryPointValidation() {
+    //Warning for 0 Story Points
+    function StoryPointValidation() {
         var isInvalidInput = false;
         $("input[type=number]").each(function(){
             if (this.value != 1 && this.value != 3 && this.value != 5 && this.value != 8 && this.value != 13 && this.value != 21)
@@ -177,26 +143,26 @@
         })
 
         if(isInvalidInput)
-            {
-                var modal = document.getElementById('MyModal');
-                var closebutton = document.getElementById('closebutton')
-                var continuebutton = document.getElementById('continuebutton')
-                modal.style.display = "block";
-                closebutton.onclick = function() {
-                    modal.style.display = "none";//closes pop up 
-                }
-
-                continuebutton.onclick = function()
-                {
-                postStoryForm();
-                    location.href = "@Url.Action("Resource", "Home")";
-                }
+        {
+            var modal = document.getElementById('MyModal');
+            var closebutton = document.getElementById('closebutton')
+            var continuebutton = document.getElementById('continuebutton')
+            modal.style.display = "block";
+            closebutton.onclick = function() {
+                modal.style.display = "none";//closes pop up 
             }
-            else
+
+            continuebutton.onclick = function()
             {
-            postStoryForm();
+                postStoryForm();
                 location.href = "@Url.Action("Resource", "Home")";
             }
+        }
+        else
+        {
+            postStoryForm();
+            location.href = "@Url.Action("Resource", "Home")";
+        }
     }
 
     function postStoryForm() {
@@ -210,6 +176,43 @@
                 location.href="@Url.Action("Story", "Home")";
             }
         })
+    }
+
+    function deleteValidation(wantsToDelete) {
+        var modal = document.getElementById('deleteStoriesModal');
+        var noButton = document.getElementById('noButton');
+        var yesButton = document.getElementById('yesButton');
+        noButton.onclick = function () {
+            wantsToDelete(false)
         }
+
+        yesButton.onclick = function () {
+            wantsToDelete(true)
+        }
+    }
+
+    function deleteStoryForm(){
+        var data = [];
+        $("input[name='chkDelete']:checked").each(function () {
+            data.push($(this).val());
+        });
+        if (data.length == 0) {
+            return;
+        }
+        else if (data.length >0) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("StoryDelete")",
+                data: { id: data },
+                traditional: true,
+                success: function (result) {
+                    //Modify DOM
+                    $("input[name='chkDelete']:checked").each(function () {
+                        $(this.parentNode.parentNode).remove();
+                    })
+                }
+            })
+        }
+    }
 </script>
 
