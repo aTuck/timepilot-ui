@@ -18,7 +18,7 @@
     </div>
     <div class="pre-project-container">
         <h2 class="project-header">PROJECTS</h2>
-        <div class="project-controls">
+        <div class="aside-right">   
             <p class="controls-label">Sort Project By:</p>
             <select id="sort-order">
                 <option value="desc">Name A-Z</option>
@@ -28,16 +28,19 @@
         <input id="search-box"/>
         </div>
     </div>
+
     <div class="project-container">
         @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @id = "projectForm" }))
         {
             @Html.DropDownListFor(m => m.SelectedProject,
                                 new SelectList(Model.ProjectList, "ProjectKey", "Summary"),
 
-                                new { size = "25", @class = "projectList", @id = "projectList" })
-                <input type="submit" value="Stories Page" class="button" id="submit" />
+                                new { size = "25", @class = "projectList", @id = "projectList" })         
         }
+
+        <input type="submit" value="Stories Page" class="button" id="submit" />
     </div>
+    
 
 <script>
 //Filters dropwdown list based on search box input
