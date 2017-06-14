@@ -18,9 +18,9 @@
 
 <div class="pre-project-container">
     <h2 class="project-header">STORIES</h2>
-    <div class="project-controls">
+    <div class="aside-right">
         <p class="controls-label">Sort Story By:</p>
-        <select class="sort-method">
+        <select id="sort-order">
             <option onchange="">Name A-Z</option>
             <option>Name Z-A</option>
             <option>Newest Updated</option>
@@ -28,6 +28,7 @@
         </select>
     </div>
 </div>
+<!-- <h2>Story Points: @Model.totalNumberStoryPoints</h2> -->
 
 @using (Html.BeginForm("Story", "Home", FormMethod.Post, new { @id = "storyForm" }))
 {
@@ -38,7 +39,7 @@
         }
         else
         {
-            <h2>Story Points: @Model.totalNumberStoryPoints</h2>
+
             <table class="table-hover">
                 <tr>
                     <th>Story ID</th>
@@ -58,11 +59,11 @@
                             @Html.HiddenFor(m => m.StoryList[i].Summary)
                         </td>
                         <td>
-                            @Html.TextBoxFor(m => m.StoryList[i].StoryPoints, new { @class = "storyPoint", @type="number" })
+                            @Html.TextBoxFor(m => m.StoryList[i].StoryPoints, new { @class = "storyPoint", @type = "number" })
                             @Html.HiddenFor(m => m.StoryList[i].StoryPoints)
                         </td>
                         <td>
-                            <input class="" name="chkDelete" type="checkbox" value="@Model.StoryList[i].StoryID"/>
+                            <input class="" name="chkDelete" type="checkbox" value="@Model.StoryList[i].StoryID" />
                             @Html.HiddenFor(m => m.StoryList[i].StoryID)
                         </td>
                     </tr>
@@ -77,35 +78,35 @@
         <input id="btnPopulate" type="button" value="Refresh Stories" onclick="location.href='@Url.Action("StoryPopulate", "Home" )'" class="button" />
         <input name="command" id="command" type="button" value="Resource Capacity Page" onclick="return StoryPointValidation();" class="button toggleModal" />
     </div>
-} 
+}
 
-    <div class="modal" id="MyModal" data-keyboard="false" data-backdrop="static">
-        <!-- Warning Pop UP HTML-->
-        <div class="modalstuff">
-            <header>
-                <h2>
-                One or more stories on this page has invalid story point values! 
+<div class="modal" id="MyModal" data-keyboard="false" data-backdrop="static">
+    <!-- Warning Pop UP HTML-->
+    <div class="modalstuff">
+        <header>
+            <h2>
+                One or more stories on this page has invalid story point values!
                 <br />
                 Valid values: 1, 3, 5, 8, 13, 21
-                </h2>
-            </header>
-            <button class="btn closebutton" id="closebutton"> Edit Stories </button>
-            <button class="btn proceedbutton" id="continuebutton"> Continue </button>
-        </div>
+            </h2>
+        </header>
+        <button class="btn closebutton" id="closebutton"> Edit Stories </button>
+        <button class="btn proceedbutton" id="continuebutton"> Continue </button>
     </div>
+</div>
 
-    <div class="modal fade" id="deleteStoriesModal" data-keyboard="false" role="dialog">
-        <!-- Warning Pop UP HTML-->
-        <div class="modalstuff">
-            <header>
-                <h2>
-                    Are you sure?
-                </h2>
-            </header>
-            <button class="btn closebutton" id="noButton" data-dismiss="modal"> No </button>
-            <button class="btn proceedbutton" id="yesButton" data-dismiss="modal"> Yes </button>
-        </div>
+<div class="modal fade" id="deleteStoriesModal" data-keyboard="false" role="dialog">
+    <!-- Warning Pop UP HTML-->
+    <div class="modalstuff">
+        <header>
+            <h2>
+                Are you sure?
+            </h2>
+        </header>
+        <button class="btn closebutton" id="noButton" data-dismiss="modal"> No </button>
+        <button class="btn proceedbutton" id="yesButton" data-dismiss="modal"> Yes </button>
     </div>
+</div>
 
 <script>
     // JQuery to call delete action from button click
@@ -129,9 +130,9 @@
             }
         })
     })
-    
 
-  
+
+
     //Warning for 0 Story Points
     function StoryPointValidation() {
         var isInvalidInput = false;
@@ -149,7 +150,7 @@
             var continuebutton = document.getElementById('continuebutton')
             modal.style.display = "block";
             closebutton.onclick = function() {
-                modal.style.display = "none";//closes pop up 
+                modal.style.display = "none";//closes pop up
             }
 
             continuebutton.onclick = function()

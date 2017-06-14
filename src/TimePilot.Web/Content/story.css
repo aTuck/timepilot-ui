@@ -1,13 +1,17 @@
 ﻿table {
-    font-family: arial, sans-serif;
+    font-family: 'Century Gothic';
     width: 100%;
     border-collapse: collapse;
 }
 
 td, th {
     text-align: left;
-    padding: 8px;
+    padding: 2px;
     width: 0px;
+}
+
+td:hover{
+    background: initial;
 }
 
 tr {
@@ -19,11 +23,11 @@ label{
 }
 
 tr:nth-child(even) {
-    background-color: #e2fdff;
+    background-color: #c0d9db;
 }
 
 tr:nth-child(even) td input {
-    background-color: #e2fdff;
+    background-color: #c0d9db;
 }
 
 tr:hover td input{
@@ -62,10 +66,13 @@ input:hover{
 
 .stories-container{
     width: 1140px;
-    max-height: 700px;
+    max-height: 530px;
     margin: 0px auto;
     overflow: scroll;
     overflow-x: hidden;
+    background:#e2fdff;
+    border-color: #c0cfd1;  
+    border-radius:10px;
 }
 
 .stories-container::-webkit-scrollbar
@@ -83,7 +90,11 @@ input:hover{
 .buttons-container{
     display: flex;
     justify-content: center;
-    margin-top: 25px;
-    margin-bottom:45px;
+    margin-top: 10px;
+    margin-bottom:20px;
+}
+
+@media only screen and (max-width: 992px) {
+  
 }
 
