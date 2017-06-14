@@ -1,0 +1,218 @@
+﻿@using TimePilot.Web.ViewModels
+@model StoryViewModel
+
+@{
+    ViewBag.Title = "Story";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="flex-container-header">
+    <h1>Time Pilot</h1>
+    <p>
+        <a class="pre-activebread" href="Index">Project Selection</a> >
+        <a class="activebread">Story Points</a> >
+        <a class="deactivebread">Resource Capacity</a> >
+        <a class="deactivebread">Conversion Rate & Results</a>
+    </p>
+</div>
+
+<div class="pre-project-container">
+    <h2 class="project-header">STORIES</h2>
+    <div class="project-controls">
+        <p class="controls-label">Sort Story By:</p>
+        <select class="sort-method">
+            <option onchange="">Name A-Z</option>
+            <option>Name Z-A</option>
+            <option>Newest Updated</option>
+            <option>Oldest Updated</option>
+        </select>
+    </div>
+</div>
+
+@using (Html.BeginForm("Story", "Home", FormMethod.Post, new { @id = "storyForm" }))
+{
+    <div class="stories-container">
+        @if (Model.StoryList.Count < 1)
+        {
+            <h3> There are no stories for this project </h3>
+        }
+        else
+        {
+            <h2>Story Points: @Model.totalNumberStoryPoints</h2>
+            <table class="table-hover">
+                <tr>
+                    <th>Story ID</th>
+                    <th>Story Summary</th>
+                    <th>Story Points</th>
+                    <th>Delete Story</th>
+                </tr>
+                @for (int i = 0; i < Model.StoryList.Count(); i++)
+                {
+                    <tr>
+                        <td>
+                            @Html.Label("Key", @Model.StoryList[i].StoryKey)
+                            @Html.HiddenFor(m => m.StoryList[i].StoryKey)
+                        </td>
+                        <td>
+                            @Html.Label("Summary", @Model.StoryList[i].Summary)
+                            @Html.HiddenFor(m => m.StoryList[i].Summary)
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.StoryList[i].StoryPoints, new { @class = "storyPoint", @type="number" })
+                            @Html.HiddenFor(m => m.StoryList[i].StoryPoints)
+                        </td>
+                        <td>
+                            <input class="" name="chkDelete" type="checkbox" value="@Model.StoryList[i].StoryID"/>
+                            @Html.HiddenFor(m => m.StoryList[i].StoryID)
+                        </td>
+                    </tr>
+                }
+            </table>
+        }
+    </div>
+    <div class="buttons-container">
+        <input type="button" value="Previous" onclick="location.href='@Url.Action("Index", "Home")'" class="button" />
+        <input id="btnDelete" type="button" value="Delete Selected" onclick="javascript:;" class="button" data-toggle="modal" data-target="#deleteStoriesModal" />
+        <input id="btnUpdate" name="command" type="submit" value="Apply Changes" onclick="postStoryForm()" class="button" />
+        <input id="btnPopulate" type="button" value="Refresh Stories" onclick="location.href='@Url.Action("StoryPopulate", "Home" )'" class="button" />
+        <input name="command" id="command" type="button" value="Resource Capacity Page" onclick="return StoryPointValidation();" class="button toggleModal" />
+    </div>
+} 
+
+    <div class="modal" id="MyModal" data-keyboard="false" data-backdrop="static">
+        <!-- Warning Pop UP HTML-->
+        <div class="modalstuff">
+            <header>
+                <h2>
+                One or more stories on this page has invalid story point values! 
+                <br />
+                Valid values: 1, 3, 5, 8, 13, 21
+                </h2>
+            </header>
+            <button class="btn closebutton" id="closebutton"> Edit Stories </button>
+            <button class="btn proceedbutton" id="continuebutton"> Continue </button>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteStoriesModal" data-keyboard="false" role="dialog">
+        <!-- Warning Pop UP HTML-->
+        <div class="modalstuff">
+            <header>
+                <h2>
+                    Are you sure?
+                </h2>
+            </header>
+            <button class="btn closebutton" id="noButton" data-dismiss="modal"> No </button>
+            <button class="btn proceedbutton" id="yesButton" data-dismiss="modal"> Yes </button>
+        </div>
+    </div>
+
+<script>
+    // JQuery to call delete action from button click
+    $("#btnDelete").on("click", function (e) {
+        e.preventDefault();
+
+        deleteValidation((wantsToDelete) => {
+            if (wantsToDelete) { deleteStoryForm() };
+        })
+    })
+
+    // JQuery to call populate action from button click
+    $("#btnPopulate").on("click", function (e) {
+        e.preventDefault();
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("StoryPopulate")",
+            traditional:true,
+            success: function (result) {
+                location.reload();
+            }
+        })
+    })
+    
+
+  
+    //Warning for 0 Story Points
+    function StoryPointValidation() {
+        var isInvalidInput = false;
+        $("input[type=number]").each(function(){
+            if (this.value != 1 && this.value != 3 && this.value != 5 && this.value != 8 && this.value != 13 && this.value != 21)
+            {
+                isInvalidInput = true;
+            }
+        })
+
+        if(isInvalidInput)
+        {
+            var modal = document.getElementById('MyModal');
+            var closebutton = document.getElementById('closebutton')
+            var continuebutton = document.getElementById('continuebutton')
+            modal.style.display = "block";
+            closebutton.onclick = function() {
+                modal.style.display = "none";//closes pop up 
+            }
+
+            continuebutton.onclick = function()
+            {
+                postStoryForm();
+                location.href = "@Url.Action("Resource", "Home")";
+            }
+        }
+        else
+        {
+            postStoryForm();
+            location.href = "@Url.Action("Resource", "Home")";
+        }
+    }
+
+    function postStoryForm() {
+        var data = $('#storyForm').serialize();
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("StoryUpdate")",
+            data: data,
+            traditional:true,
+            success: function (result) {
+                location.href="@Url.Action("Story", "Home")";
+            }
+        })
+    }
+
+    function deleteValidation(wantsToDelete) {
+        var modal = document.getElementById('deleteStoriesModal');
+        var noButton = document.getElementById('noButton');
+        var yesButton = document.getElementById('yesButton');
+        noButton.onclick = function () {
+            wantsToDelete(false)
+        }
+
+        yesButton.onclick = function () {
+            wantsToDelete(true)
+        }
+    }
+
+    function deleteStoryForm(){
+        var data = [];
+        $("input[name='chkDelete']:checked").each(function () {
+            data.push($(this).val());
+        });
+        if (data.length == 0) {
+            return;
+        }
+        else if (data.length >0) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("StoryDelete")",
+                data: { id: data },
+                traditional: true,
+                success: function (result) {
+                    //Modify DOM
+                    $("input[name='chkDelete']:checked").each(function () {
+                        $(this.parentNode.parentNode).remove();
+                    })
+                }
+            })
+        }
+    }
+</script>
+

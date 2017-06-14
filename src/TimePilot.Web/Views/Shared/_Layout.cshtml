@@ -1,0 +1,53 @@
+﻿@using System.Web.Optimization
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/layout.css" rel="stylesheet" />
+    <link href="~/Content/resource.css" rel="stylesheet" />
+    <link href="~/Content/Modals.css" rel="stylesheet" />
+    <link href="~/Content/story.css" rel="stylesheet" />
+    <link href="~/Content/favicon.ico" rel="shortcut icon" />
+    <script src="~/Scripts/jquery-1.12.4.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+    <meta name="viewport" content="width=device-width" charset="utf-8" />
+    <title> @ViewBag.Title </title>
+</head>
+
+<body>
+    @{
+        // Data for dynamic header breadcrumbs
+        var currentController = ViewContext.RouteData.Values["controller"] as string ?? "Home";
+        var currentAction = ViewContext.RouteData.Values["action"] as string ?? "Index";
+        var currentPage = (currentController + "-" + currentAction).ToLower();
+    }
+
+    <!--
+        <header class="flex-container-header">
+            <a id="logo" href="/">Time Pilot</a>
+            <p>
+                @Html.Label("Project Selection >",
+               new { @class = currentPage == "home-index" ? "activebread" : "deactivebread" })
+                @Html.Label("Story Points >",
+               new { @class = currentPage == "home-story" ? "activebread" : "deactivebread" })
+                @Html.Label("Resource Capacity >",
+               new { @class = currentPage == "home-resource" ? "activebread" : "deactivebread" })
+                @Html.Label("Conversion Rate & Results",
+               new { @class = currentPage == "home-result" ? "activebread" : "deactivebread" })
+            </p>
+        </header>
+     -->
+    <div class="container">
+        @RenderBody()
+    </div>
+
+    <div class="push"></div>
+    <footer class="flex-container-footer">
+        <span class="col-md-2"> Time Pilot </span>
+        <span class="col-md-8"> © 2017 PNI Digital Media Inc. </span>
+        <span class="col-md-2"> Team Delta-t </span>
+    </footer>
+</body>
+</html>
