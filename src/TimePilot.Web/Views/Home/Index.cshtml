@@ -7,46 +7,46 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-    <div class="flex-container-header">
-        <h1>Time Pilot</h1>
-        <p>
-            <a class="activebread">Project Selection</a> >
-            <a class="deactivebread">Story Points</a> >
-            <a class="deactivebread">Resource Capacity</a> >
-            <a class="deactivebread">Conversion Rate & Results</a>
-        </p>
+<div class="flex-container-header">
+    <h1 href="Index">Time Pilot</h1>
+    <p>
+        <a class="activebread">Project Selection</a> >
+        <a class="deactivebread">Story Points</a> >
+        <a class="deactivebread">Resource Capacity</a> >
+        <a class="deactivebread">Conversion Rate & Results</a>
+    </p>
+</div>
+<div class="pre-project-container">
+    <h2 class="project-header">PROJECTS</h2>
+    <div class="aside-right">
+        <p class="controls-label">Sort Project By:</p>
+        <select id="sort-order">
+            <option value="desc">Name A-Z</option>
+            <option value="asc">Name Z-A</option>
+        </select>
+        <p class="controls-label">Search:</p>
+        <input id="search-box" />
     </div>
-    <div class="pre-project-container">
-        <h2 class="project-header">PROJECTS</h2>
-        <div class="aside-right">   
-            <p class="controls-label">Sort Project By:</p>
-            <select id="sort-order">
-                <option value="desc">Name A-Z</option>
-                <option value="asc">Name Z-A</option>
-            </select>
-            <p class="controls-label">Search:</p>
-        <input id="search-box"/>
-        </div>
-    </div>
+</div>
 
-    <div class="project-container">
-        @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @id = "projectForm" }))
-        {
-            @Html.DropDownListFor(m => m.SelectedProject,
+<div class="project-container">
+    @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @id = "projectForm" }))
+    {
+        @Html.DropDownListFor(m => m.SelectedProject,
                                 new SelectList(Model.ProjectList, "ProjectKey", "Summary"),
 
-                                new { size = "25", @class = "projectList", @id = "projectList" })         
-        }
-
+                                new { size = "25", @class = "projectList", @id = "projectList" })
         <input type="submit" value="Stories Page" class="button" id="submit" />
-    </div>
-    
+    }
+
+</div>
+
 
 <script>
 //Filters dropwdown list based on search box input
 document.getElementById("search-box").onkeyup = function() {
     // Declare variables
-    var input, filter, select, option, i;
+    var input, filter, select, option, i, test = 0;
     input = document.getElementById('search-box');
     filter = input.value.toUpperCase();
     select = document.getElementById('projectList');
@@ -56,10 +56,19 @@ document.getElementById("search-box").onkeyup = function() {
     for (i = 0; i < option.length; i++) {
         if (option[i].innerHTML.toUpperCase().indexOf(filter) > -1) {
             option[i].style.display = "";
+            if (test % 2 == 0) {
+                option[i].style.background = "#e2fdff";
+            }
+            else {
+                option[i].style.background = "#c0d9db";
+            }
+            test++;
         } else {
             option[i].style.display = "none";
         }
     }
+
+
 }
 
 //Sorts dropdown list based on sort order selected
@@ -69,7 +78,7 @@ document.getElementById("sort-order").onchange = function () {
     var hiddenRef = new Array();
     sortOrder = this.value;
     selElem = document.getElementById("projectList");
-    
+
     // Add hidden options to reference array, create temp array of option data
     for (var i = 0; i < selElem.options.length; i++) {
     if (selElem.options[i].style.display == "none") {

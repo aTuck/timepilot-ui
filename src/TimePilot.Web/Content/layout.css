@@ -63,16 +63,13 @@ h1:hover{
     font-weight:700;
     font-size:13px;
     color: #344d4f;
-    animation: ease-out;
-    transition: 0.7s;
 }
 
 .activebread:hover{
     text-decoration:none;
-    cursor:pointer;
-    color: #0f1616;
-    animation:ease-in;
-    transition:0.7s;
+    cursor:default;
+    color: #344d4f;
+
 }
 
 .deactivebread {
@@ -87,10 +84,19 @@ h1:hover{
 
 .pre-activebread{   
     font-size:13px;
+    color:#e2fdff;
+    animation:ease-in;
+    transition:0.7s;
 }
 
 .pre-activebread:hover{
     cursor:pointer;
+    text-decoration: none;
+    color: black;
+    animation:ease-out;
+    transition:0.7s;
+    font-weight:700;
+    
 }
         
 .button{
@@ -149,6 +155,8 @@ h1:hover{
 #search-box{
     width:200px;
     cursor: text;
+    border-radius:5px;
+    border: black 1px;
 }
 
 .controls-label{
@@ -156,6 +164,7 @@ h1:hover{
     align-items: center;
     margin-left: 15px;
     margin-right: 10px;
+
 }
 
 .projectList option:nth-child(even){
@@ -205,13 +214,9 @@ h1:hover{
 
 #sort-order{
     cursor:pointer;
+    border-radius: 5px;
+    border: #aaaaaa 1px;
 }
-
-#sort-order option:hover{
-    background: pink;
-    cursor: pointer;
-}
-
 
 .flex-container-footer{
     display: flex;
