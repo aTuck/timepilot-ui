@@ -4,18 +4,38 @@
     border-collapse: collapse;
 }
 
-td, th {
+td {
     text-align: left;
-    padding: 2px;
+    padding: 1px;
     width: 0px;
 }
 
+.table-hover > tbody > tr:hover{
+    background-color: #e2fdff;
+}
+
+.table-hover > tbody >tr:nth-child(even):hover{
+    background-color: #c0d9db;
+}
+
+.story-header{
+    background:#5cd2db;
+    font-weight:700;
+    padding-top: 7px;
+    padding-bottom:7px;
+}
+
+.story-header:hover{
+    background:#5cd2db;
+}
+
 td:hover{
-    background: initial;
+    background: transparent;
 }
 
 tr {
     width:auto;
+    background: transparent;
 }
 
 label{
@@ -27,11 +47,7 @@ tr:nth-child(even) {
 }
 
 tr:nth-child(even) td input {
-    background-color: #c0d9db;
-}
-
-tr:hover td input{
-    background-color: #f5f5f5;
+    background-color: #fff;
 }
 
 input[type="checkbox"]{
@@ -40,11 +56,11 @@ input[type="checkbox"]{
 }
 
 input[type="submit"] {
-    margin: 0px 4px;
+    margin: 5px 4px;
 }
 
 input[type="button"]{
-    margin: 0px 4px;
+    margin: 5px 4px;
 }
 
 input:hover{
@@ -52,12 +68,14 @@ input:hover{
 }
 
 .storyPoint {
-    border: none;
-    width: 70px;
+    border: black;
+    border-radius:5px;
+    width: 40px;
     font-size: 18px;
     font-weight: 700;
-    background: #cbebed;
+    background: #ffffff;
     height: 20px;
+    text-align:center;
 }
 
 .storyPoint:focus{
@@ -66,7 +84,7 @@ input:hover{
 
 .stories-container{
     width: 1140px;
-    max-height: 530px;
+    max-height: 550px;
     margin: 0px auto;
     overflow: scroll;
     overflow-x: hidden;
@@ -90,11 +108,40 @@ input:hover{
 .buttons-container{
     display: flex;
     justify-content: center;
-    margin-top: 10px;
+    margin-top: 20px;
     margin-bottom:20px;
+    flex-wrap:wrap;
+}
+@media only screen and (max-width: 1319px) {
+
+    .stories-container{
+    width: 100%;
+    }
+
 }
 
-@media only screen and (max-width: 992px) {
-  
-}
 
+@media only screen and (max-width: 1092px) {
+
+    .stories-container{
+    width: 100%;
+    }
+     .story-header{
+        font-size:12px;
+    }
+    
+    label{
+        font-size:12px;
+    }
+
+    tr:nth-child(even) td input{
+        font-size:12px;
+    }
+
+    .storyPoint{
+        font-size:12px;
+        width:30px;
+       
+    }
+
+}

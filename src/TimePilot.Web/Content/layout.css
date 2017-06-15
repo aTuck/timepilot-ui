@@ -84,7 +84,7 @@ h1:hover{
 
 .pre-activebread{   
     font-size:13px;
-    color:#e2fdff;
+    color:#8d8e8e;
     animation:ease-in;
     transition:0.7s;
 }
@@ -94,9 +94,6 @@ h1:hover{
     text-decoration: none;
     color: black;
     animation:ease-out;
-    transition:0.7s;
-    font-weight:700;
-    
 }
         
 .button{
@@ -274,6 +271,7 @@ h1:hover{
       
     }
 }
+
 @media only screen and (max-width: 992px) {
   .pre-project-container {
         flex-direction: column;
