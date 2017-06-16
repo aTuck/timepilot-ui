@@ -36,79 +36,84 @@
         @if (Model.StoryList.Count < 1)
         {
             <h3> There are no stories for this project </h3>
+
+            
         }
         else
         {
+          
+                <p></p>
 
-            <table class="table-hover">
-                <tr>
-                    <th>Story ID</th>
-                    <th>Story Summary</th>
-                    <th>Story Points</th>
-                    <th>Delete Story</th>
-                </tr>
-                @for (int i = 0; i < Model.StoryList.Count(); i++)
-                {
-                    <tr>
-                        <td>
-                            @Html.Label("Key", @Model.StoryList[i].StoryKey)
-                            @Html.HiddenFor(m => m.StoryList[i].StoryKey)
-                        </td>
-                        <td>
-                            @Html.Label("Summary", @Model.StoryList[i].Summary)
-                            @Html.HiddenFor(m => m.StoryList[i].Summary)
-                        </td>
-                        <td>
-                            @Html.TextBoxFor(m => m.StoryList[i].StoryPoints, new { @class = "storyPoint", @type = "number" })
-                            @Html.HiddenFor(m => m.StoryList[i].StoryPoints)
-                        </td>
-                        <td>
-                            <input class="" name="chkDelete" type="checkbox" value="@Model.StoryList[i].StoryID" />
-                            @Html.HiddenFor(m => m.StoryList[i].StoryID)
-                        </td>
-                    </tr>
-                }
-            </table>
+                <table class="table-hover">
+
+                    <td class="story-header"> Story ID </td>
+                    <td class="story-header"> Summary</td>
+                    <td class="story-header"> Story Points</td>
+                    <td class="story-header"> Delete</td>
+
+                    @for (int i = 0; i < Model.StoryList.Count(); i++)
+                    {
+                        <tr>
+                            <td>
+                                @Html.Label("Key", @Model.StoryList[i].StoryKey)
+                                @Html.HiddenFor(m => m.StoryList[i].StoryKey)
+                            </td>
+                            <td>
+                                @Html.Label("Summary", @Model.StoryList[i].Summary)
+                                @Html.HiddenFor(m => m.StoryList[i].Summary)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.StoryList[i].StoryPoints, new { @class = "storyPoint", @type = "number" })
+                                @Html.HiddenFor(m => m.StoryList[i].StoryPoints)
+                            </td>
+                            <td>
+                                <input class="" name="chkDelete" type="checkbox" value="@Model.StoryList[i].StoryID" />
+                                @Html.HiddenFor(m => m.StoryList[i].StoryID)
+                            </td>
+                        </tr>
+                    }
+                </table>
+           
         }
-    </div>
-    <div class="buttons-container">
-        <input type="button" value="Previous" onclick="location.href='@Url.Action("Index", "Home")'" class="button" />
-        <input id="btnDelete" type="button" value="Delete Selected" onclick="javascript:;" class="button" data-toggle="modal" data-target="#deleteStoriesModal" />
-        <input id="btnUpdate" name="command" type="submit" value="Apply Changes" onclick="postStoryForm()" class="button" />
-        <input id="btnPopulate" type="button" value="Refresh Stories" onclick="location.href='@Url.Action("StoryPopulate", "Home" )'" class="button" />
-        <input name="command" id="command" type="button" value="Resource Capacity Page" onclick="return StoryPointValidation();" class="button toggleModal" />
-    </div>
-}
+        </div>
+        <div class="buttons-container">
+            <input type="button" value="Previous" onclick="location.href='@Url.Action("Index", "Home")'" class="button" />
+            <input id="btnDelete" type="button" value="Delete Selected" onclick="javascript:;" class="button" data-toggle="modal" data-target="#deleteStoriesModal" />
+            <input id="btnUpdate" name="command" type="submit" value="Apply Changes" onclick="postStoryForm()" class="button" />
+            <input id="btnPopulate" type="button" value="Refresh Stories" onclick="location.href='@Url.Action("StoryPopulate", "Home" )'" class="button" />
+            <input name="command" id="command" type="button" value="Resource Capacity Page" onclick="return StoryPointValidation();" class="button toggleModal" />
+        </div>
+        }
 
-<div class="modal" id="MyModal" data-keyboard="false" data-backdrop="static">
-    <!-- Warning Pop UP HTML-->
-    <div class="modalstuff">
-        <header>
-            <h2>
-                One or more stories on this page has invalid story point values!
-                <br />
-                Valid values: 1, 3, 5, 8, 13, 21
-            </h2>
-        </header>
-        <button class="btn closebutton" id="closebutton"> Edit Stories </button>
-        <button class="btn proceedbutton" id="continuebutton"> Continue </button>
-    </div>
-</div>
+        <div class="modal" id="MyModal" data-keyboard="false" data-backdrop="static">
+            <!-- Warning Pop UP HTML-->
+            <div class="modalstuff">
+                <header>
+                    <h2>
+                        One or more stories on this page has invalid story point values!
+                        <br />
+                        Valid values: 1, 3, 5, 8, 13, 21
+                    </h2>
+                </header>
+                <button class="btn closebutton" id="closebutton"> Edit Stories </button>
+                <button class="btn proceedbutton" id="continuebutton"> Continue </button>
+            </div>
+        </div>
 
-<div class="modal fade" id="deleteStoriesModal" data-keyboard="false" role="dialog">
-    <!-- Warning Pop UP HTML-->
-    <div class="modalstuff">
-        <header>
-            <h2>
-                Are you sure?
-            </h2>
-        </header>
-        <button class="btn closebutton" id="noButton" data-dismiss="modal"> No </button>
-        <button class="btn proceedbutton" id="yesButton" data-dismiss="modal"> Yes </button>
-    </div>
-</div>
+        <div class="modal fade" id="deleteStoriesModal" data-keyboard="false" role="dialog">
+            <!-- Warning Pop UP HTML-->
+            <div class="modalstuff">
+                <header>
+                    <h2>
+                        Are you sure?
+                    </h2>
+                </header>
+                <button class="btn closebutton" id="noButton" data-dismiss="modal"> No </button>
+                <button class="btn proceedbutton" id="yesButton" data-dismiss="modal"> Yes </button>
+            </div>
+        </div>
 
-<script>
+        <script>
     // JQuery to call delete action from button click
     $("#btnDelete").on("click", function (e) {
         e.preventDefault();
@@ -215,5 +220,5 @@
             })
         }
     }
-</script>
+        </script>
 
