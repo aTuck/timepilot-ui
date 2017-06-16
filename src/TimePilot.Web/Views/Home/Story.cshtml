@@ -4,6 +4,7 @@
 @{
     ViewBag.Title = "Story";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    
 }
 
 <div class="flex-container-header">
@@ -30,18 +31,32 @@
 </div>
 <!-- <h2>Story Points: @Model.totalNumberStoryPoints</h2> -->
 
+
 @using (Html.BeginForm("Story", "Home", FormMethod.Post, new { @id = "storyForm" }))
 {
     <div class="stories-container">
-        @if (Model.StoryList.Count < 1)
-        {
-            <h3> There are no stories for this project </h3>
 
+        
+        @if (Model.StoryList.Count < 1 )
+        {
+
+            <h3> There are no stories for this project </h3>
+            <script type="text/javascript">
+
+                $(function () {
+                    RefreshStoryForm();
+                });
+
+
+            </script>
             
+
         }
+
+
         else
         {
-          
+
                 <p></p>
 
                 <table class="table-hover">
@@ -145,6 +160,7 @@
             if (this.value != 1 && this.value != 3 && this.value != 5 && this.value != 8 && this.value != 13 && this.value != 21)
             {
                 isInvalidInput = true;
+               
             }
         })
 
@@ -170,6 +186,19 @@
             location.href = "@Url.Action("Resource", "Home")";
         }
     }
+
+
+     function RefreshStoryForm() {
+
+        $.ajax({
+            type: "POST",                        
+            success: function (result) {
+                location.href="@Url.Action("StoryPopulate", "Home")";
+            }
+        })
+    }
+
+
 
     function postStoryForm() {
         var data = $('#storyForm').serialize();
