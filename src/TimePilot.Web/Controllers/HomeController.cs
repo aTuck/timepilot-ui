@@ -24,8 +24,10 @@ namespace TimePilot.Controllers
         List<TimePilot.Entities.Story> stories = new List<TimePilot.Entities.Story>();        
         List<Project> projects = new List<Project>();
         public static string SelectedProject;
+
         ProjectRepository ProjDB = new ProjectRepository();
         StoryRepository StoryDB = new StoryRepository();
+        SprintRepository SprintDB = new SprintRepository();
 
         public void originateResourceCapacity()
         {
