@@ -9,21 +9,30 @@
 
 <style>
     table {
-        font-family: arial, sans-serif;
-        border-collapse: collapse;       
+       
+        border-collapse: collapse; 
         width: 100%
     }
 
-    td, th {
-        border: 1px solid #dddddd;      
-        text-align: left;
-        padding: 8px;
-     
+    th {
+        background: #5cd2db;
+        border: 1px solid #000;    
+        text-align: center;
+        padding: 6px;
     }
 
-    tr:nth-child(even) {
-        background-color: #dddddd;
+    tr:nth-child(even) td input{
+          background: #28d1ef;
+          border-radius: 20px;
     }
+
+        tr:nth-child(even) td input:hover {
+            background: #24bbd6;
+            cursor: pointer;
+            animation: ease-in;
+            transition: 0.7s;
+        }
+
 </style>
 
 <div class="flex-container-header">
@@ -56,22 +65,24 @@
                 @for (int i = 0; i < Model.sprints.Count(); i++)
                 {
                 <tr>
-                    <th>Sprint @(i + 1)</th>
+                    <th class="sprints">Sprint @(i + 1)</th>
 
-                    <td>
+                    <td class="sprint-button">
                         <input type="submit" name="command" value="Add Member" id=@(i) onclick="setButtonIndex(this.id)" class="button" />
                         @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
                     </td>
 
-                    <td>
+                    <td class="sprint-button">
                         <input type="submit" name="command" id=@(i) value="Delete Sprint" class="button" onclick="setButtonIndex(this.id)" />
                         @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
                     </td>
-                    <td>
+                    <td class="sprint-button">
                         <input type="submit" name="command" id=@(i) value="Copy Sprint" class="button" onclick="setButtonIndex(this.id)" />
                         @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
                     </td>
+
                 </tr>
+
                     for (int j = 0; j < Model.sprints[i].members.Count(); j++)
                     {
                     <tr>
@@ -157,11 +168,13 @@
                     </div>
                 </div>
             }*/
+            <div class="buttons-container">
             <input type="submit" name="command" id="command" value="Add Sprint" class="button" />
             <input type="submit" name="command" value="Delete Selected" class="button" />
             <input type="button" value="Previous" onclick="location.href='@Url.Action("Story", "Home")'" class="button" />
             <input type="submit" name="command" id="command" value="Recalculate Values" class="button" />
             <input type="button" value="Results Page" onclick="postResourceForm()" class="button" />
+            </div>
         }
 </div>
 

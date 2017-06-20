@@ -24,3 +24,30 @@ label{
 input[type=text]{
     width: 50px;
 }
+
+.buttons-container{
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom:20px;
+    
+}
+
+.sprints{
+    background: #2dbae5;
+    border: none;
+    border-bottom-left-radius:100px;
+    border-bottom-right-radius:100px;
+    border-top-left-radius:10px;
+    border-top-right-radius: 10px;
+    text-align: center;
+    padding:0px;
+}
+
+.sprint-button{
+    background: #cbebed;
+}
+
+.sprint-button:hover{
+    background: #cbebed;
+}
