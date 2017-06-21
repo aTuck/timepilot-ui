@@ -22,7 +22,13 @@ label{
 }
 
 input[type=text]{
-    width: 50px;
+    width: 95%;
+    text-align: center;
+    background: white;
+    border-radius: 3px;
+    border-color: black;
+    border-width: 1px;
+    align-items: center;
 }
 
 .buttons-container{
@@ -50,4 +56,18 @@ input[type=text]{
 
 .sprint-button:hover{
     background: #cbebed;
+}
+
+.total-capacity{
+    display: flex;
+    justify-content: center;
+    background: #5cd2db;
+    border-radius: 10px;
+    justify-content: space-around;
+    padding-top: 7px;
+    padding-bottom: 7px;
+}
+
+.name{
+    background:pink;
 }
