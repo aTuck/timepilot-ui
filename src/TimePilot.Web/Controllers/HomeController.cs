@@ -98,15 +98,11 @@ namespace TimePilot.Controllers
             for (int i = 0; i < projects.Count; i++)
             {
                 temp = ProjDB.GetById(projects[i]);
-                if (temp.ProjectKey == projects[i].ProjectKey)
-                {
-                    return;
-                }
-                else
-                {
+                if (!(temp.ProjectKey == projects[i].ProjectKey))                                                               
+                
                     ProjDB.Add(projects[i]);
                 }
-            }
+            
         }
 
         public void setHoursEstimationValues(ResultsViewModel model)
