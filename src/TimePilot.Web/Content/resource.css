@@ -34,7 +34,7 @@ input[type=text]{
 .buttons-container{
     display: flex;
     justify-content: center;
-    margin-top: 20px;
+    margin-top: 10px;
     margin-bottom:20px;
     
 }
@@ -66,7 +66,7 @@ input[type=text]{
     justify-content: space-around;
     padding-top: 7px;
     padding-bottom: 7px;
-    margi
+    margin-top: 30px;
 }
 
 .name{
