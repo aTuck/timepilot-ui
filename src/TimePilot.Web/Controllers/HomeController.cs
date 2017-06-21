@@ -189,6 +189,25 @@ namespace TimePilot.Controllers
             return RedirectToAction("Story");
         }
 
+        public ActionResult StoryBringBackDeleted()
+        {
+            receiveStoryData();
+            stories = apiHelper.parseStoryData(storyJson);
+            TimePilot.Entities.Story temp;
+            for (int i = 0; i < stories.Count; i++)
+            {
+                stories[i].ProjectKey = SelectedProject;
+                temp = StoryDB.GetById(stories[i]);
+                if (temp.ProjectKey == null)
+                {
+                    StoryDB.Add(stories[i]);
+                }
+                
+            }
+            return RedirectToAction("Story");
+        }
+
+
         [HttpPost]
         public ActionResult StoryUpdate(StoryViewModel model)
         {
