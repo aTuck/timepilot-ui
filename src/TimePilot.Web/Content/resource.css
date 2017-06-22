@@ -34,7 +34,7 @@ input[type=text]{
 .buttons-container{
     display: flex;
     justify-content: center;
-    margin-top: 20px;
+    margin-top: 10px;
     margin-bottom:20px;
     
 }
@@ -52,10 +52,31 @@ input[type=text]{
 
 .sprint-button{
     background: #cbebed;
+
 }
 
 .sprint-button:hover{
     background: #cbebed;
+}
+
+.sprintbutton{
+    background: #28d1ef !important;
+    border-radius: 20px;
+    font-family: 'Century Gothic';
+    font-size: 15px; 
+    border-radius: 20px;
+    padding: 10px;  
+    outline:none;
+    border: #aaaaaa 1px;
+    animation:ease-out;
+    transition:0.7s;
+}
+
+.sprintbutton:hover{
+    background: #24bbd6 !important;
+    cursor: pointer;
+    animation: ease-in;
+    transition: 0.7s;
 }
 
 .total-capacity{
@@ -66,9 +87,6 @@ input[type=text]{
     justify-content: space-around;
     padding-top: 7px;
     padding-bottom: 7px;
-    margi
+    margin-top: 20px;
 }
 
-.name{
-    background:pink;
-}

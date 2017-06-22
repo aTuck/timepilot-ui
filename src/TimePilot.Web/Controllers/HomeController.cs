@@ -602,11 +602,11 @@ namespace TimePilot.Controllers
             List<SelectListItem> myRoleList = new List<SelectListItem>();
             SelectListItem LeadDev = new SelectListItem() { Text = "Lead Dev", Value = "leadDev"};
             SelectListItem SeniorDev = new SelectListItem() { Text = "Senior Dev", Value = "seniorDev"};
-            SelectListItem IntermediateDev = new SelectListItem() { Text = "Intermediate Dev", Value = "intermediateDev"};
+            SelectListItem IntermediateDev = new SelectListItem() { Text = "Dev", Value = "intermediateDev"};
             SelectListItem JuniorDev = new SelectListItem() { Text = "Junior Dev", Value = "juniorDev"};
             SelectListItem LeadQA = new SelectListItem() { Text = "Lead QA", Value = "leadQA"};
             SelectListItem SeniorQA = new SelectListItem() { Text = "Senior QA", Value = "seniorQA"};
-            SelectListItem IntermediateQA = new SelectListItem() { Text = "Intermediate QA", Value = "intermediateQA"};
+            SelectListItem IntermediateQA = new SelectListItem() { Text = "QA", Value = "intermediateQA"};
             SelectListItem JuniorQA = new SelectListItem() { Text = "Junior QA", Value = "juniorQA"};
 
             myRoleList.Add(LeadDev);

@@ -21,16 +21,40 @@
         padding: 6px;
     }
 
-    tr:nth-child(even) td input{
-          background: #28d1ef;
-          border-radius: 20px;
-    }
+        td{
+            text-align: center; 
+            vertical-align: middle;
+        }
 
-        tr:nth-child(even) td input:hover {
-            background: #24bbd6;
+        select{
             cursor: pointer;
-            animation: ease-in;
-            transition: 0.7s;
+            border-radius: 3px;
+            border-color: black;
+            margin: 3px;
+            padding: 1px;
+        }
+
+        tr:nth-child(even){
+            background: #cbebed;
+
+        }
+
+        .total{
+            background: #2dbae5 !important;
+            width: 80% !important;
+            font-weight: 700;  
+        }
+
+        .popover-title{
+             font-size:17px;
+             font-family: 'Century Gothic';
+             font-weight:700;
+        }
+
+        .popover-content{
+            font-size:12px;
+            font-family: 'Century Gothic';
+            text-align:center;
         }
 
 </style>
@@ -56,8 +80,8 @@
                     <th>Total Hours</th>
                     <th>Standup Duration</th>
                     <th>Standups</th>
-                    <th>Misc</th>
-                    <th>Time Off</th>
+                    <th>Misc. <a href="#" data-toggle="popover" data-placement="bottom" title="Miscellaneous" data-content="Meetings (Backlog Review, Dev Meeting), Demos/Retros, Sprint Planning"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                    <th>Time Off<a href="#" data-toggle="popover" data-placement="bottom" title="Time Off" data-content="Any sick days, holidays, vacation time, or other time off here "><span class="glyphicon glyphicon-question-sign"></span></a></th>
                     <th>Non Dev Hours</th>
                     <th>Total Available</th>
                     <th>Delete</th>
@@ -68,16 +92,16 @@
                     <th class="sprints">Sprint @(i + 1)</th>
 
                     <td class="sprint-button">
-                        <input type="submit" name="command" value="Add Member" id=@(i) onclick="setButtonIndex(this.id)" class="button" />
+                        <input type="submit" name="command" value="Add Member" id=@(i) onclick="setButtonIndex(this.id)" class="sprintbutton" />
                         @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
                     </td>
 
                     <td class="sprint-button">
-                        <input type="submit" name="command" id=@(i) value="Delete Sprint" class="button" onclick="setButtonIndex(this.id)" />
+                        <input type="submit" name="command" id=@(i) value="Delete Sprint"  onclick="setButtonIndex(this.id)" class="sprintbutton" />
                         @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
                     </td>
                     <td class="sprint-button">
-                        <input type="submit" name="command" id=@(i) value="Copy Sprint" class="button" onclick="setButtonIndex(this.id)" />
+                        <input type="submit" name="command" id=@(i) value="Copy Sprint"  onclick="setButtonIndex(this.id)" class="sprintbutton" />
                         @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
                     </td>
 
@@ -89,10 +113,11 @@
                         <td>
                             @Html.DropDownListFor(m => m.sprints[i].members[j].role, new SelectList(Model.roleList, "Value", "Text", Model.sprints[i].members[j].role), "Select Role", new { id = @i.ToString() + @j.ToString(), @onchange = "setMemberIndex(this.id); this.form.submit()" })
                             @Html.HiddenFor(m => m.memberIndex, new { id = "memberIndex" })
+                            
 
                         </td>
                         <td >
-                            @Html.TextBoxFor(m => m.sprints[i].members[j].name, new { @class = "name" })
+                            @Html.TextBoxFor(m => m.sprints[i].members[j].name, new {placeholder ="Name"})
                             @Html.HiddenFor(m => m.sprints[i].members[j].name)
 
                         </td>
@@ -105,8 +130,8 @@
                             @Html.HiddenFor(m => m.sprints[i].members[j].percentWork)
                         </td>
 
-                        <td>
-                            @Html.TextBoxFor(m => m.sprints[i].members[j].totalHours, new { @readonly = true })
+                        <td >
+                            @Html.TextBoxFor(m => m.sprints[i].members[j].totalHours, new { @readonly = true , @class = "total"})
                             @Html.HiddenFor(m => m.sprints[i].members[j].totalHours)
                         </td>
                         <td>
@@ -114,7 +139,7 @@
                             @Html.HiddenFor(m => m.sprints[i].members[j].standupDuration)
                         </td>
                         <td>
-                            @Html.TextBoxFor(m => m.sprints[i].members[j].standUps, new { @readonly = true })
+                            @Html.TextBoxFor(m => m.sprints[i].members[j].standUps)
                             @Html.HiddenFor(m => m.sprints[i].members[j].standUps)
                         </td>
                         <td>
@@ -126,11 +151,11 @@
                             @Html.HiddenFor(m => m.sprints[i].members[j].timeOff)
                         </td>
                         <td>
-                            @Html.TextBoxFor(m => m.sprints[i].members[j].nonDevHours, new { @readonly = true })
+                            @Html.TextBoxFor(m => m.sprints[i].members[j].nonDevHours, new { @readonly = true , @class = "total" })
                             @Html.HiddenFor(m => m.sprints[i].members[j].nonDevHours)
                         </td>
                         <td>
-                            @Html.TextBoxFor(m => m.sprints[i].members[j].totalAvailable, new { @readonly = true })
+                            @Html.TextBoxFor(m => m.sprints[i].members[j].totalAvailable, new { @readonly = true , @class = "total" })
                             @Html.HiddenFor(m => m.sprints[i].members[j].totalAvailable)
                         </td>
                         <td>
@@ -168,23 +193,26 @@
                     </div>
                 </div>
             }*/
-          
+
+            <div class="total-capacity">
+                <p><b>Total Dev Capacity:</b>  @Model.totalDevCapacity</p>
+                <p><b>Average Per Sprint: </b> @Model.avgPerSprint</p>
+                <p><b>Average Per Week: </b> @Model.avgPerWeek</p>
+            </div>
+
+            <div class="buttons-container">
+                <input type="submit" name="command" id="command" value="Add Sprint" class="button" />
+                <input type="submit" name="command" value="Delete Selected" class="button" />
+                <input type="button" value="Previous" onclick="location.href='@Url.Action("Story", "Home")'" class="button" />
+                <input type="submit" name="command" id="command" value="Recalculate Values" class="button" />
+                <input type="button" value="Results Page" onclick="return ResourceValidation();" data-toggle="modal" data-target="#MyModal"  class="button" />
+            </div>
+            
         }
 </div>
 
-<div class="total-capacity">
-    <p><b>Total Dev Capacity:</b>  @Model.totalDevCapacity</p>
-    <p><b>Average Per Sprint: </b> @Model.avgPerSprint</p>
-    <p><b>Average Per Week: </b> @Model.avgPerWeek</p>
-</div>
 
-<div class="buttons-container">
-    <input type="submit" name="command" id="command" value="Add Sprint" class="button" />
-    <input type="submit" name="command" value="Delete Selected" class="button" />
-    <input type="button" value="Previous" onclick="location.href='@Url.Action("Story", "Home")'" class="button" />
-    <input type="submit" name="command" id="command" value="Recalculate Values" class="button" />
-    <input type="button" value="Results Page" onclick="postResourceForm()" class="button" />
-</div>
+
 
 <script type="text/javascript">
         function setButtonIndex(e) {
@@ -194,6 +222,43 @@
             document.getElementById('memberIndex').value = e;
        } 
         $('.collapse').collapse("collapse");
+
+        function ResourceValidation() {
+            var isInvalidInput = false;
+            $("sprints[i].members[j].totalAvailable").each(function () {
+                if (this.value < 0)
+                {
+                    isInvalidInput = true;
+                    $(this).css("background-color", "#e56060");
+                }
+                else {
+                    $(this).css("background-color", "#2dbae5");
+                }
+           
+            })
+
+            if(isInvalidInput)
+            {
+                var modal = document.getElementById('MyModal');
+                var closebutton = document.getElementById('closebutton')
+                var continuebutton = document.getElementById('continuebutton')
+                modal.style.display = "block";
+                closebutton.onclick = function() {
+                 modal.style.display = "none";//closes pop up
+                }
+
+                continuebutton.onclick = function()
+                {
+                    postResourceForm();
+                    location.href = "@Url.Action("Result", "Home")";
+                }
+            }
+            else
+            {
+                postResourceForm();
+                location.href = "@Url.Action("Result", "Home")";
+            }
+        }
 
         function postResourceForm() {
             var data = $('#resourceForm').serialize();
@@ -208,4 +273,21 @@
             })
             location.href = '@Url.Action("Result", "Home")'
         }
+
+
+    $(document).ready(function () {
+        $('[data-toggle="popover"]').popover({
+            html: true
+        });
+    });
+
+    $(document).on('click', function (e) {
+        $('[data-toggle="popover"],[data-original-title]').each(function () {
+            if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0 ) {
+                (($(this).popover('hide').data('bs.popover') || {}).inState || {}).click = false
+            }
+        });
+    });
+
+
 </script>
