@@ -20,12 +20,10 @@
 <div class="pre-project-container">
     <h2 class="project-header">STORIES</h2>
     <div class="aside-right">
-        <p class="controls-label">Sort Story By:</p>
-        <select id="sort-order">
-            <option onchange="">Name A-Z</option>
-            <option>Name Z-A</option>
-            <option>Newest Updated</option>
-            <option>Oldest Updated</option>
+        <p class="controls-label">Sort Stories By:</p>
+        <select id="sort-story">
+            <option value="ascending">Ascending Story ID</option>
+            <option value="descending">Descending Story ID </option>
         </select>
     </div>
 </div>
@@ -39,18 +37,16 @@
         
         @if (Model.StoryList.Count < 1 )
         {
-
-            <h3> There are no stories for this project </h3>
-            <script type="text/javascript">
+            <h3 class="nostories"> There are no stories for this project </h3>
+            
+                <script>
 
                 $(function () {
                     RefreshStoryForm();
                 });
+                    </script>
 
-
-            </script>
             
-
         }
 
 
@@ -93,25 +89,26 @@
         </div>
         <div class="buttons-container">
             <input type="button" value="Previous" onclick="location.href='@Url.Action("Index", "Home")'" class="button" />
-            <input id="btnDelete" type="button" value="Delete Selected" onclick="javascript:;" class="button" data-toggle="modal" data-target="#deleteStoriesModal" />
-            <input id="btnUpdate" name="command" type="submit" value="Apply Changes" onclick="postStoryForm()" class="button" />
-            <input id="btnPopulate" type="button" value="Refresh Stories" onclick="location.href='@Url.Action("StoryPopulate", "Home" )'" class="button" />
-            <input name="command" id="command" type="button" value="Resource Capacity Page" onclick="return StoryPointValidation();" class="button toggleModal" />
+            <input id="btnDelete" type="button" value="Delete Stories" onclick="javascript:;" class="button" data-toggle="modal" data-target="#deleteStoriesModal" />
+            <input id="btnUpdate" name="command" type="submit" value="Save Changes" onclick="postStoryForm()" class="button" />
+            <input id="btnPopulate" type="button" value="Reload Stories (Clear Changes)" onclick="location.href='@Url.Action("StoryPopulate", "Home" )'" class="button" />
+            <input id="btnPopulate" type="button" value="Reload Stories (Keep Changes)" onclick="location.href='@Url.Action("StoryBringBackDeleted", "Home" )'" class="button" />
+            <input name="command" id="command" type="button" value="Resource Capacity Page" onclick="return StoryPointValidation();" class="button" data-toggle="modal" data-target="#MyModal" />
         </div>
         }
 
-        <div class="modal" id="MyModal" data-keyboard="false" data-backdrop="static">
+        <div class="modal fade" id="MyModal" data-keyboard="false" data-backdrop="static">
             <!-- Warning Pop UP HTML-->
             <div class="modalstuff">
                 <header>
-                    <h2>
-                        One or more stories on this page has invalid story point values!
+                    <h2 class="storypopup">
+                        One or more stories has invalid story point values!
                         <br />
-                        Valid values: 1, 3, 5, 8, 13, 21
+                        <font  color="#e56060"> Valid values: 1, 3, 5, 8, 13, 21</font>
                     </h2>
                 </header>
-                <button class="btn closebutton" id="closebutton"> Edit Stories </button>
-                <button class="btn proceedbutton" id="continuebutton"> Continue </button>
+                <button class="btn closebutton" id="closebutton" data-dismiss="modal"> Edit Stories </button>
+                <button class="btn proceedbutton" id="continuebutton" data-dismiss="modal" > Continue </button>
             </div>
         </div>
 
@@ -120,7 +117,7 @@
             <div class="modalstuff">
                 <header>
                     <h2>
-                        Are you sure?
+                        Are you sure you want to deleted selected stories?
                     </h2>
                 </header>
                 <button class="btn closebutton" id="noButton" data-dismiss="modal"> No </button>
@@ -132,7 +129,7 @@
     // JQuery to call delete action from button click
     $("#btnDelete").on("click", function (e) {
         e.preventDefault();
-
+        
         deleteValidation((wantsToDelete) => {
             if (wantsToDelete) { deleteStoryForm() };
         })
@@ -160,8 +157,12 @@
             if (this.value != 1 && this.value != 3 && this.value != 5 && this.value != 8 && this.value != 13 && this.value != 21)
             {
                 isInvalidInput = true;
-               
+                $(this).css("background-color", "#e56060");
             }
+            else {
+                $(this).css("background-color", "white");
+            }
+           
         })
 
         if(isInvalidInput)
@@ -249,5 +250,7 @@
             })
         }
     }
+           
+
         </script>
 

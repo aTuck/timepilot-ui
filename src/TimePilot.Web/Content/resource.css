@@ -22,5 +22,53 @@ label{
 }
 
 input[type=text]{
-    width: 50px;
+    width: 95%;
+    text-align: center;
+    background: white;
+    border-radius: 3px;
+    border-color: black;
+    border-width: 1px;
+    align-items: center;
+}
+
+.buttons-container{
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom:20px;
+    
+}
+
+.sprints{
+    background: #2dbae5;
+    border: none;
+    border-bottom-left-radius:100px;
+    border-bottom-right-radius:100px;
+    border-top-left-radius:10px;
+    border-top-right-radius: 10px;
+    text-align: center;
+    padding:0px;
+}
+
+.sprint-button{
+    background: #cbebed;
+}
+
+.sprint-button:hover{
+    background: #cbebed;
+}
+
+.total-capacity{
+    display: flex;
+    justify-content: center;
+    background: #5cd2db;
+    border-radius: 10px;
+    justify-content: space-around;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    margi
+}
+
+.name{
+    background:pink;
 }
