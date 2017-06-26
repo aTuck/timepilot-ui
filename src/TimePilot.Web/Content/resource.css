@@ -90,3 +90,72 @@ input[type=text]{
     margin-top: 20px;
 }
 
+@media only screen and (max-width: 1319px) {
+
+    .resource-container{
+    width: 100%;
+    font-size: 13px;
+    }
+
+}
+
+@media only screen and (max-width: 1092px) {
+   .resource-container{
+    font-size: 10px;
+    }
+
+     input[type="button"]{
+         font-size:12px;
+     }
+     input[type="submit"]{
+         font-size:12px;
+     }
+
+     tr:nth-child(even) td input.sprintbutton{
+         font-size:10px;
+         padding: 1px;
+     }
+}
+
+@media only screen and (max-width:685px){
+    .modal{
+        width:100%;
+    }
+
+     .resource-container{
+    font-size: 6px;
+    }
+
+   tr:nth-child(even) td input.sprintbutton{
+         font-size:6px;
+         padding: 0px;
+     }
+  
+    input[type="checkbox"]{
+         width:10px !important;
+         height:10px !important;
+     }
+}
+
+@media only screen and (max-width:550px){
+     .resource-container{
+    font-size: 4px;
+    }
+
+     input[type="button"]{
+         font-size:12px;
+     }
+     input[type="submit"]{
+         font-size:12px;
+     }
+
+     tr:nth-child(even) td input.sprintbutton{
+         font-size:4px;
+         padding: 0px;
+     }
+
+     .total-capacity{
+         font-size: 10px;
+     }
+
+}

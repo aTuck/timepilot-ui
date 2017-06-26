@@ -39,9 +39,9 @@
 
         }
 
-        .total{
-            background: #2dbae5 !important;
-            width: 80% !important;
+        input[type="text"].total {
+            background: #2dbae5 ;
+            width: 80%;
             font-weight: 700;  
         }
 
@@ -49,6 +49,7 @@
              font-size:17px;
              font-family: 'Century Gothic';
              font-weight:700;
+             background: #e0e0e0;
         }
 
         .popover-content{
@@ -77,13 +78,13 @@
                     <th>Name</th>
                     <th>Sprint Days</th>
                     <th>% Work</th>
-                    <th>Total Hours</th>
-                    <th>Standup Duration</th>
+                    <th>Total (hrs)</th>
+                    <th>Standup Duration (hrs)</th>
                     <th>Standups</th>
-                    <th>Misc. <a href="#" data-toggle="popover" data-placement="bottom" title="Miscellaneous" data-content="Meetings (Backlog Review, Dev Meeting), Demos/Retros, Sprint Planning"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                    <th>Time Off<a href="#" data-toggle="popover" data-placement="bottom" title="Time Off" data-content="Any sick days, holidays, vacation time, or other time off here "><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                    <th>Non Dev Hours</th>
-                    <th>Total Available</th>
+                    <th>Misc. (hrs) <a href="#" data-toggle="popover" data-placement="bottom" title="Miscellaneous" data-content="Meetings (Backlog Review, Dev Meeting), Demos/Retros, Sprint Planning"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                    <th>Time Off (hrs)<a href="#" data-toggle="popover" data-placement="bottom" title="Time Off" data-content="Any sick days, holidays, vacation time, or other time off here "><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                    <th>Non Dev (hrs)</th>
+                    <th>Total Available (hrs)</th>
                     <th>Delete</th>
                 </tr>
                 @for (int i = 0; i < Model.sprints.Count(); i++)
@@ -156,7 +157,7 @@
                             @Html.HiddenFor(m => m.sprints[i].members[j].nonDevHours)
                         </td>
                         <td>
-                            @Html.TextBoxFor(m => m.sprints[i].members[j].totalAvailable, new { @readonly = true, @class = "total"})
+                            @Html.TextBoxFor(m => m.sprints[i].members[j].totalAvailable, new { @readonly = true , @class = "total", @Name = "totalAvailable" })
                             @Html.HiddenFor(m => m.sprints[i].members[j].totalAvailable)
                         </td>
                         <td>
@@ -206,13 +207,24 @@
                 <input type="submit" name="command" value="Delete Selected" class="button" />
                 <input type="button" value="Previous" onclick="location.href='@Url.Action("Story", "Home")'" class="button" />
                 <input type="submit" name="command" id="command" value="Recalculate Values" class="button" />
-                <input type="submit" value="Results Page" onclick="return ResourceValidation();" data-toggle="modal" data-target="#MyModal" class="resultsButton button"/>
+                <input type="button" value="Results Page" onclick="return ResourceValidation();" data-toggle="modal" data-target="#MyModal"  class="button" />  
             </div>
             
         }
 </div>
 
-
+<div class="modal fade" id="MyModal" data-keyboard="false" data-backdrop="static">
+    <!-- Warning Pop UP HTML-->
+    <div class="modalstuff">
+        <header>
+            <h2 class="storypopup">
+                One or more members has negative total avalibality
+            </h2>     
+        </header>
+        <button class="btn closebutton" id="closebutton" data-dismiss="modal"> Edit Members </button>
+        <button class="btn proceedbutton" id="continuebutton" data-dismiss="modal"> Continue </button>
+    </div>
+</div>
 
 
 <script type="text/javascript">
@@ -232,10 +244,38 @@
             data: data,
             traditional:true,
             success: function (result) {
-            location.reload();
+                location.reload();
             }
         })
-        location.href = '@Url.Action("Result", "Home")'
+    }
+
+    function ResourceValidation() {
+        var isInvalidInput = false;
+        $("input[name='totalAvailable']").each(function () {
+            if (parseInt($(this).attr('value')) <= 0) {
+                $(this).css("background-color", "#e56060");
+                isInvalidInput = true;
+            }
+        })
+
+        if(isInvalidInput) {
+            var modal = document.getElementById('MyModal');
+            var closebutton = document.getElementById('closebutton')
+            var continuebutton = document.getElementById('continuebutton')
+            modal.style.display = "block";
+            closebutton.onclick = function() {
+                modal.style.display = "none";//closes pop up
+            }
+            continuebutton.onclick = function()
+            {
+                postResourceForm();
+                location.href = "@Url.Action("Result", "Home")";
+            }
+        }
+        else {
+            postResourceForm();
+            location.href = "@Url.Action("Result", "Home")";
+        }
     }
 
     $(document).ready(function () {
@@ -252,75 +292,74 @@
         });
     });
 
-    // Default values
+    // Set default values
     $("select").on("change", function () {
+        var elems = this.parentNode.parentNode.getElementsByClassName("rawData");
         switch (this.value) {
             case 'leadDev':
-                this.parentNode.parentNode.getElementsByClassName("rawData")[0].value = 10;   // Sprint Days
-                this.parentNode.parentNode.getElementsByClassName("rawData")[1].value = 50;   // % Work
-                this.parentNode.parentNode.getElementsByClassName("rawData")[2].value = 0.25; // Standup Duration
-                this.parentNode.parentNode.getElementsByClassName("rawData")[3].value = 2.5;  // Standups
-                this.parentNode.parentNode.getElementsByClassName("rawData")[4].value = 6;    // Misc.
-                this.parentNode.parentNode.getElementsByClassName("rawData")[5].value = 0;    // Time Off
+                elems[0].value = 10;   // Sprint Days
+                elems[1].value = 50;   // % Work
+                elems[2].value = 0.25; // Standup Duration
+                elems[3].value = 2.5;  // Standups
+                elems[4].value = 6;    // Misc.
+                elems[5].value = 0;    // Time Off
                 break;
             case 'seniorDev':
-                this.parentNode.parentNode.getElementsByClassName("rawData")[0].value = 10;   // Sprint Days
-                this.parentNode.parentNode.getElementsByClassName("rawData")[1].value = 70;   // % Work
-                this.parentNode.parentNode.getElementsByClassName("rawData")[2].value = 0.25; // Standup Duration
-                this.parentNode.parentNode.getElementsByClassName("rawData")[3].value = 2.5;  // Standups
-                this.parentNode.parentNode.getElementsByClassName("rawData")[4].value = 5;    // Misc.
-                this.parentNode.parentNode.getElementsByClassName("rawData")[5].value = 0;    // Time Off
+                elems[0].value = 10;   // Sprint Days
+                elems[1].value = 70;   // % Work
+                elems[2].value = 0.25; // Standup Duration
+                elems[3].value = 2.5;  // Standups
+                elems[4].value = 5;    // Misc.
+                elems[5].value = 0;    // Time Off
                 break;
             case 'intermediateDev':
-                this.parentNode.parentNode.getElementsByClassName("rawData")[0].value = 10;   // Sprint Days
-                this.parentNode.parentNode.getElementsByClassName("rawData")[1].value = 80;   // % Work
-                this.parentNode.parentNode.getElementsByClassName("rawData")[2].value = 0.25; // Standup Duration
-                this.parentNode.parentNode.getElementsByClassName("rawData")[3].value = 2.5;  // Standups
-                this.parentNode.parentNode.getElementsByClassName("rawData")[4].value = 4;    // Misc.
-                this.parentNode.parentNode.getElementsByClassName("rawData")[5].value = 0;    // Time Off
+                elems[0].value = 10;   // Sprint Days
+                elems[1].value = 80;   // % Work
+                elems[2].value = 0.25; // Standup Duration
+                elems[3].value = 2.5;  // Standups
+                elems[4].value = 4;    // Misc.
+                elems[5].value = 0;    // Time Off
                 break;
             case 'juniorDev':
-                this.parentNode.parentNode.getElementsByClassName("rawData")[0].value = 10;   // Sprint Days
-                this.parentNode.parentNode.getElementsByClassName("rawData")[1].value = 90;   // % Work
-                this.parentNode.parentNode.getElementsByClassName("rawData")[2].value = 0.25; // Standup Duration
-                this.parentNode.parentNode.getElementsByClassName("rawData")[3].value = 2.5;  // Standups
-                this.parentNode.parentNode.getElementsByClassName("rawData")[4].value = 4;    // Misc.
-                this.parentNode.parentNode.getElementsByClassName("rawData")[5].value = 0;    // Time Off
+                elems[0].value = 10;   // Sprint Days
+                elems[1].value = 90;   // % Work
+                elems[2].value = 0.25; // Standup Duration
+                elems[3].value = 2.5;  // Standups
+                elems[4].value = 4;    // Misc.
+                elems[5].value = 0;    // Time Off
                 break;
             case 'leadQA':
-                this.parentNode.parentNode.getElementsByClassName("rawData")[0].value = 10;   // Sprint Days
-                this.parentNode.parentNode.getElementsByClassName("rawData")[1].value = 50;   // % Work
-                this.parentNode.parentNode.getElementsByClassName("rawData")[2].value = 0.25; // Standup Duration
-                this.parentNode.parentNode.getElementsByClassName("rawData")[3].value = 2.5;  // Standups
-                this.parentNode.parentNode.getElementsByClassName("rawData")[4].value = 6;    // Misc.
-                this.parentNode.parentNode.getElementsByClassName("rawData")[5].value = 0;    // Time Off
+                elems[0].value = 10;   // Sprint Days
+                elems[1].value = 50;   // % Work
+                elems[2].value = 0.25; // Standup Duration
+                elems[3].value = 2.5;  // Standups
+                elems[4].value = 6;    // Misc.
+                elems[5].value = 0;    // Time Off
                 break;
             case 'seniorQA':
-                this.parentNode.parentNode.getElementsByClassName("rawData")[0].value = 10;   // Sprint Days
-                this.parentNode.parentNode.getElementsByClassName("rawData")[1].value = 70;   // % Work
-                this.parentNode.parentNode.getElementsByClassName("rawData")[2].value = 0.25; // Standup Duration
-                this.parentNode.parentNode.getElementsByClassName("rawData")[3].value = 2.5;  // Standups
-                this.parentNode.parentNode.getElementsByClassName("rawData")[4].value = 5;    // Misc.
-                this.parentNode.parentNode.getElementsByClassName("rawData")[5].value = 0;    // Time Off
+                elems[0].value = 10;   // Sprint Days
+                elems[1].value = 70;   // % Work
+                elems[2].value = 0.25; // Standup Duration
+                elems[3].value = 2.5;  // Standups
+                elems[4].value = 5;    // Misc.
+                elems[5].value = 0;    // Time Off
                 break;
             case 'intermediateQA':
-                this.parentNode.parentNode.getElementsByClassName("rawData")[0].value = 10;   // Sprint Days
-                this.parentNode.parentNode.getElementsByClassName("rawData")[1].value = 80;   // % Work
-                this.parentNode.parentNode.getElementsByClassName("rawData")[2].value = 0.25; // Standup Duration
-                this.parentNode.parentNode.getElementsByClassName("rawData")[3].value = 2.5;  // Standups
-                this.parentNode.parentNode.getElementsByClassName("rawData")[4].value = 4;    // Misc.
-                this.parentNode.parentNode.getElementsByClassName("rawData")[5].value = 0;    // Time Off
+                elems[0].value = 10;   // Sprint Days
+                elems[1].value = 80;   // % Work
+                elems[2].value = 0.25; // Standup Duration
+                elems[3].value = 2.5;  // Standups
+                elems[4].value = 4;    // Misc.
+                elems[5].value = 0;    // Time Off
                 break;
             case 'juniorQA':
-                this.parentNode.parentNode.getElementsByClassName("rawData")[0].value = 10;   // Sprint Days
-                this.parentNode.parentNode.getElementsByClassName("rawData")[1].value = 90;   // % Work
-                this.parentNode.parentNode.getElementsByClassName("rawData")[2].value = 0.25; // Standup Duration
-                this.parentNode.parentNode.getElementsByClassName("rawData")[3].value = 2.5;  // Standups
-                this.parentNode.parentNode.getElementsByClassName("rawData")[4].value = 4;    // Misc.
-                this.parentNode.parentNode.getElementsByClassName("rawData")[5].value = 0;    // Time Off
+                elems[0].value = 10;   // Sprint Days
+                elems[1].value = 90;   // % Work
+                elems[2].value = 0.25; // Standup Duration
+                elems[3].value = 2.5;  // Standups
+                elems[4].value = 4;    // Misc.
+                elems[5].value = 0;    // Time Off
                 break;
         }
     })
-    
-
 </script>
