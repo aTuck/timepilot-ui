@@ -89,7 +89,7 @@
                 @for (int i = 0; i < Model.sprints.Count(); i++)
                 {
                 <tr>
-                    <th class="sprints">Sprint @(i + 1)</th>
+                    <th class="sprints"><input id="sprint-name" type="text" placeholder="Enter sprint name" /></th>
 
                     <td class="sprint-button">
                         <input type="submit" name="command" value="Add Member" id=@(i) onclick="setButtonIndex(this.id)" class="sprintbutton" />
@@ -111,7 +111,8 @@
                     {
                     <tr>
                         <td>
-                            @Html.DropDownListFor(m => m.sprints[i].members[j].role, new SelectList(Model.roleList, "Value", "Text", Model.sprints[i].members[j].role), "Select Role", new { id = @i.ToString() + @j.ToString(), @onchange = "setMemberIndex(this.id); this.form.submit()" })
+                            <!--onchange = "setMemberIndex(this.id); this.form.submit()"--> 
+                            @Html.DropDownListFor(m => m.sprints[i].members[j].role, new SelectList(Model.roleList, "Value", "Text", Model.sprints[i].members[j].role), "Select Role", new { id = @i.ToString() + @j.ToString(), })
                             @Html.HiddenFor(m => m.memberIndex, new { id = "memberIndex" })
                             
 
@@ -122,11 +123,11 @@
 
                         </td>
                         <td>
-                            @Html.TextBoxFor(m => m.sprints[i].members[j].sprintDays)
+                            @Html.TextBoxFor(m => m.sprints[i].members[j].sprintDays, new {@class = "rawData"})
                             @Html.HiddenFor(m => m.sprints[i].members[j].sprintDays)
                         </td>
                         <td>
-                            @Html.TextBoxFor(m => m.sprints[i].members[j].percentWork)
+                            @Html.TextBoxFor(m => m.sprints[i].members[j].percentWork, new { @class = "rawData"})
                             @Html.HiddenFor(m => m.sprints[i].members[j].percentWork)
                         </td>
 
@@ -135,27 +136,27 @@
                             @Html.HiddenFor(m => m.sprints[i].members[j].totalHours)
                         </td>
                         <td>
-                            @Html.TextBoxFor(m => m.sprints[i].members[j].standupDuration)
+                            @Html.TextBoxFor(m => m.sprints[i].members[j].standupDuration, new { @class = "rawData" })
                             @Html.HiddenFor(m => m.sprints[i].members[j].standupDuration)
                         </td>
                         <td>
-                            @Html.TextBoxFor(m => m.sprints[i].members[j].standUps)
+                            @Html.TextBoxFor(m => m.sprints[i].members[j].standUps, new { @class = "rawData" })
                             @Html.HiddenFor(m => m.sprints[i].members[j].standUps)
                         </td>
                         <td>
-                            @Html.TextBoxFor(m => m.sprints[i].members[j].misc)
+                            @Html.TextBoxFor(m => m.sprints[i].members[j].misc, new { @class = "rawData" })
                             @Html.HiddenFor(m => m.sprints[i].members[j].misc)
                         </td>
                         <td>
-                            @Html.TextBoxFor(m => m.sprints[i].members[j].timeOff)
+                            @Html.TextBoxFor(m => m.sprints[i].members[j].timeOff, new { @class = "rawData" })
                             @Html.HiddenFor(m => m.sprints[i].members[j].timeOff)
                         </td>
                         <td>
-                            @Html.TextBoxFor(m => m.sprints[i].members[j].nonDevHours, new { @readonly = true , @class = "total" })
+                            @Html.TextBoxFor(m => m.sprints[i].members[j].nonDevHours, new { @readonly = true, @class = "total" })
                             @Html.HiddenFor(m => m.sprints[i].members[j].nonDevHours)
                         </td>
                         <td>
-                            @Html.TextBoxFor(m => m.sprints[i].members[j].totalAvailable, new { @readonly = true , @class = "total" })
+                            @Html.TextBoxFor(m => m.sprints[i].members[j].totalAvailable, new { @readonly = true, @class = "total"})
                             @Html.HiddenFor(m => m.sprints[i].members[j].totalAvailable)
                         </td>
                         <td>
@@ -205,7 +206,7 @@
                 <input type="submit" name="command" value="Delete Selected" class="button" />
                 <input type="button" value="Previous" onclick="location.href='@Url.Action("Story", "Home")'" class="button" />
                 <input type="submit" name="command" id="command" value="Recalculate Values" class="button" />
-                <input type="button" value="Results Page" onclick="return ResourceValidation();" data-toggle="modal" data-target="#MyModal"  class="button" />
+                <input type="submit" value="Results Page" onclick="return ResourceValidation();" data-toggle="modal" data-target="#MyModal" class="resultsButton button"/>
             </div>
             
         }
@@ -215,65 +216,27 @@
 
 
 <script type="text/javascript">
-        function setButtonIndex(e) {
-            document.getElementById('buttonIndex').value = e;
-        }
-        function setMemberIndex(e) {
-            document.getElementById('memberIndex').value = e;
-       } 
-        $('.collapse').collapse("collapse");
+    function setButtonIndex(e) {
+        document.getElementById('buttonIndex').value = e;
+    }
+    function setMemberIndex(e) {
+        document.getElementById('memberIndex').value = e;
+    } 
+    $('.collapse').collapse("collapse");
 
-        function ResourceValidation() {
-            var isInvalidInput = false;
-            $("sprints[i].members[j].totalAvailable").each(function () {
-                if (this.value < 0)
-                {
-                    isInvalidInput = true;
-                    $(this).css("background-color", "#e56060");
-                }
-                else {
-                    $(this).css("background-color", "#2dbae5");
-                }
-           
-            })
-
-            if(isInvalidInput)
-            {
-                var modal = document.getElementById('MyModal');
-                var closebutton = document.getElementById('closebutton')
-                var continuebutton = document.getElementById('continuebutton')
-                modal.style.display = "block";
-                closebutton.onclick = function() {
-                 modal.style.display = "none";//closes pop up
-                }
-
-                continuebutton.onclick = function()
-                {
-                    postResourceForm();
-                    location.href = "@Url.Action("Result", "Home")";
-                }
+    function postResourceForm() {
+        var data = $('#resourceForm').serialize();
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("ResourceUpdate")",
+            data: data,
+            traditional:true,
+            success: function (result) {
+            location.reload();
             }
-            else
-            {
-                postResourceForm();
-                location.href = "@Url.Action("Result", "Home")";
-            }
-        }
-
-        function postResourceForm() {
-            var data = $('#resourceForm').serialize();
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("ResourceUpdate")",
-                data: data,
-                traditional:true,
-                success: function (result) {
-                location.reload();
-                }
-            })
-            location.href = '@Url.Action("Result", "Home")'
-        }
-
+        })
+        location.href = '@Url.Action("Result", "Home")'
+    }
 
     $(document).ready(function () {
         $('[data-toggle="popover"]').popover({
@@ -289,5 +252,75 @@
         });
     });
 
+    // Default values
+    $("select").on("change", function () {
+        switch (this.value) {
+            case 'leadDev':
+                this.parentNode.parentNode.getElementsByClassName("rawData")[0].value = 10;   // Sprint Days
+                this.parentNode.parentNode.getElementsByClassName("rawData")[1].value = 50;   // % Work
+                this.parentNode.parentNode.getElementsByClassName("rawData")[2].value = 0.25; // Standup Duration
+                this.parentNode.parentNode.getElementsByClassName("rawData")[3].value = 2.5;  // Standups
+                this.parentNode.parentNode.getElementsByClassName("rawData")[4].value = 6;    // Misc.
+                this.parentNode.parentNode.getElementsByClassName("rawData")[5].value = 0;    // Time Off
+                break;
+            case 'seniorDev':
+                this.parentNode.parentNode.getElementsByClassName("rawData")[0].value = 10;   // Sprint Days
+                this.parentNode.parentNode.getElementsByClassName("rawData")[1].value = 70;   // % Work
+                this.parentNode.parentNode.getElementsByClassName("rawData")[2].value = 0.25; // Standup Duration
+                this.parentNode.parentNode.getElementsByClassName("rawData")[3].value = 2.5;  // Standups
+                this.parentNode.parentNode.getElementsByClassName("rawData")[4].value = 5;    // Misc.
+                this.parentNode.parentNode.getElementsByClassName("rawData")[5].value = 0;    // Time Off
+                break;
+            case 'intermediateDev':
+                this.parentNode.parentNode.getElementsByClassName("rawData")[0].value = 10;   // Sprint Days
+                this.parentNode.parentNode.getElementsByClassName("rawData")[1].value = 80;   // % Work
+                this.parentNode.parentNode.getElementsByClassName("rawData")[2].value = 0.25; // Standup Duration
+                this.parentNode.parentNode.getElementsByClassName("rawData")[3].value = 2.5;  // Standups
+                this.parentNode.parentNode.getElementsByClassName("rawData")[4].value = 4;    // Misc.
+                this.parentNode.parentNode.getElementsByClassName("rawData")[5].value = 0;    // Time Off
+                break;
+            case 'juniorDev':
+                this.parentNode.parentNode.getElementsByClassName("rawData")[0].value = 10;   // Sprint Days
+                this.parentNode.parentNode.getElementsByClassName("rawData")[1].value = 90;   // % Work
+                this.parentNode.parentNode.getElementsByClassName("rawData")[2].value = 0.25; // Standup Duration
+                this.parentNode.parentNode.getElementsByClassName("rawData")[3].value = 2.5;  // Standups
+                this.parentNode.parentNode.getElementsByClassName("rawData")[4].value = 4;    // Misc.
+                this.parentNode.parentNode.getElementsByClassName("rawData")[5].value = 0;    // Time Off
+                break;
+            case 'leadQA':
+                this.parentNode.parentNode.getElementsByClassName("rawData")[0].value = 10;   // Sprint Days
+                this.parentNode.parentNode.getElementsByClassName("rawData")[1].value = 50;   // % Work
+                this.parentNode.parentNode.getElementsByClassName("rawData")[2].value = 0.25; // Standup Duration
+                this.parentNode.parentNode.getElementsByClassName("rawData")[3].value = 2.5;  // Standups
+                this.parentNode.parentNode.getElementsByClassName("rawData")[4].value = 6;    // Misc.
+                this.parentNode.parentNode.getElementsByClassName("rawData")[5].value = 0;    // Time Off
+                break;
+            case 'seniorQA':
+                this.parentNode.parentNode.getElementsByClassName("rawData")[0].value = 10;   // Sprint Days
+                this.parentNode.parentNode.getElementsByClassName("rawData")[1].value = 70;   // % Work
+                this.parentNode.parentNode.getElementsByClassName("rawData")[2].value = 0.25; // Standup Duration
+                this.parentNode.parentNode.getElementsByClassName("rawData")[3].value = 2.5;  // Standups
+                this.parentNode.parentNode.getElementsByClassName("rawData")[4].value = 5;    // Misc.
+                this.parentNode.parentNode.getElementsByClassName("rawData")[5].value = 0;    // Time Off
+                break;
+            case 'intermediateQA':
+                this.parentNode.parentNode.getElementsByClassName("rawData")[0].value = 10;   // Sprint Days
+                this.parentNode.parentNode.getElementsByClassName("rawData")[1].value = 80;   // % Work
+                this.parentNode.parentNode.getElementsByClassName("rawData")[2].value = 0.25; // Standup Duration
+                this.parentNode.parentNode.getElementsByClassName("rawData")[3].value = 2.5;  // Standups
+                this.parentNode.parentNode.getElementsByClassName("rawData")[4].value = 4;    // Misc.
+                this.parentNode.parentNode.getElementsByClassName("rawData")[5].value = 0;    // Time Off
+                break;
+            case 'juniorQA':
+                this.parentNode.parentNode.getElementsByClassName("rawData")[0].value = 10;   // Sprint Days
+                this.parentNode.parentNode.getElementsByClassName("rawData")[1].value = 90;   // % Work
+                this.parentNode.parentNode.getElementsByClassName("rawData")[2].value = 0.25; // Standup Duration
+                this.parentNode.parentNode.getElementsByClassName("rawData")[3].value = 2.5;  // Standups
+                this.parentNode.parentNode.getElementsByClassName("rawData")[4].value = 4;    // Misc.
+                this.parentNode.parentNode.getElementsByClassName("rawData")[5].value = 0;    // Time Off
+                break;
+        }
+    })
+    
 
 </script>
