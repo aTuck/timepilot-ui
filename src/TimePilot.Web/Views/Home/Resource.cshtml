@@ -233,7 +233,8 @@
     }
     function setMemberIndex(e) {
         document.getElementById('memberIndex').value = e;
-    } 
+    }
+
     $('.collapse').collapse("collapse");
 
     function postResourceForm() {
@@ -244,7 +245,7 @@
             data: data,
             traditional:true,
             success: function (result) {
-                location.reload();
+                //do nothing right now, used to be reload
             }
         })
     }
@@ -278,12 +279,34 @@
         }
     }
 
+    function calculateValues(data, totals) {
+        var hrsPerDay = 8;
+
+        // Data
+        var sprintDays = data[0].value;
+        var pcntWork = data[1].value;
+        var standupDuration = data[2].value;
+        var standupCount = data[3].value;
+        var miscHours = data[4].value;
+        var timeOff = data[5].value;
+
+        // Totals
+        var ttlHours = totals[0];
+        var nonDevHours = totals[1];
+        var ttlAvailable = totals[2];
+
+        // Calculations
+        ttlHours.value = sprintDays * (pcntWork / 100) * hrsPerDay;
+        nonDevHours.value = miscHours + standupDuration;
+        ttlAvailable.value = ttlHours.value - nonDevHours.value - timeOff;
+    }
+
+    // Popovers
     $(document).ready(function () {
         $('[data-toggle="popover"]').popover({
             html: true
         });
     });
-
     $(document).on('click', function (e) {
         $('[data-toggle="popover"],[data-original-title]').each(function () {
             if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0 ) {
@@ -361,5 +384,19 @@
                 elems[5].value = 0;    // Time Off
                 break;
         }
+    })
+
+    // Calculate from default values
+    $("select").on("change", function () {
+        var data = this.parentNode.parentNode.getElementsByClassName("rawData");
+        var totals = this.parentNode.parentNode.getElementsByClassName("total");
+        calculateValues(data, totals);
+    })
+
+    // Calculate from user input
+    $("input[class='rawData']").on("keyup", function () {
+        var data = this.parentNode.parentNode.getElementsByClassName("rawData");
+        var totals = this.parentNode.parentNode.getElementsByClassName("total");
+        calculateValues(data, totals);
     })
 </script>
