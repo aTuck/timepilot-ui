@@ -119,7 +119,7 @@
 
                         </td>
                         <td >
-                            @Html.TextBoxFor(m => m.sprints[i].members[j].name, new {placeholder ="Name"})
+                            @Html.TextBoxFor(m => m.sprints[i].members[j].name, new {@class = "sprint-name", placeholder ="Name"})
                             @Html.HiddenFor(m => m.sprints[i].members[j].name)
 
                         </td>
