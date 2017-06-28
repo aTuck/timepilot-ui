@@ -58,6 +58,12 @@
             text-align:center;
         }
 
+    h2.resourcepopup {
+        font-size: 20px;
+    }
+
+}
+
 </style>
 
 <div class="flex-container-header">
@@ -82,7 +88,7 @@
                     <th>Standup Duration (hrs)</th>
                     <th>Total Standup (hrs)</th>
                     <th>Misc. (hrs) <a href="#" data-toggle="popover" data-placement="bottom" title="Miscellaneous" data-content="Meetings (Backlog Review, Dev Meeting), Demos/Retros, Sprint Planning"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                    <th>Time Off (hrs)<a href="#" data-toggle="popover" data-placement="bottom" title="Time Off" data-content="Any sick days, holidays, vacation time, or other time off here "><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                    <th>Time Off (hrs)<a href="#" data-toggle="popover" data-placement="bottom" title="Time Off" data-content="Any sick days, holidays, vacation time, or other time off "><span class="glyphicon glyphicon-question-sign"></span></a></th>
                     <th>Non Dev (hrs)</th>
                     <th>Total Available (hrs)</th>
                     <th>Delete</th>
@@ -201,9 +207,9 @@
             </div>
 
             <div class="buttons-container">
+                <input type="button" value="Previous" onclick="location.href='@Url.Action("Story", "Home")'" class="button" />
                 <input type="submit" name="command" id="command" value="Add Sprint" class="button" />
                 <input type="submit" name="command" value="Delete Selected" class="button" />
-                <input type="button" value="Previous" onclick="location.href='@Url.Action("Story", "Home")'" class="button" />
                 <input type="submit" name="command" id="command" value="Recalculate Values" class="button" />
                 <input type="button" value="Results Page" onclick="return ResourceValidation();" data-toggle="modal" data-target="#MyModal"  class="button" />  
             </div>
@@ -215,7 +221,7 @@
     <!-- Warning Pop UP HTML-->
     <div class="modalstuff">
         <header>
-            <h2 class="storypopup">
+            <h2 class="resourcepopup">
                 One or more members has negative total avalibality
             </h2>     
         </header>

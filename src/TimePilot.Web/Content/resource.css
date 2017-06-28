@@ -98,6 +98,8 @@ input[type=text]{
     font-weight: 700;
 }
 
+
+
 @media only screen and (max-width: 1319px) {
 
     .resource-container{
@@ -133,6 +135,9 @@ input[type=text]{
      .resource-container{
     font-size: 6px;
     }
+      input[type=text]{
+         font-size:6px;
+     }
 
    tr:nth-child(even) td input.sprintbutton{
          font-size:6px;
@@ -149,6 +154,12 @@ input[type=text]{
      .resource-container{
     font-size: 4px;
     }
+     tr:nth-child(even) td input{
+         font-size:4px;
+     }
+     input[type=text]{
+         font-size:4px;
+     }
 
      input[type="button"]{
          font-size:12px;

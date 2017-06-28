@@ -38,6 +38,11 @@
                                 new { size = "25", @class = "projectList", @id = "projectList" })
         <input type="submit" value="Stories Page" class="button" id="submit" />
     }
+    
+    @if(Model.ProjectList.Count < 2)
+    {
+        <p> test</p>
+    }
 
 </div>
 
@@ -64,10 +69,9 @@ document.getElementById("search-box").onkeyup = function() {
             }
             test++;
         } else {
-            option[i].style.display = "none";
+            option[i].style.display = "none";    
         }
     }
-
 
 }
 
