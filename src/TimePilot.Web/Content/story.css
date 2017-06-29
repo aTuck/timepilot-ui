@@ -63,7 +63,11 @@ input[type="button"]{
     margin: 5px 4px;
 }
 
-input:hover{
+input[type="checkbox"]:hover{
+    cursor:pointer;
+}
+
+input[type="submit"]:hover{
     cursor:pointer;
 }
 
@@ -112,6 +116,29 @@ input:hover{
     margin-bottom:20px;
     flex-wrap:wrap;
 }
+
+.btn{
+    animation: ease-out;
+    transition:0.4s;
+    margin:5px;
+}
+
+.btn:hover{
+    background-color:#5cd2db;
+    animation: ease-in;
+    transition:0.4s;
+}
+
+h2.storypopup{
+    font-size:17px;
+    padding-bottom: 5px;
+}
+
+h3.nostories{
+    text-align:center;
+
+}
+
 @media only screen and (max-width: 1319px) {
 
     .stories-container{
@@ -143,5 +170,16 @@ input:hover{
         width:30px;
        
     }
+ 
+}
 
+@media only screen and (max-width:600px){
+       .modal{
+        width:100%;
+    }
+
+      h2.storypopup{
+    font-size:14px;
+    
+}
 }

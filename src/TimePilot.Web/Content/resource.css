@@ -22,5 +22,148 @@ label{
 }
 
 input[type=text]{
-    width: 50px;
+    width: 95%;
+    text-align: center;
+    background: white;
+    border-radius: 3px;
+    border-color: black;
+    border-width: 1px;
+    align-items: center;
+}
+
+.buttons-container{
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    margin-bottom:20px;
+    
+}
+
+.sprints{
+    background: #2dbae5;
+    border: none;
+    border-bottom-left-radius:100px;
+    border-bottom-right-radius:100px;
+    border-top-left-radius:10px;
+    border-top-right-radius: 10px;
+    text-align: center;
+    padding:0px;
+}
+
+.sprint-button{
+    background: #cbebed;
+
+}
+
+.sprint-button:hover{
+    background: #cbebed;
+}
+
+.sprintbutton{
+    background: #28d1ef !important;
+    border-radius: 20px;
+    font-family: 'Century Gothic';
+    font-size: 15px; 
+    border-radius: 20px;
+    padding: 10px;  
+    outline:none;
+    border: #aaaaaa 1px;
+    animation:ease-out;
+    transition:0.7s;
+}
+
+.sprintbutton:hover{
+    background: #24bbd6 !important;
+    cursor: pointer;
+    animation: ease-in;
+    transition: 0.7s;
+}
+
+.total-capacity{
+    display: flex;
+    justify-content: center;
+    background: #5cd2db;
+    border-radius: 10px;
+    justify-content: space-around;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    margin-top: 20px;
+}
+
+.sprint-name{
+    background: transparent !important;
+    border: none;
+    border-bottom: solid 1px black;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+@media only screen and (max-width: 1319px) {
+
+    .resource-container{
+    width: 100%;
+    font-size: 13px;
+    }
+
+}
+
+@media only screen and (max-width: 1092px) {
+   .resource-container{
+    font-size: 10px;
+    }
+
+     input[type="button"]{
+         font-size:12px;
+     }
+     input[type="submit"]{
+         font-size:12px;
+     }
+
+     tr:nth-child(even) td input.sprintbutton{
+         font-size:10px;
+         padding: 1px;
+     }
+}
+
+@media only screen and (max-width:685px){
+    .modal{
+        width:100%;
+    }
+
+     .resource-container{
+    font-size: 6px;
+    }
+
+   tr:nth-child(even) td input.sprintbutton{
+         font-size:6px;
+         padding: 0px;
+     }
+  
+    input[type="checkbox"]{
+         width:10px !important;
+         height:10px !important;
+     }
+}
+
+@media only screen and (max-width:550px){
+     .resource-container{
+    font-size: 4px;
+    }
+
+     input[type="button"]{
+         font-size:12px;
+     }
+     input[type="submit"]{
+         font-size:12px;
+     }
+
+     tr:nth-child(even) td input.sprintbutton{
+         font-size:4px;
+         padding: 0px;
+     }
+
+     .total-capacity{
+         font-size: 10px;
+     }
+
 }

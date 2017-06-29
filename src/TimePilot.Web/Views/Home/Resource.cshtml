@@ -9,21 +9,55 @@
 
 <style>
     table {
-        font-family: arial, sans-serif;
-        border-collapse: collapse;       
+       
+        border-collapse: collapse; 
         width: 100%
     }
 
-    td, th {
-        border: 1px solid #dddddd;      
-        text-align: left;
-        padding: 8px;
-     
+    th {
+        background: #5cd2db;
+        border: 1px solid #000;    
+        text-align: center;
+        padding: 6px;
     }
 
-    tr:nth-child(even) {
-        background-color: #dddddd;
-    }
+        td{
+            text-align: center; 
+            vertical-align: middle;
+        }
+
+        select{
+            cursor: pointer;
+            border-radius: 3px;
+            border-color: black;
+            margin: 3px;
+            padding: 1px;
+        }
+
+        tr:nth-child(even){
+            background: #cbebed;
+
+        }
+
+        input[type="text"].total {
+            background: #2dbae5 ;
+            width: 80%;
+            font-weight: 700;  
+        }
+
+        .popover-title{
+             font-size:17px;
+             font-family: 'Century Gothic';
+             font-weight:700;
+             background: #e0e0e0;
+        }
+
+        .popover-content{
+            font-size:12px;
+            font-family: 'Century Gothic';
+            text-align:center;
+        }
+
 </style>
 
 <div class="flex-container-header">
@@ -44,89 +78,91 @@
                     <th>Name</th>
                     <th>Sprint Days</th>
                     <th>% Work</th>
-                    <th>Total Hours</th>
-                    <th>Standup Duration</th>
-                    <th>Standups</th>
-                    <th>Misc</th>
-                    <th>Time Off</th>
-                    <th>Non Dev Hours</th>
-                    <th>Total Available</th>
+                    <th>Total (hrs)</th>
+                    <th>Standup Duration (hrs)</th>
+                    <th>Total Standup (hrs)</th>
+                    <th>Misc. (hrs) <a href="#" data-toggle="popover" data-placement="bottom" title="Miscellaneous" data-content="Meetings (Backlog Review, Dev Meeting), Demos/Retros, Sprint Planning"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                    <th>Time Off (hrs)<a href="#" data-toggle="popover" data-placement="bottom" title="Time Off" data-content="Any sick days, holidays, vacation time, or other time off here "><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                    <th>Non Dev (hrs)</th>
+                    <th>Total Available (hrs)</th>
                     <th>Delete</th>
                 </tr>
-                @for (int i = 0; i < Model.sprints.Count(); i++)
-                {
-                <tr>
-                    <th>Sprint @(i + 1)</th>
-
-                    <td>
-                        <input type="submit" name="command" value="Add Member" id=@(i) onclick="setButtonIndex(this.id)" class="button" />
-                        @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
-                    </td>
-
-                    <td>
-                        <input type="submit" name="command" id=@(i) value="Delete Sprint" class="button" onclick="setButtonIndex(this.id)" />
-                        @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
-                    </td>
-                    <td>
-                        <input type="submit" name="command" id=@(i) value="Copy Sprint" class="button" onclick="setButtonIndex(this.id)" />
-                        @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
-                    </td>
-                </tr>
-                    for (int j = 0; j < Model.sprints[i].members.Count(); j++)
+                    @for (int i = 0; i < Model.sprints.Count(); i++)
                     {
-                    <tr>
-                        <td>
-                            @Html.DropDownListFor(m => m.sprints[i].members[j].role, new SelectList(Model.roleList, "Value", "Text", Model.sprints[i].members[j].role), "Select Role", new { id = @i.ToString() + @j.ToString(), @onchange = "setMemberIndex(this.id); this.form.submit()" })
-                            @Html.HiddenFor(m => m.memberIndex, new { id = "memberIndex" })
+                        <tr>
+                            <!-- <input class="sprint-title" type="text" placeholder="Enter sprint name"/> -->
+                            <th class="sprints">Sprint @(i+1)</th>
 
-                        </td>
-                        <td>
-                            @Html.TextBoxFor(m => m.sprints[i].members[j].name)
-                            @Html.HiddenFor(m => m.sprints[i].members[j].name)
+                            <td class="sprint-button">
+                                <input type="submit" name="command" value="Add Member" id=@(i) onclick="setButtonIndex(this.id)" class="sprintbutton" />
+                                @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
+                            </td>
 
-                        </td>
-                        <td>
-                            @Html.TextBoxFor(m => m.sprints[i].members[j].sprintDays)
-                            @Html.HiddenFor(m => m.sprints[i].members[j].sprintDays)
-                        </td>
-                        <td>
-                            @Html.TextBoxFor(m => m.sprints[i].members[j].percentWork)
-                            @Html.HiddenFor(m => m.sprints[i].members[j].percentWork)
-                        </td>
+                            <td class="sprint-button">
+                                <input type="submit" name="command" id=@(i) value="Delete Sprint" onclick="setButtonIndex(this.id)" class="sprintbutton" />
+                                @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
+                            </td>
+                            <td class="sprint-button">
+                                <input type="submit" name="command" id=@(i) value="Copy Sprint" onclick="setButtonIndex(this.id)" class="sprintbutton" />
+                                @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
+                            </td>
 
-                        <td>
-                            @Html.TextBoxFor(m => m.sprints[i].members[j].totalHours, new { @readonly = true })
-                            @Html.HiddenFor(m => m.sprints[i].members[j].totalHours)
-                        </td>
-                        <td>
-                            @Html.TextBoxFor(m => m.sprints[i].members[j].standupDuration)
-                            @Html.HiddenFor(m => m.sprints[i].members[j].standupDuration)
-                        </td>
-                        <td>
-                            @Html.TextBoxFor(m => m.sprints[i].members[j].standUps, new { @readonly = true })
-                            @Html.HiddenFor(m => m.sprints[i].members[j].standUps)
-                        </td>
-                        <td>
-                            @Html.TextBoxFor(m => m.sprints[i].members[j].misc)
-                            @Html.HiddenFor(m => m.sprints[i].members[j].misc)
-                        </td>
-                        <td>
-                            @Html.TextBoxFor(m => m.sprints[i].members[j].timeOff)
-                            @Html.HiddenFor(m => m.sprints[i].members[j].timeOff)
-                        </td>
-                        <td>
-                            @Html.TextBoxFor(m => m.sprints[i].members[j].nonDevHours, new { @readonly = true })
-                            @Html.HiddenFor(m => m.sprints[i].members[j].nonDevHours)
-                        </td>
-                        <td>
-                            @Html.TextBoxFor(m => m.sprints[i].members[j].totalAvailable, new { @readonly = true })
-                            @Html.HiddenFor(m => m.sprints[i].members[j].totalAvailable)
-                        </td>
-                        <td>
-                            @Html.CheckBoxFor(m => m.sprints[i].members[j].isSelectedToDelete)
-                            @Html.HiddenFor(m => m.sprints[i].members[j].isSelectedToDelete)
-                        </td>
-                    </tr>
+                        </tr>
+
+                        for (int j = 0; j < Model.sprints[i].members.Count(); j++)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DropDownListFor(m => m.sprints[i].members[j].role, new SelectList(Model.roleList, "Value", "Text", Model.sprints[i].members[j].role), "Select Role", new { id = @i.ToString() + @j.ToString(), })
+                                    @Html.HiddenFor(m => m.memberIndex, new { id = "memberIndex" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(m => m.sprints[i].members[j].name, new {@class = "sprint-name", placeholder ="Name"})
+                                    @Html.HiddenFor(m => m.sprints[i].members[j].name)
+
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(m => m.sprints[i].members[j].sprintDays, new {@class = "raw-data"})
+                                    @Html.HiddenFor(m => m.sprints[i].members[j].sprintDays)
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(m => m.sprints[i].members[j].percentWork, new { @class = "raw-data"})
+                                    @Html.HiddenFor(m => m.sprints[i].members[j].percentWork)
+                                </td>
+
+                                <td>
+                                    @Html.TextBoxFor(m => m.sprints[i].members[j].totalHours, new { @readonly = true , @class = "total"})
+                                    @Html.HiddenFor(m => m.sprints[i].members[j].totalHours)
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(m => m.sprints[i].members[j].standupDuration, new { @class = "raw-data" })
+                                    @Html.HiddenFor(m => m.sprints[i].members[j].standupDuration)
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(m => m.sprints[i].members[j].standUps, new { @readonly = true, @class = "total" })
+                                    @Html.HiddenFor(m => m.sprints[i].members[j].standUps)
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(m => m.sprints[i].members[j].misc, new { @class = "raw-data" })
+                                    @Html.HiddenFor(m => m.sprints[i].members[j].misc)
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(m => m.sprints[i].members[j].timeOff, new { @class = "raw-data" })
+                                    @Html.HiddenFor(m => m.sprints[i].members[j].timeOff)
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(m => m.sprints[i].members[j].nonDevHours, new { @readonly = true, @class = "total" })
+                                    @Html.HiddenFor(m => m.sprints[i].members[j].nonDevHours)
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(m => m.sprints[i].members[j].totalAvailable, new { @readonly = true , @class = "total", @Name = "totalAvailable" })
+                                    @Html.HiddenFor(m => m.sprints[i].members[j].totalAvailable)
+                                </td>
+                                <td>
+                                    @Html.CheckBoxFor(m => m.sprints[i].members[j].isSelectedToDelete)
+                                    @Html.HiddenFor(m => m.sprints[i].members[j].isSelectedToDelete)
+                                </td>
+                            </tr>
                         }
                     }
             </table>
@@ -157,38 +193,226 @@
                     </div>
                 </div>
             }*/
-            <input type="submit" name="command" id="command" value="Add Sprint" class="button" />
-            <input type="submit" name="command" value="Delete Selected" class="button" />
-            <input type="button" value="Previous" onclick="location.href='@Url.Action("Story", "Home")'" class="button" />
-            <input type="submit" name="command" id="command" value="Recalculate Values" class="button" />
-            <input type="button" value="Results Page" onclick="postResourceForm()" class="button" />
+
+            <div class="total-capacity">
+                <p><b>Total Dev Capacity:</b>  <span class="final-value">@Model.totalDevCapacity</span></p>
+                <p><b>Average Per Sprint: </b> <span class="final-value">@Model.avgPerSprint</span></p>
+                <p><b>Average Per Week: </b> <span class="final-value">@Model.avgPerWeek</span></p>
+            </div>
+
+            <div class="buttons-container">
+                <input type="submit" name="command" id="command" value="Add Sprint" class="button" />
+                <input type="submit" name="command" value="Delete Selected" class="button" />
+                <input type="button" value="Previous" onclick="location.href='@Url.Action("Story", "Home")'" class="button" />
+                <input type="submit" name="command" id="command" value="Recalculate Values" class="button" />
+                <input type="button" value="Results Page" onclick="return ResourceValidation();" data-toggle="modal" data-target="#MyModal"  class="button" />  
+            </div>
+            
         }
 </div>
 
-<p>Total DEV Capacity: @Model.totalDevCapacity</p>
-<p>Average Per Sprint: @Model.avgPerSprint</p>
-<p>Average Per Week: @Model.avgPerWeek</p>
+<div class="modal fade" id="MyModal" data-keyboard="false" data-backdrop="static">
+    <!-- Warning Pop UP HTML-->
+    <div class="modalstuff">
+        <header>
+            <h2 class="storypopup">
+                One or more members has negative total avalibality
+            </h2>     
+        </header>
+        <button class="btn closebutton" id="closebutton" data-dismiss="modal"> Edit Members </button>
+        <button class="btn proceedbutton" id="continuebutton" data-dismiss="modal"> Continue </button>
+    </div>
+</div>
+
 
 <script type="text/javascript">
-        function setButtonIndex(e) {
-            document.getElementById('buttonIndex').value = e;
-        }
-        function setMemberIndex(e) {
-            document.getElementById('memberIndex').value = e;
-       } 
-        $('.collapse').collapse("collapse");
+    function setButtonIndex(e) {
+        document.getElementById('buttonIndex').value = e;
+    }
+    function setMemberIndex(e) {
+        document.getElementById('memberIndex').value = e;
+    }
 
-        function postResourceForm() {
-            var data = $('#resourceForm').serialize();
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("ResourceUpdate")",
-                data: data,
-                traditional:true,
-                success: function (result) {
-                location.reload();
-                }
-            })
-            location.href = '@Url.Action("Result", "Home")'
+    $('.collapse').collapse("collapse");
+
+    function postResourceForm() {
+        var data = $('#resourceForm').serialize();
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("ResourceUpdate")",
+            data: data,
+            traditional:true,
+            success: function (result) {
+                //do nothing right now, used to be reload
+            }
+        })
+    }
+
+    function ResourceValidation() {
+        var isInvalidInput = false;
+        $("input[name='totalAvailable']").each(function () {
+            if (parseInt($(this).attr('value')) <= 0) {
+                $(this).css("background-color", "#e56060");
+                isInvalidInput = true;
+            }
+        })
+
+        if(isInvalidInput) {
+            var modal = document.getElementById('MyModal');
+            var closebutton = document.getElementById('closebutton')
+            var continuebutton = document.getElementById('continuebutton')
+            modal.style.display = "block";
+            closebutton.onclick = function() {
+                modal.style.display = "none";//closes pop up
+            }
+            continuebutton.onclick = function()
+            {
+                postResourceForm();
+                location.href = "@Url.Action("Result", "Home")";
+            }
         }
+        else {
+            postResourceForm();
+            location.href = "@Url.Action("Result", "Home")";
+        }
+    }
+
+    function calculateValues(data, totals, finals) {
+        // Member variables
+        var hrsPerDay = 8;
+        var temp = 0;
+
+        // Data
+        var sprintDays = data[0].value;
+        var pcntWork = data[1].value;
+        var standupDuration = data[2].value;
+        var miscHours = data[3].value;
+        var timeOff = data[4].value;
+
+        // Totals
+        var ttlHours = totals[0];
+        var standUps = totals[1];
+        var nonDevHours = totals[2];
+        var ttlAvailable = totals[3];
+
+        // Finals
+        var ttlDevCapac = finals[0];
+        var avgPerSprint = finals[1];
+        var avgPerWeek = finals[2];
+
+        // Data Calculations
+        ttlHours.value = sprintDays * (pcntWork / 100) * hrsPerDay;
+        standUps.value = sprintDays * standupDuration;
+        nonDevHours.value = parseFloat(miscHours) + parseFloat(standUps.value);
+        ttlAvailable.value = ttlHours.value - nonDevHours.value - timeOff;
+        
+        // Overall Calculations
+        var ttls = document.getElementsByName("totalAvailable");
+        var sprints = document.getElementsByClassName("sprint-title").length;
+        for (i = 0; i < ttls.length; i++) {temp += parseFloat(ttls[i].value);}
+        ttlDevCapac.textContent = parseFloat(temp);
+        avgPerSprint.textContent = parseFloat(temp / sprints);
+        avgPerWeek.textContent = parseFloat((temp / sprints) / 2);
+    }
+
+    // Popovers
+    $(document).ready(function () {
+        $('[data-toggle="popover"]').popover({
+            html: true
+        });
+    });
+    $(document).on('click', function (e) {
+        $('[data-toggle="popover"],[data-original-title]').each(function () {
+            if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0 ) {
+                (($(this).popover('hide').data('bs.popover') || {}).inState || {}).click = false
+            }
+        });
+    });
+
+    // Set default values
+    $("select").on("change", function () {
+        var elems = this.parentNode.parentNode.getElementsByClassName("raw-data");
+        switch (this.value) {
+            case 'leadDev':
+                elems[0].value = 10;   // Sprint Days
+                elems[1].value = 50;   // % Work
+                elems[2].value = 0.25; // Standup Duration
+                //elems[3].value = 2.5;  // Standups
+                elems[3].value = 6;    // Misc.
+                elems[4].value = 0;    // Time Off
+                break;
+            case 'seniorDev':
+                elems[0].value = 10;   // Sprint Days
+                elems[1].value = 70;   // % Work
+                elems[2].value = 0.25; // Standup Duration
+                //elems[3].value = 2.5;  // Standups
+                elems[3].value = 5;    // Misc.
+                elems[4].value = 0;    // Time Off
+                break;
+            case 'intermediateDev':
+                elems[0].value = 10;   // Sprint Days
+                elems[1].value = 80;   // % Work
+                elems[2].value = 0.25; // Standup Duration
+                //elems[3].value = 2.5;  // Standups
+                elems[3].value = 4;    // Misc.
+                elems[4].value = 0;    // Time Off
+                break;
+            case 'juniorDev':
+                elems[0].value = 10;   // Sprint Days
+                elems[1].value = 90;   // % Work
+                elems[2].value = 0.25; // Standup Duration
+                //elems[3].value = 2.5;  // Standups
+                elems[3].value = 4;    // Misc.
+                elems[4].value = 0;    // Time Off
+                break;
+            case 'leadQA':
+                elems[0].value = 10;   // Sprint Days
+                elems[1].value = 50;   // % Work
+                elems[2].value = 0.25; // Standup Duration
+                //elems[3].value = 2.5;  // Standups
+                elems[3].value = 6;    // Misc.
+                elems[4].value = 0;    // Time Off
+                break;
+            case 'seniorQA':
+                elems[0].value = 10;   // Sprint Days
+                elems[1].value = 70;   // % Work
+                elems[2].value = 0.25; // Standup Duration
+                //elems[3].value = 2.5;  // Standups
+                elems[3].value = 5;    // Misc.
+                elems[4].value = 0;    // Time Off
+                break;
+            case 'intermediateQA':
+                elems[0].value = 10;   // Sprint Days
+                elems[1].value = 80;   // % Work
+                elems[2].value = 0.25; // Standup Duration
+                //elems[3].value = 2.5;  // Standups
+                elems[3].value = 4;    // Misc.
+                elems[4].value = 0;    // Time Off
+                break;
+            case 'juniorQA':
+                elems[0].value = 10;   // Sprint Days
+                elems[1].value = 90;   // % Work
+                elems[2].value = 0.25; // Standup Duration
+                //elems[3].value = 2.5;  // Standups
+                elems[3].value = 4;    // Misc.
+                elems[4].value = 0;    // Time Off
+                break;
+        }
+    })
+
+    // Do calculations when default values are set
+    $("select").on("change", function () {
+        var data = this.parentNode.parentNode.getElementsByClassName("raw-data");
+        var totals = this.parentNode.parentNode.getElementsByClassName("total");
+        var finals = document.getElementsByClassName("final-value")
+        calculateValues(data, totals, finals);
+    })
+
+    // Do calculations during user input
+    $("input[class='raw-data']").on("keyup", function () {
+        var data = this.parentNode.parentNode.getElementsByClassName("raw-data");
+        var totals = this.parentNode.parentNode.getElementsByClassName("total");
+        var finals = document.getElementsByClassName("final-value")
+        calculateValues(data, totals, finals);
+    })
 </script>

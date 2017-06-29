@@ -1,6 +1,6 @@
 ﻿@model TimePilot.Web.ViewModels.ResultsViewModel
 
-@{
+@{ 
     ViewBag.Title = "Result";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -21,34 +21,35 @@
     }
 
     #myTable tr:nth-child(even) {
-        background-color: #c5e7e0;
+        background-color:#c5e7e0;
     }
-
-    #myTable tr:nth-child(odd) {
+     #myTable tr:nth-child(odd) {
         background-color: #ddf0ec;
     }
 
-    .velocitytable tr:nth-child(even) {
-        background-color: #d1cbe1;
-    }
-
-    .velocitytable tr:nth-child(odd) {
+     .velocitytable tr:nth-child(even)
+    {
+          background-color:#d1cbe1;
+         
+        
+     }
+      .velocitytable tr:nth-child(odd)
+    {
         background-color: #e0dfea;
-    }
+     }
 
-    .hourstable tr:nth-child(even) {
-        background-color: #b0e3e5;
-    }
+      .hourstable tr:nth-child(even)
+      {
+        background-color:#b0e3e5
+      }
 
-    .hourstable tr:nth-child(odd) {
-        background-color: #d6f9f6;
-    }
-
+      .hourstable tr:nth-child(odd){
+          background-color:#d6f9f6
+      }
     h2 {
         padding: 10px;
     }
-
-    onbottom {
+    onbottom{
         margin-top: 10px;
         margin-bottom: 10px;
     }
@@ -81,7 +82,6 @@
                 <th>Total Days</th>
             </tr>
 
-
             @for (int i = 0; i < Model.storypointAllocation.Length; i++)
             {
                 <tr>
@@ -94,7 +94,7 @@
                         @Html.HiddenFor(m => m.numberOfStories[i])
                     </td>
                     <td>
-                        @Html.TextBoxFor(m => m.DaysPerPt[i], new { @onchange = "this.form.submit();" })
+                        @Html.TextBoxFor(m => m.DaysPerPt[i], new {@onchange = "this.form.submit();" })
                         @Html.HiddenFor(m => m.DaysPerPt[i])
                     </td>
                     <td>
@@ -107,11 +107,11 @@
 
 
 
-        </table>
+        </table >
 
         <h2>Hours Estimation</h2>
 
-        <table class="hourstable">
+        <table class ="hourstable">
 
             <tr>
                 <td>Total Hours: @Model.TotalHours</td>
@@ -122,7 +122,7 @@
                     Contingency:  @Html.TextBoxFor(m => m.Contingency, new { @onchange = "this.form.submit();" })
                     @Html.HiddenFor(m => m.Contingency)
                 </td>
-                <td>Sprint Length: @Html.DropDownListFor(m => m.SprintLength, new SelectList(Model.sprintLengthList, "Value", "Text"), "Sprint Length", new { @onchange = "this.form.submit()" })</td>
+                <td>Sprint Length: @Html.DropDownListFor(m => m.SprintLength, new SelectList(Model.sprintLengthList, "Value", "Text"), "Sprint Length", new { @onchange = "this.form.submit()"})</td>
             </tr>
             <tr>
                 <td>Total Dev & QA Hours: @Model.TotalDevQA</td>
@@ -137,12 +137,12 @@
 
 
 
-        </table>
+        </table >
 
         <h2>Velocity Validation</h2>
 
 
-        <table class="velocitytable">
+        <table class= "velocitytable">
 
             <tr>
                 <td>Total Number of Story Points: @Model.totalStoryPoints </td>
