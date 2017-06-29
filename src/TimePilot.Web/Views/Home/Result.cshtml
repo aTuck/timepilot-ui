@@ -11,6 +11,7 @@
         font-family: arial, sans-serif;
         border-collapse: collapse;
         width: 100%;
+        padding: 10px;
     }
 
     td, th {
@@ -19,8 +20,38 @@
         padding: 8px;
     }
 
-    tr:nth-child(even) {
-        background-color: #dddddd;
+    #myTable tr:nth-child(even) {
+        background-color:#c5e7e0;
+    }
+     #myTable tr:nth-child(odd) {
+        background-color: #ddf0ec;
+    }
+
+     .velocitytable tr:nth-child(even)
+    {
+          background-color:#d1cbe1;
+         
+        
+     }
+      .velocitytable tr:nth-child(odd)
+    {
+        background-color: #e0dfea;
+     }
+
+      .hourstable tr:nth-child(even)
+      {
+        background-color:#b0e3e5
+      }
+
+      .hourstable tr:nth-child(odd){
+          background-color:#d6f9f6
+      }
+    h2 {
+        padding: 10px;
+    }
+    onbottom{
+        margin-top: 10px;
+        margin-bottom: 10px;
     }
 </style>
 
@@ -77,11 +108,11 @@
 
 
 
-        </table>
+        </table >
 
         <h2>Hours Estimation</h2>
 
-        <table>
+        <table class ="hourstable">
 
             <tr>
                 <td>Total Hours: @Model.TotalHours</td>
@@ -107,12 +138,12 @@
 
 
 
-        </table>
+        </table >
 
         <h2>Velocity Validation</h2>
 
 
-        <table>
+        <table class= "velocitytable">
 
             <tr>
                 <td>Total Number of Story Points: @Model.totalStoryPoints </td>
@@ -140,8 +171,8 @@
         </table>
 
 
-        <input type="button" value="Previous" onclick="location.href='@Url.Action("Resource", "Home")'" class="button" />
-        <input type="button" value="Home" onclick="location.href='@Url.Action("Index", "Home")'" class="button" />
+        <input type="button" value="Previous" onclick="location.href='@Url.Action("Resource", "Home")'" class="button onbottom" />
+        <input type="button" value="Home" onclick="location.href='@Url.Action("Index", "Home")'" class="button onbottom" />
 
 
     }
