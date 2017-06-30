@@ -38,7 +38,7 @@ namespace TimePilot.Controllers
             memberlist.Add(member);
             sprint.members = memberlist;
             sprintList.Add(sprint);
-            mResourceViewModel.sprints = sprintList;
+           // mResourceViewModel.sprints = sprintList;
         }
 
         public void bindStoryDataToViewModel(StoryViewModel StoryVM)
@@ -100,8 +100,7 @@ namespace TimePilot.Controllers
             for (int i = 0; i < projects.Count; i++)
             {
                 temp = ProjDB.GetById(projects[i]);
-                if (!(temp.ProjectKey == projects[i].ProjectKey))                                                               
-                
+                if (!(temp.ProjectKey == projects[i].ProjectKey))
                     ProjDB.Add(projects[i]);
                 }
             
@@ -237,7 +236,7 @@ namespace TimePilot.Controllers
         }
 
 
-        public void copySprint(ResourceCapacityViewModel model)        
+        /*public void copySprint(ResourceCapacityViewModel model)        
         {
 
             List<Member> copiedMemberList = model.sprints[model.buttonIndex].members;
@@ -245,7 +244,7 @@ namespace TimePilot.Controllers
             model.sprints.Add(copiedSprint);
             model.sprints[model.sprints.Count-1].members = copiedMemberList;
             
-        }
+        }*/
 
         public void calculateTotalStoryPoints (StoryViewModel model)
         {
@@ -277,7 +276,7 @@ namespace TimePilot.Controllers
         {
             ModelState.Clear();            
             RCModel.roleList = createRoleList();
-            calculateAvailability(RCModel);            
+            //calculateAvailability(RCModel);
 
             if (RCModel.memberIndex != null)
             {
@@ -285,24 +284,24 @@ namespace TimePilot.Controllers
                 string indexString = RCModel.memberIndex;
                 int SprintIndex = int.Parse(indexString[0].ToString());
                 int MemberIndex = int.Parse(indexString[1].ToString());
-                setDefaultValues(RCModel, SprintIndex, MemberIndex);
+                //setDefaultValues(RCModel, SprintIndex, MemberIndex);
             }
-            if (command != null && command.Equals("Add Member"))
+            /*if (command != null && command.Equals("Add Member"))
             {
                 
                 Member member = new Member();
                 RCModel.sprints[RCModel.buttonIndex].members.Add(member);
 
-            }
-            if (command != null && command.Equals("Copy Sprint"))
+            }*/
+            /*if (command != null && command.Equals("Copy Sprint"))
             {
 
 
                 copySprint(RCModel);
 
 
-            }
-            if (command != null && command.Equals("Add Sprint"))
+            }*/
+            /*if (command != null && command.Equals("Add Sprint"))
             {
 
                 TimePilot.Web.Models.Sprint sprint = new TimePilot.Web.Models.Sprint();
@@ -312,13 +311,13 @@ namespace TimePilot.Controllers
                 RCModel.sprints[RCModel.sprints.Count - 1].members = memberList;
                 RCModel.sprints[RCModel.sprints.Count - 1].members.Add(member);
 
-            }
+            }*/
 
-            if (command != null && command.Equals("Delete Selected"))
+           /* if (command != null && command.Equals("Delete Selected"))
             {
                 
                 deleteSelectedMembers(RCModel);
-            }
+            }*/
 
             if (command != null && command.Equals("Delete Sprint"))
             {
@@ -326,7 +325,7 @@ namespace TimePilot.Controllers
                 deleteSprint(RCModel);
 
             }
-            calculateRCMainValues(RCModel);
+            //calculateRCMainValues(RCModel);
             totalAvailablility = RCModel.totalDevCapacity;
             AvgCapactiyperWeek = RCModel.avgPerWeek;
             return View(RCModel);
@@ -334,7 +333,11 @@ namespace TimePilot.Controllers
 
         public ActionResult ResourceUpdate(ResourceCapacityViewModel ResourceVM)
         {
-            //do nothing right now
+            for (int i=0; i < ResourceVM.sprints.Count; i++)
+            {
+                ResourceVM.sprints[i].ProjectKey = SelectedProject;
+                SprintDB.Add(ResourceVM.sprints[i]);
+            }
             return RedirectToAction("Resource");
         }
 
@@ -382,7 +385,7 @@ namespace TimePilot.Controllers
             return View(model);
         }
 
-        private void deleteSelectedMembers(ResourceCapacityViewModel model)
+        /*private void deleteSelectedMembers(ResourceCapacityViewModel model)
         {
             for (int i = 0; i < model.sprints.Count; i++)
             {
@@ -395,7 +398,7 @@ namespace TimePilot.Controllers
                     }
                 }
             }
-        }
+        }*/
 
         private void deleteSprint (ResourceCapacityViewModel model)
         {
@@ -406,7 +409,7 @@ namespace TimePilot.Controllers
 
         }
 
-        public void calculateAvailability(ResourceCapacityViewModel model)
+       /* public void calculateAvailability(ResourceCapacityViewModel model)
         {
             for (int i = 0; i < model.sprints.Count; i++)
             {
@@ -418,9 +421,9 @@ namespace TimePilot.Controllers
                     model.sprints[i].members[j].totalAvailable = model.sprints[i].members[j].totalHours - model.sprints[i].members[j].nonDevHours - model.sprints[i].members[j].timeOff;
                 }
             }
-        }      
+        }      */
 
-        public void calculateRCMainValues(ResourceCapacityViewModel model)
+        /*public void calculateRCMainValues(ResourceCapacityViewModel model)
         {
             for (int i = 0; i < model.sprints.Count; i++)
             {
@@ -431,10 +434,10 @@ namespace TimePilot.Controllers
             }
             model.avgPerSprint = model.totalDevCapacity / model.sprints.Count;
             model.avgPerWeek = model.avgPerSprint / 2;
-        }
+        }*/
 
         //i = sprint index j = member index
-        public void setDefaultValues(ResourceCapacityViewModel model, int i, int j)
+       /* public void setDefaultValues(ResourceCapacityViewModel model, int i, int j)
         {
             switch (model.sprints[i].members[j].role)
             {
@@ -530,7 +533,7 @@ namespace TimePilot.Controllers
             model.memberIndex = null;
             
 
-        }
+        }*/
        
         private void sumStoryPoints(StoryViewModel model)
         {

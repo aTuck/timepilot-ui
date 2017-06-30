@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using TimePilot.Web.Models;
+//using TimePilot.Web.Models;
+using TimePilot.Entities;
 
 namespace TimePilot.Web.ViewModels
 {
