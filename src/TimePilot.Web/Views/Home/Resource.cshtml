@@ -71,7 +71,8 @@
 
 <div class="resource-container">
         @using (Html.BeginForm("Resource", "Home", FormMethod.Post, new { @id = "resourceForm" }))
-        {
+            {
+            Model.pageState = new List<int>();
             <table id="myTable">
                 <tr>
                     <th>Role</th>
@@ -89,32 +90,25 @@
                 </tr>
                 @for (int i = 0; i < Model.sprints.Count(); i++)
                 {
-                    <tr>
-                        @Html.HiddenFor(m => m.sprints[i].SprintID));
+                    Model.pageState.Add(0);
+                    <tr id="@i">
+                        @Html.HiddenFor(m => m.sprints[i].SprintID)
                         <th class="sprints sprint-title">
-                            @Html.TextBoxFor(m => m.sprints[i].Name, new { @placeholder = "Enter sprint name" });
+                            @Html.TextBoxFor(m => m.sprints[i].Name, new { @placeholder = "Enter sprint name" })
                         </th>
 
                         <td class="sprint-button">
-                            <input type="submit" name="command" value="Add Member" id=@(i) onclick="setButtonIndex(this.id)" class="sprintbutton" />
-                            @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
+                            <input type="button" value="Add Member" id=@(i) class="sprintbutton add-member" />
                         </td>
-
-                        <td class="sprint-button">
-                            <input type="submit" name="command" id=@(i) value="Delete Sprint" onclick="setButtonIndex(this.id)" class="sprintbutton" />
-                            @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
-                        </td>
-                        <td class="sprint-button">
-                            <input type="submit" name="command" id=@(i) value="Copy Sprint" onclick="setButtonIndex(this.id)" class="sprintbutton" />
-                            @Html.HiddenFor(m => m.buttonIndex, new { id = "buttonIndex" })
-                        </td>
-
                     </tr>
+
+                    int memberCount = 0;
                     for (int j = 0; j < Model.members.Count; j++)
                     {
                         if (Model.members[j].SprintID == Model.sprints[i].SprintID)
                         {
-                            <tr>
+                            Model.pageState[i]++;
+                            <tr id="@i-@memberCount">
                                 <td>
                                     <select>
                                         <option value="leadDev">Lead Dev</option>
@@ -129,8 +123,7 @@
                                 </td>
                                 <td>
                                     @Html.TextBoxFor(m => m.members[j].Name, new { @class = "sprint-name", placeholder = "Name" })
-                                    @Html.HiddenFor(m => m.members[j].Name)
-
+                                    <!--Html.HiddenFor(m => m.members[j].Name)-->
                                 </td>
                                 <td>
                                     @Html.TextBoxFor(m => m.members[j].SprintDays, new { @class = "raw-data" })
@@ -170,20 +163,26 @@
                                     <input type="checkbox" />
                                 </td>
                             </tr>
+                            memberCount++;
                         }
+                    }
+                    <tr id="@i-@memberCount"></tr>
+                    if (i == (Model.sprints.Count() - 1))
+                    {
+                        <tr id="@(i+1)"/>
                     }
                 }
             </table>
 
             <div class="total-capacity">
-                <p><b>Total Dev Capacity:</b>  <span class="final-value">@Model.totalDevCapacity</span></p>
-                <p><b>Average Per Sprint: </b> <span class="final-value">@Model.avgPerSprint</span></p>
-                <p><b>Average Per Week: </b> <span class="final-value">@Model.avgPerWeek</span></p>
+                <p><b>Total Dev Capacity:</b>  <span class="final-value"/>0</p>
+                <p><b>Average Per Sprint: </b> <span class="final-value"/>0</p>
+                <p><b>Average Per Week: </b> <span class="final-value"/>0</p>
             </div>
 
             <div class="buttons-container">
                 <input type="button" value="Previous" class="button"onclick="location.href='@Url.Action("Story", "Home")'"  />
-                <input type="button" value="Add Sprint" class="button add-sprint-btn" id="command"   />
+                <input type="button" value="Add Sprint" class="button add-sprint" />
                 <input type="button" value="Delete Selected" class="button" />
                 <input type="button" value="Results Page" class="button" onclick="return ResourceValidation();" data-toggle="modal" data-target="#MyModal" />
                 <input type="button" value="TEST BUTTON" class="btn-primary" onclick="postResourceForm()" />
@@ -287,7 +286,7 @@
         standUps.value = sprintDays * standupDuration;
         nonDevHours.value = parseFloat(miscHours) + parseFloat(standUps.value);
         ttlAvailable.value = ttlHours.value - nonDevHours.value - timeOff;
-        
+
         // Overall Calculations
         var ttls = document.getElementsByName("totalAvailable");
         var sprints = document.getElementsByClassName("sprint-title").length;
@@ -398,7 +397,36 @@
         calculateValues(data, totals, finals);
     })
 
-    $(document).ready = function () {
+    // DOM modication for adding Sprints/Members
+    // TODO: Change HTML of add member to actual member row
+    $(document).ready(function () {
+        var pageState = @Html.Raw(Json.Encode(Model.pageState));
 
-    }
+        $(document).on('click', '.add-member', function(){
+            var whichSprint = this.id;
+            var whichMember = pageState[whichSprint];
+            addMember(whichSprint, whichMember);
+        })
+
+        $('.add-sprint').click(function(){
+            pageState.push(0);
+            var whichSprint = pageState.length - 1;
+            alert(whichSprint);
+            // Populate placeholder with correct HTML
+            $('#'+whichSprint).html('<th class="sprints sprint-title"><input type="text" placeholder="Enter name"/></th><td class="sprint-button"><input type="button" value="Add Member" id='+whichSprint+' class="sprintbutton add-member" /></td>');
+
+            // Append member placeholder and add default member
+            $('<tr id="'+whichSprint+'-'+pageState[whichSprint]+'"></tr>').insertAfter('#'+whichSprint);
+            addMember(whichSprint, pageState[whichSprint]);
+
+            // Append Sprint placeholder
+            $('<tr id="'+(whichSprint+1)+'"/>').insertAfter('#'+whichSprint+'-'+pageState[whichSprint]);
+        });
+
+        function addMember(sprintNum, memberNum){
+            $('#'+sprintNum+'-'+memberNum).html('<p>Hello testing</p>');
+            $('<tr id="'+sprintNum+'-'+(memberNum+1)+'">').insertAfter('#'+sprintNum+'-'+memberNum);
+            pageState[sprintNum]++;
+        }
+    });
 </script>

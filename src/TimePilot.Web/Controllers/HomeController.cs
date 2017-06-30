@@ -358,14 +358,14 @@ namespace TimePilot.Controllers
             }
         }*/
 
-        private void deleteSprint (ResourceCapacityViewModel model)
+        /*private void deleteSprint (ResourceCapacityViewModel model)
         {
             if (model.sprints.Count > 1)
             {
                 model.sprints.RemoveAt(model.buttonIndex);
             }
 
-        }
+        }*/
 
        /* public void calculateAvailability(ResourceCapacityViewModel model)
         {
