@@ -52,9 +52,11 @@ namespace TimePilot.DataAccess.Repository
             }
         }
 
-        public bool Update(Sprint sprint)
+        private bool Update(Sprint sprint)
         {
-            throw new NotImplementedException();
+            string sql = @"UPDATE sprint SET Name = @n WHERE SprintID = @id";
+            dbContext.Query<Story>(sql, new { n = sprint.Name, id = sprint.SprintID});
+            return true;
         }
 
         /* Deletes a Sprint from the Sprint table
@@ -78,15 +80,24 @@ namespace TimePilot.DataAccess.Repository
          * Always returns true */
         public bool Add(Sprint sprint)
         {
-            //TSQL string to insert the project passed to this function into the project table
-            string sql = @"INSERT INTO Sprint (SprintID, Name, ProjectKey) 
-                           VALUES (@id, @n, @pk)";
+            Sprint check = GetById(sprint);
+            if (check == null)
+            {
+                //TSQL string to insert the project passed to this function into the project table
+                string sql = @"INSERT INTO Sprint (Name, ProjectKey) 
+                           VALUES (@n, @pk)";
 
-            //Do a query sending sql string and assigning variables in sql string to the sprint object passed in
-            dbContext.Query(sql, new {id = sprint.SprintID, n = sprint.Name, pk = sprint.ProjectKey}).ToList();
+                //Do a query sending sql string and assigning variables in sql string to the sprint object passed in
+                dbContext.Query(sql, new { n = sprint.Name, pk = sprint.ProjectKey }).ToList();
 
-            //Sprint didn't exist, now it does
-            return true;
+                //Sprint didn't exist, now it does
+                return true;
+            }
+            else
+            {
+                Update(sprint);
+                return true;
+            }
         }
     }
 }

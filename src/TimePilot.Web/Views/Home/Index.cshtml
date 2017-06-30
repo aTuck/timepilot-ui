@@ -46,7 +46,7 @@
 //Filters dropwdown list based on search box input
 document.getElementById("search-box").onkeyup = function() {
     // Declare variables
-    var input, filter, select, option, i, test = 0;
+    var input, filter, select, option, i;
     input = document.getElementById('search-box');
     filter = input.value.toUpperCase();
     select = document.getElementById('projectList');
@@ -62,13 +62,10 @@ document.getElementById("search-box").onkeyup = function() {
             else {
                 option[i].style.background = "#c0d9db";
             }
-            test++;
         } else {
             option[i].style.display = "none";
         }
     }
-
-
 }
 
 //Sorts dropdown list based on sort order selected

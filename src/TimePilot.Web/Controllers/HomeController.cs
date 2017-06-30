@@ -13,9 +13,8 @@ namespace TimePilot.Controllers
         ApiHelper apiHelper = new ApiHelper();
         private string projectJson;
         private string storyJson;
-        ProjectViewModel ProjectVM = new ProjectViewModel();
-        ResourceCapacityViewModel mResourceViewModel = new ResourceCapacityViewModel();
-        ResultsViewModel ResultsVM = new ResultsViewModel();
+        
+
         public static int [] storypointallocation;
         public static float totalAvailablility;
         public static float AvgCapactiyperWeek;
@@ -25,21 +24,14 @@ namespace TimePilot.Controllers
         List<Project> projects = new List<Project>();
         public static string SelectedProject;
 
+        ProjectViewModel ProjectVM = new ProjectViewModel();
+        ResourceCapacityViewModel ResourceVM = new ResourceCapacityViewModel();
+        ResultsViewModel ResultsVM = new ResultsViewModel();
+
         ProjectRepository ProjDB = new ProjectRepository();
         StoryRepository StoryDB = new StoryRepository();
         SprintRepository SprintDB = new SprintRepository();
-
-        public void originateResourceCapacity()
-        {
-            Member member = new Member();
-            TimePilot.Web.Models.Sprint sprint = new TimePilot.Web.Models.Sprint();
-            List<TimePilot.Web.Models.Sprint> sprintList = new List<TimePilot.Web.Models.Sprint>();
-            List<Member> memberlist = new List<Member>();
-            memberlist.Add(member);
-            sprint.members = memberlist;
-            sprintList.Add(sprint);
-           // mResourceViewModel.sprints = sprintList;
-        }
+        MemberRepository MemberDB = new MemberRepository();
 
         public void bindStoryDataToViewModel(StoryViewModel StoryVM)
         {
@@ -263,80 +255,46 @@ namespace TimePilot.Controllers
 
         public ActionResult Resource()
         {
-            mResourceViewModel.roleList = createRoleList();
-            
-            
-                originateResourceCapacity();
-            
-            return View(mResourceViewModel);
+            List<TimePilot.Entities.Member> currentMembers = new List<TimePilot.Entities.Member>();
+            ResourceVM.members = currentMembers;
+            ResourceVM.sprints = SprintDB.GetAllByForeignId(SelectedProject);
+            for(int i =0; i< ResourceVM.sprints.Count; i++)
+            {
+                currentMembers = MemberDB.GetAllByForeignId(ResourceVM.sprints[i].SprintID);
+                if (currentMembers.Count >= 1)
+                {
+                    for (int j = 0; j < currentMembers.Count; j++)
+                    {
+                        ResourceVM.members.Add(currentMembers[j]);
+                    }
+                }
+            }
+            return View(ResourceVM);
         }
 
         [HttpPost]
-        public ActionResult Resource(ResourceCapacityViewModel RCModel, string ddlRole, string command)
-        {
+        public ActionResult Resource(ResourceCapacityViewModel RCModel)
+       {
             ModelState.Clear();            
-            RCModel.roleList = createRoleList();
-            //calculateAvailability(RCModel);
-
-            if (RCModel.memberIndex != null)
+            for (int i = 0; i < ResourceVM.sprints.Count; i++)
             {
-                
-                string indexString = RCModel.memberIndex;
-                int SprintIndex = int.Parse(indexString[0].ToString());
-                int MemberIndex = int.Parse(indexString[1].ToString());
-                //setDefaultValues(RCModel, SprintIndex, MemberIndex);
+                ResourceVM.sprints[i].ProjectKey = SelectedProject;
+                SprintDB.Add(ResourceVM.sprints[i]);
             }
-            /*if (command != null && command.Equals("Add Member"))
-            {
-                
-                Member member = new Member();
-                RCModel.sprints[RCModel.buttonIndex].members.Add(member);
-
-            }*/
-            /*if (command != null && command.Equals("Copy Sprint"))
-            {
-
-
-                copySprint(RCModel);
-
-
-            }*/
-            /*if (command != null && command.Equals("Add Sprint"))
-            {
-
-                TimePilot.Web.Models.Sprint sprint = new TimePilot.Web.Models.Sprint();
-                Member member = new Member();
-                List<Member> memberList = new List<Member>();
-                RCModel.sprints.Add(sprint);
-                RCModel.sprints[RCModel.sprints.Count - 1].members = memberList;
-                RCModel.sprints[RCModel.sprints.Count - 1].members.Add(member);
-
-            }*/
-
-           /* if (command != null && command.Equals("Delete Selected"))
-            {
-                
-                deleteSelectedMembers(RCModel);
-            }*/
-
-            if (command != null && command.Equals("Delete Sprint"))
-            {
-                
-                deleteSprint(RCModel);
-
-            }
-            //calculateRCMainValues(RCModel);
-            totalAvailablility = RCModel.totalDevCapacity;
-            AvgCapactiyperWeek = RCModel.avgPerWeek;
-            return View(RCModel);
+            return RedirectToAction("Resource");
         }
 
+        [HttpPost]
         public ActionResult ResourceUpdate(ResourceCapacityViewModel ResourceVM)
         {
             for (int i=0; i < ResourceVM.sprints.Count; i++)
             {
                 ResourceVM.sprints[i].ProjectKey = SelectedProject;
                 SprintDB.Add(ResourceVM.sprints[i]);
+                for (int j=0; j < ResourceVM.members.Count; j++)
+                {
+                    //if (ResourceVM.members[j])
+                }
             }
             return RedirectToAction("Resource");
         }
@@ -600,7 +558,7 @@ namespace TimePilot.Controllers
             return myEnumSprintLengthList;
         }
 
-        private IEnumerable<SelectListItem> createRoleList()
+        /*private IEnumerable<SelectListItem> createRoleList()
         {
             List<SelectListItem> myRoleList = new List<SelectListItem>();
             SelectListItem LeadDev = new SelectListItem() { Text = "Lead Dev", Value = "leadDev"};
@@ -623,7 +581,7 @@ namespace TimePilot.Controllers
 
             IEnumerable<SelectListItem> myEnumRoleList = myRoleList;
             return myEnumRoleList;
-        }
+        }*/
     }
 }
 

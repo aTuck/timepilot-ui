@@ -10,8 +10,9 @@ namespace TimePilot.Web.ViewModels
 {
     public class ResourceCapacityViewModel
     {
-        public IEnumerable<SelectListItem> roleList { get; set; }
         public List<Sprint> sprints { get; set; }
+        public List<Member> members { get; set; }
+
         public float avgPerSprint { get; set; }
         public float avgPerWeek { get; set; }
         public float totalDevCapacity { get; set; }

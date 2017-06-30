@@ -111,6 +111,7 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Member.cs" />
     <Compile Include="Project.cs" />
     <Compile Include="Sprint.cs" />
     <Compile Include="Story.cs" />
