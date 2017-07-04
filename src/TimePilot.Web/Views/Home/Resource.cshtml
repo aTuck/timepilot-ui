@@ -91,7 +91,7 @@
                 @for (int i = 0; i < Model.sprints.Count(); i++)
                 {
                     Model.pageState.Add(0);
-                    <tr id="@i">
+                    <tr id="@i" class="sprint-row">
                         @Html.HiddenFor(m => m.sprints[i].SprintID)
                         <th class="sprints sprint-title">
                             @Html.TextBoxFor(m => m.sprints[i].Name, new { @placeholder = "Enter sprint name" })
@@ -108,7 +108,7 @@
                         if (Model.members[j].SprintID == Model.sprints[i].SprintID)
                         {
                             Model.pageState[i]++;
-                            <tr id="@i-@memberCount">
+                            <tr id="@i-@memberCount" class="member-row">
                                 <td>
                                     <select>
                                         <option value="leadDev">Lead Dev</option>
@@ -173,7 +173,7 @@
                     }
                 }
             </table>
-
+            <input type="button" value="+" class="button add-sprint" data-toggle="tooltip" title="Add a sprint" data-placement="right"/>
             <div class="total-capacity">
                 <p><b>Total Dev Capacity:</b>  <span class="final-value"/>0</p>
                 <p><b>Average Per Sprint: </b> <span class="final-value"/>0</p>
@@ -182,7 +182,6 @@
 
             <div class="buttons-container">
                 <input type="button" value="Previous" class="button"onclick="location.href='@Url.Action("Story", "Home")'"  />
-                <input type="button" value="Add Sprint" class="button add-sprint" />
                 <input type="button" value="Delete Selected" class="button" />
                 <input type="button" value="Results Page" class="button" onclick="return ResourceValidation();" data-toggle="modal" data-target="#MyModal" />
                 <input type="button" value="TEST BUTTON" class="btn-primary" onclick="postResourceForm()" />
@@ -310,6 +309,11 @@
         });
     });
 
+    // Tooltip
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();   
+    });
+
     // Set default values
     $("select").on("change", function () {
         var elems = this.parentNode.parentNode.getElementsByClassName("raw-data");
@@ -395,6 +399,16 @@
         var totals = this.parentNode.parentNode.getElementsByClassName("total");
         var finals = document.getElementsByClassName("final-value")
         calculateValues(data, totals, finals);
+    })
+
+    // Do calculations on page load
+    $(window).load(function(){
+        $(".member-row").each(function(){
+            var data = this.getElementsByClassName("raw-data"); 
+            var totals = this.getElementsByClassName("total");
+            var finals = document.getElementsByClassName("final-value")
+            calculateValues(data, totals, finals);
+        })
     })
 
     // DOM modication for adding Sprints/Members
