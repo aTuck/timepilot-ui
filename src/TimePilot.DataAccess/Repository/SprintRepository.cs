@@ -15,8 +15,8 @@ namespace TimePilot.DataAccess.Repository
             string sql = @"SELECT TOP (@maxRows) * from sprint";
 
             //_maxResults is set in web.config
-            List<Sprint> stories = dbContext.Query<Sprint>(sql, new { maxRows = _maxResults }).ToList();
-            return stories;
+            List<Sprint> sprints = dbContext.Query<Sprint>(sql, new { maxRows = _maxResults }).ToList();
+            return sprints;
         }
 
         public void DeleteAll()
@@ -52,11 +52,10 @@ namespace TimePilot.DataAccess.Repository
             }
         }
 
-        private bool Update(Sprint sprint)
+        private void Update(Sprint sprint)
         {
             string sql = @"UPDATE sprint SET Name = @n WHERE SprintID = @id";
-            dbContext.Query<Story>(sql, new { n = sprint.Name, id = sprint.SprintID});
-            return true;
+            List<Sprint> updatedSprint = dbContext.Query<Sprint>(sql, new { n = sprint.Name, id = sprint.SprintID }).ToList();
         }
 
         /* Deletes a Sprint from the Sprint table
@@ -78,25 +77,25 @@ namespace TimePilot.DataAccess.Repository
 
         /* Adds a Sprint to the Sprint table
          * Always returns true */
-        public bool Add(Sprint sprint)
+        public int Add(Sprint sprint)
         {
             Sprint check = GetById(sprint);
-            if (check == null)
+            if (check.SprintID == -1)
             {
                 //TSQL string to insert the project passed to this function into the project table
-                string sql = @"INSERT INTO Sprint (Name, ProjectKey) 
-                           VALUES (@n, @pk)";
+                string sql = @"INSERT INTO Sprint (Name, ProjectKey) VALUES (@n, @pk);
+                               SELECT CAST(SCOPE_IDENTITY() as int)";
 
                 //Do a query sending sql string and assigning variables in sql string to the sprint object passed in
-                dbContext.Query(sql, new { n = sprint.Name, pk = sprint.ProjectKey }).ToList();
+                var addedSprintID = dbContext.Query<int>(sql, new { n = sprint.Name, pk = sprint.ProjectKey }).Single();
 
                 //Sprint didn't exist, now it does
-                return true;
+                return addedSprintID;
             }
             else
             {
                 Update(sprint);
-                return true;
+                return sprint.SprintID;
             }
         }
     }

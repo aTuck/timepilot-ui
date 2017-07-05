@@ -15,5 +15,7 @@ namespace TimePilot.Entities
         public int Misc { get; set; }
         public int TimeOff { get; set; }
         public int SprintID{ get; set; }
+
+        public int PageID { get; set; }
     }
 }

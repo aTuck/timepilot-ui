@@ -258,6 +258,11 @@ namespace TimePilot.Controllers
             List<TimePilot.Entities.Member> currentMembers = new List<TimePilot.Entities.Member>();
             ResourceVM.members = currentMembers;
             ResourceVM.sprints = SprintDB.GetAllByForeignId(SelectedProject);
+            if (ResourceVM.sprints.Count == 0)
+            {
+                Entities.Sprint initSprint = new Entities.Sprint();
+                ResourceVM.sprints.Add(initSprint);
+            }
             for(int i =0; i< ResourceVM.sprints.Count; i++)
             {
                 currentMembers = MemberDB.GetAllByForeignId(ResourceVM.sprints[i].SprintID);
@@ -267,6 +272,11 @@ namespace TimePilot.Controllers
                     {
                         ResourceVM.members.Add(currentMembers[j]);
                     }
+                }
+                else
+                {
+                    Entities.Member initMember = new Entities.Member();
+                    ResourceVM.members.Add(initMember);
                 }
             }
             return View(ResourceVM);
@@ -287,13 +297,25 @@ namespace TimePilot.Controllers
         [HttpPost]
         public ActionResult ResourceUpdate(ResourceCapacityViewModel ResourceVM)
         {
+            int dbCurrentSprintID = 0;
+            int tempCurrentSprintID = 0;
             for (int i=0; i < ResourceVM.sprints.Count; i++)
             {
+                // Grab working reference to current sprint -- this ID is different than database ID
+                tempCurrentSprintID = ResourceVM.sprints[i].SprintID;
+
                 ResourceVM.sprints[i].ProjectKey = SelectedProject;
-                SprintDB.Add(ResourceVM.sprints[i]);
-                for (int j=0; j < ResourceVM.members.Count; j++)
+                dbCurrentSprintID = SprintDB.Add(ResourceVM.sprints[i]);
+                if(ResourceVM.members != null && ResourceVM.members.Count >=1)
                 {
-                    //if (ResourceVM.members[j])
+                    for (int j = 0; j < ResourceVM.members.Count; j++)
+                    {
+                        if (ResourceVM.members[j].SprintID == tempCurrentSprintID)
+                        {
+                            ResourceVM.members[j].SprintID = dbCurrentSprintID;
+                            MemberDB.Add(ResourceVM.members[j]);
+                        }
+                    }
                 }
             }
             return RedirectToAction("Resource");

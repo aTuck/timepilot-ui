@@ -91,14 +91,16 @@
                 @for (int i = 0; i < Model.sprints.Count(); i++)
                 {
                     Model.pageState.Add(0);
+                    Model.sprints[i].PageID = i;
                     <tr id="@i" class="sprint-row">
                         @Html.HiddenFor(m => m.sprints[i].SprintID)
                         <th class="sprints sprint-title">
-                            @Html.TextBoxFor(m => m.sprints[i].Name, new { @placeholder = "Enter sprint name" })
+                            @Html.TextBoxFor(m => m.sprints[i].Name, new { @placeholder = "Sprint name" })
                         </th>
 
                         <td class="sprint-button">
                             <input type="button" value="Add Member" id=@(i) class="sprintbutton add-member" />
+                            <input type="hidden" id="sprints_@(i)__PageID" name="sprints[@(i)].PageID" value="@i" />
                         </td>
                     </tr>
 
@@ -108,7 +110,9 @@
                         if (Model.members[j].SprintID == Model.sprints[i].SprintID)
                         {
                             Model.pageState[i]++;
+
                             <tr id="@i-@memberCount" class="member-row">
+                                <input type="hidden" id="members_@(i)__PageID" name="members[@(i)].PageID" value="@i" />
                                 <td>
                                     <select>
                                         <option value="leadDev">Lead Dev</option>
@@ -311,11 +315,11 @@
 
     // Tooltip
     $(document).ready(function(){
-        $('[data-toggle="tooltip"]').tooltip();   
+        $('[data-toggle="tooltip"]').tooltip();
     });
 
-    // Set default values
-    $("select").on("change", function () {
+    // Set default values + calculations on select box change
+    $(document).on("change", "select", function () {
         var elems = this.parentNode.parentNode.getElementsByClassName("raw-data");
         switch (this.value) {
             case 'leadDev':
@@ -383,10 +387,6 @@
                 elems[4].value = 0;    // Time Off
                 break;
         }
-    })
-
-    // Do calculations when default values are set
-    $("select").on("change", function () {
         var data = this.parentNode.parentNode.getElementsByClassName("raw-data");
         var totals = this.parentNode.parentNode.getElementsByClassName("total");
         var finals = document.getElementsByClassName("final-value")
@@ -404,7 +404,7 @@
     // Do calculations on page load
     $(window).load(function(){
         $(".member-row").each(function(){
-            var data = this.getElementsByClassName("raw-data"); 
+            var data = this.getElementsByClassName("raw-data");
             var totals = this.getElementsByClassName("total");
             var finals = document.getElementsByClassName("final-value")
             calculateValues(data, totals, finals);
@@ -417,28 +417,27 @@
         var pageState = @Html.Raw(Json.Encode(Model.pageState));
 
         $(document).on('click', '.add-member', function(){
-            var whichSprint = this.id;
-            var whichMember = pageState[whichSprint];
-            addMember(whichSprint, whichMember);
+            var sprintNum = this.id;
+            var memberNum = pageState[sprintNum];
+            addMember(sprintNum, memberNum);
         })
 
         $('.add-sprint').click(function(){
             pageState.push(0);
-            var whichSprint = pageState.length - 1;
-            alert(whichSprint);
+            var sprintNum = pageState.length - 1;
             // Populate placeholder with correct HTML
-            $('#'+whichSprint).html('<th class="sprints sprint-title"><input type="text" placeholder="Enter name"/></th><td class="sprint-button"><input type="button" value="Add Member" id='+whichSprint+' class="sprintbutton add-member" /></td>');
+            $('#'+sprintNum).html('<th class="sprints sprint-title"><input type="text" id="sprints_'+sprintNum+'__Name" name="sprints['+sprintNum+'].Name" placeholder="Sprint name"/></th><td class="sprint-button"><input type="button" value="Add Member" id='+sprintNum+' class="sprintbutton add-member" /> <input type="hidden" id="sprints_'+sprintNum+'__PageID" name="sprints['+sprintNum+'].PageID" value="'+sprintNum+'" /></td>');
 
             // Append member placeholder and add default member
-            $('<tr id="'+whichSprint+'-'+pageState[whichSprint]+'"></tr>').insertAfter('#'+whichSprint);
-            addMember(whichSprint, pageState[whichSprint]);
+            $('<tr id="'+sprintNum+'-'+pageState[sprintNum]+'"></tr>').insertAfter('#'+sprintNum);
+            addMember(sprintNum, pageState[sprintNum]);
 
             // Append Sprint placeholder
-            $('<tr id="'+(whichSprint+1)+'"/>').insertAfter('#'+whichSprint+'-'+pageState[whichSprint]);
+            $('<tr id="'+(sprintNum+1)+'"/>').insertAfter('#'+sprintNum+'-'+pageState[sprintNum]);
         });
 
         function addMember(sprintNum, memberNum){
-            $('#'+sprintNum+'-'+memberNum).html('<p>Hello testing</p>');
+            $('#'+sprintNum+'-'+memberNum).html('id="'+sprintNum+'-'+memberNum+'" class="member-row"> <td> <select> <option value="leadDev">Lead Dev</option> <option value="seniorDev">Senior Dev</option> <option value="intermediateDev">Dev</option> <option value="juniorDev">Junior Dev</option> <option value="leadQA">Lead QA</option> <option value="seniorQA">Senior QA</option> <option value="intermediateQA">QA</option> <option value="juniorQA">Junior QA</option> </select> </td> <td> <input type="text" class="sprint-name" id="members_'+sprintNum+'__Name" name="members['+sprintNum+'].Name" placeholder="Name"/> </td> <td> <input type="text" class="raw-data" /> </td> <td> <input type="text" class="raw-data" /> </td> <td> <input type="text" class="total" Name="totalHours" readonly /> </td> <td> <input type="text" class="raw-data" /> </td> <td> <input type="text" class="total" Name="standUps" readonly /> </td> <td> <input type="text" class="raw-data" /> </td> <td> <input type="text" class="raw-data" /> </td> <td> <input type="text" class="total" Name="nonDevHours" readonly /> </td> <td> <input type="text" class="total" Name="totalAvailable" readonly /> </td> <td> <!-- Does nothing right now --> <input type="checkbox" /> </td> <input type="hidden" id="members_'+sprintNum+'__PageID" name="members['+sprintNum+'].PageID" value="'+sprintNum+'" ');
             $('<tr id="'+sprintNum+'-'+(memberNum+1)+'">').insertAfter('#'+sprintNum+'-'+memberNum);
             pageState[sprintNum]++;
         }

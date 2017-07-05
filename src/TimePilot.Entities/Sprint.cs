@@ -7,5 +7,7 @@ namespace TimePilot.Entities
         public int SprintID { get; set; }
         public string Name { get; set; }
         public string ProjectKey { get; set; }
+
+        public int PageID { get; set; }
     }
 }

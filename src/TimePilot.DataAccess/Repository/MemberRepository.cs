@@ -79,12 +79,12 @@ namespace TimePilot.DataAccess.Repository
         public bool Add(Member member)
         {
             //TSQL string to insert the project passed to this function into the project table
-            string sql = @"INSERT INTO Member (MemberID, Name, SprintDays, Percentwork, StandupDuration,
+            string sql = @"INSERT INTO Member (Name, SprintDays, Percentwork, StandupDuration,
                                                Misc, TimeOff, SprintID) 
-                           VALUES (@id, @n, @sd, @pw, @std, @m, @t, @sid)";
+                           VALUES (@n, @sd, @pw, @std, @m, @t, @sid)";
 
             //Do a query sending sql string and assigning variables in sql string to the member object passed in
-            dbContext.Query(sql, new { id = member.MemberID, n = member.Name, sd = member.SprintDays,
+            dbContext.Query(sql, new { n = member.Name, sd = member.SprintDays,
                                        pw = member.PercentWork, std = member.StandupDuration,
                                        m = member.Misc, t = member.TimeOff, sid = member.SprintID}).ToList();
 
