@@ -55,7 +55,7 @@ namespace TimePilot.DataAccess.Repository
         private void Update(Sprint sprint)
         {
             string sql = @"UPDATE sprint SET Name = @n WHERE SprintID = @id";
-            List<Sprint> updatedSprint = dbContext.Query<Sprint>(sql, new { n = sprint.Name, id = sprint.SprintID }).ToList();
+            dbContext.Query<Sprint>(sql, new { n = sprint.Name, id = sprint.SprintID });
         }
 
         /* Deletes a Sprint from the Sprint table

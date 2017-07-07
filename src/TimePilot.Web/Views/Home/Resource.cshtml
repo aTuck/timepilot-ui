@@ -71,7 +71,8 @@
 
 <div class="resource-container">
         @using (Html.BeginForm("Resource", "Home", FormMethod.Post, new { @id = "resourceForm" }))
-            {
+        {
+            int memberTotal = 0;
             Model.pageState = new List<int>();
             <table id="myTable">
                 <tr>
@@ -104,15 +105,15 @@
                         </td>
                     </tr>
 
-                    int memberCount = 0;
+                    int membersInThisSprint = 0;
                     for (int j = 0; j < Model.members.Count; j++)
                     {
                         if (Model.members[j].SprintID == Model.sprints[i].SprintID)
                         {
                             Model.pageState[i]++;
-
-                            <tr id="@i-@memberCount" class="member-row">
-                                <input type="hidden" id="members_@(i)__PageID" name="members[@(i)].PageID" value="@i" />
+                            <tr id="@i-@membersInThisSprint" class="member-row">
+                                <input type="hidden" id="members_@(memberTotal)__PageID" name="members[@(memberTotal)].PageID" value="@i" />
+                                @Html.HiddenFor(m => m.members[j].MemberID)
                                 <td>
                                     <select>
                                         <option value="leadDev">Lead Dev</option>
@@ -127,15 +128,12 @@
                                 </td>
                                 <td>
                                     @Html.TextBoxFor(m => m.members[j].Name, new { @class = "sprint-name", placeholder = "Name" })
-                                    <!--Html.HiddenFor(m => m.members[j].Name)-->
                                 </td>
                                 <td>
                                     @Html.TextBoxFor(m => m.members[j].SprintDays, new { @class = "raw-data" })
-                                    @Html.HiddenFor(m => m.members[j].SprintDays)
                                 </td>
                                 <td>
                                     @Html.TextBoxFor(m => m.members[j].PercentWork, new { @class = "raw-data" })
-                                    @Html.HiddenFor(m => m.members[j].PercentWork)
                                 </td>
 
                                 <td>
@@ -143,18 +141,15 @@
                                 </td>
                                 <td>
                                     @Html.TextBoxFor(m => m.members[j].StandupDuration, new { @class = "raw-data" })
-                                    @Html.HiddenFor(m => m.members[j].StandupDuration)
                                 </td>
                                 <td>
                                     <input type="text" class="total" Name="standUps" readonly />
                                 </td>
                                 <td>
                                     @Html.TextBoxFor(m => m.members[j].Misc, new { @class = "raw-data" })
-                                    @Html.HiddenFor(m => m.members[j].Misc)
                                 </td>
                                 <td>
                                     @Html.TextBoxFor(m => m.members[j].TimeOff, new { @class = "raw-data" })
-                                    @Html.HiddenFor(m => m.members[j].TimeOff)
                                 </td>
                                 <td>
                                     <input type="text" class="total" Name="nonDevHours" readonly />
@@ -167,10 +162,11 @@
                                     <input type="checkbox" />
                                 </td>
                             </tr>
-                            memberCount++;
+                            membersInThisSprint++;
+                            memberTotal++;
                         }
                     }
-                    <tr id="@i-@memberCount"></tr>
+                    <tr id="@i-@membersInThisSprint"></tr>
                     if (i == (Model.sprints.Count() - 1))
                     {
                         <tr id="@(i+1)"/>
@@ -187,8 +183,7 @@
             <div class="buttons-container">
                 <input type="button" value="Previous" class="button"onclick="location.href='@Url.Action("Story", "Home")'"  />
                 <input type="button" value="Delete Selected" class="button" />
-                <input type="button" value="Results Page" class="button" onclick="return ResourceValidation();" data-toggle="modal" data-target="#MyModal" />
-                <input type="button" value="TEST BUTTON" class="btn-primary" onclick="postResourceForm()" />
+                <input type="button" value="Results Page" class="button results-button" onclick="return ResourceValidation();" data-toggle="modal" data-target="#MyModal" />
             </div>
 
             <div class="modal fade" id="MyModal" data-keyboard="false" data-backdrop="static">
@@ -234,20 +229,22 @@
 
     function ResourceValidation() {
         var isInvalidInput = false;
+
         $("input[name='totalAvailable']").each(function () {
             if (parseInt($(this).attr('value')) <= 0) {
                 $(this).css("background-color", "#e56060");
-                isInvalidInput = true;
+                isInvalidInput = true; // Set flag
             }
         })
 
+        // Flag was set
         if(isInvalidInput) {
             var modal = document.getElementById('MyModal');
             var closebutton = document.getElementById('closebutton')
             var continuebutton = document.getElementById('continuebutton')
             modal.style.display = "block";
             closebutton.onclick = function() {
-                modal.style.display = "none";//closes pop up
+                modal.style.display = "none"; // Closes pop up
             }
             continuebutton.onclick = function()
             {
@@ -294,9 +291,14 @@
         var ttls = document.getElementsByName("totalAvailable");
         var sprints = document.getElementsByClassName("sprint-title").length;
         for (i = 0; i < ttls.length; i++) {temp += parseFloat(ttls[i].value);}
-        ttlDevCapac.textContent = parseFloat(temp);
-        avgPerSprint.textContent = parseFloat(temp / sprints);
-        avgPerWeek.textContent = parseFloat((temp / sprints) / 2);
+        ttlDevCapac.textContent = round(parseFloat(temp), 1);
+        avgPerSprint.textContent = round(parseFloat(temp / sprints), 1);
+        avgPerWeek.textContent = round(parseFloat((temp / sprints) / 2), 1);
+    }
+
+    // Prevent rounding errors
+    function round(value, decimals) {
+        return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
     }
 
     // Popovers
@@ -393,6 +395,7 @@
         calculateValues(data, totals, finals);
     })
 
+
     // Do calculations during user input
     $("input[class='raw-data']").on("keyup", function () {
         var data = this.parentNode.parentNode.getElementsByClassName("raw-data");
@@ -415,6 +418,11 @@
     // TODO: Change HTML of add member to actual member row
     $(document).ready(function () {
         var pageState = @Html.Raw(Json.Encode(Model.pageState));
+        var memberTotal = 0;
+
+        for (var i=0; i<pageState.length; i++){
+            memberTotal += pageState[i];
+        }
 
         $(document).on('click', '.add-member', function(){
             var sprintNum = this.id;
@@ -437,9 +445,10 @@
         });
 
         function addMember(sprintNum, memberNum){
-            $('#'+sprintNum+'-'+memberNum).html('id="'+sprintNum+'-'+memberNum+'" class="member-row"> <td> <select> <option value="leadDev">Lead Dev</option> <option value="seniorDev">Senior Dev</option> <option value="intermediateDev">Dev</option> <option value="juniorDev">Junior Dev</option> <option value="leadQA">Lead QA</option> <option value="seniorQA">Senior QA</option> <option value="intermediateQA">QA</option> <option value="juniorQA">Junior QA</option> </select> </td> <td> <input type="text" class="sprint-name" id="members_'+sprintNum+'__Name" name="members['+sprintNum+'].Name" placeholder="Name"/> </td> <td> <input type="text" class="raw-data" /> </td> <td> <input type="text" class="raw-data" /> </td> <td> <input type="text" class="total" Name="totalHours" readonly /> </td> <td> <input type="text" class="raw-data" /> </td> <td> <input type="text" class="total" Name="standUps" readonly /> </td> <td> <input type="text" class="raw-data" /> </td> <td> <input type="text" class="raw-data" /> </td> <td> <input type="text" class="total" Name="nonDevHours" readonly /> </td> <td> <input type="text" class="total" Name="totalAvailable" readonly /> </td> <td> <!-- Does nothing right now --> <input type="checkbox" /> </td> <input type="hidden" id="members_'+sprintNum+'__PageID" name="members['+sprintNum+'].PageID" value="'+sprintNum+'" ');
+            $('#'+sprintNum+'-'+memberNum).html('<td> <select> <option value="leadDev">Lead Dev</option> <option value="seniorDev">Senior Dev</option> <option value="intermediateDev">Dev</option> <option value="juniorDev">Junior Dev</option> <option value="leadQA">Lead QA</option> <option value="seniorQA">Senior QA</option> <option value="intermediateQA">QA</option> <option value="juniorQA">Junior QA</option> </select> </td> <td> <input type="text" class="sprint-name" id="members_'+memberTotal+'__Name" name="members['+memberTotal+'].Name" placeholder="Name"/> </td> <td> <input type="text" class="raw-data" id="members_'+memberTotal+'__SprintDays" name="members['+memberTotal+'].SprintDays"/> </td> <td> <input type="text" class="raw-data" id="members_'+memberTotal+'__PercentWork" name="members['+memberTotal+'].PercentWork"/> </td> <td> <input type="text" class="total" Name="totalHours" readonly /> </td> <td> <input type="text" class="raw-data" id="members_'+memberTotal+'__StandupDuration" name="members['+memberTotal+'].StandupDuration"/> </td> <td> <input type="text" class="total" Name="standUps" readonly /> </td> <td> <input type="text" class="raw-data" id="members_'+memberTotal+'__Misc" name="members['+memberTotal+'].Misc" /> </td> <td> <input type="text" class="raw-data" id="members_'+memberTotal+'__TimeOff" name="members['+memberTotal+'].TimeOff"/> </td> <td> <input type="text" class="total" Name="nonDevHours" readonly /> </td> <td> <input type="text" class="total" Name="totalAvailable" readonly /> </td> <td> <!-- Does nothing right now --> <input type="checkbox" /> </td> <input type="hidden" id="members_'+memberTotal+'__PageID" name="members['+memberTotal+'].PageID" value="'+sprintNum+'" ');
             $('<tr id="'+sprintNum+'-'+(memberNum+1)+'">').insertAfter('#'+sprintNum+'-'+memberNum);
             pageState[sprintNum]++;
+            memberTotal++;
         }
     });
 </script>

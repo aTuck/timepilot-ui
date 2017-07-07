@@ -52,9 +52,15 @@ namespace TimePilot.DataAccess.Repository
             }
         }
 
-        public bool Update(Member member)
+        private void Update(Member member)
         {
-            throw new NotImplementedException();
+            string sql = @"UPDATE Member SET   Name = @n, SprintDays = @sd, Percentwork = @pw, 
+                                               StandupDuration = @std, Misc = @m, TimeOff = @t,
+                                               SprintID = @sid
+                                         WHERE MemberID = @id";
+            dbContext.Query<Member>(sql, new { id = member.MemberID, n = member.Name, sd = member.SprintDays,
+                                               pw = member.PercentWork, std = member.StandupDuration,
+                                               m = member.Misc, t = member.TimeOff, sid = member.SprintID });
         }
 
         /* Deletes a Member from the Member table
@@ -76,20 +82,30 @@ namespace TimePilot.DataAccess.Repository
 
         /* Adds a Member to the Member table
          * Always returns true */
-        public bool Add(Member member)
+        public int Add(Member member)
         {
-            //TSQL string to insert the project passed to this function into the project table
-            string sql = @"INSERT INTO Member (Name, SprintDays, Percentwork, StandupDuration,
-                                               Misc, TimeOff, SprintID) 
-                           VALUES (@n, @sd, @pw, @std, @m, @t, @sid)";
+            Member check = GetById(member);
+            if (check.MemberID == -1)
+            {
+                //TSQL string to insert the project passed to this function into the project table
+                string sql = @"INSERT INTO Member (Name, SprintDays, Percentwork, StandupDuration,
+                                                   Misc, TimeOff, SprintID) 
+                                                   VALUES (@n, @sd, @pw, @std, @m, @t, @sid)
+                                                   SELECT CAST(SCOPE_IDENTITY() as int)";
 
-            //Do a query sending sql string and assigning variables in sql string to the member object passed in
-            dbContext.Query(sql, new { n = member.Name, sd = member.SprintDays,
-                                       pw = member.PercentWork, std = member.StandupDuration,
-                                       m = member.Misc, t = member.TimeOff, sid = member.SprintID}).ToList();
+                //Do a query sending sql string and assigning variables in sql string to the member object passed in
+                var addedMemberID = dbContext.Query<int>(sql, new { n = member.Name, sd = member.SprintDays,
+                                                                    pw = member.PercentWork, std = member.StandupDuration,
+                                                                    m = member.Misc, t = member.TimeOff, sid = member.SprintID}).Single();
 
-            //Member didn't exist, now it does
-            return true;
+                //Member didn't exist, now it does
+                return addedMemberID;
+            }
+            else
+            {
+                Update(member);
+                return member.MemberID;
+            }
         }
     }
 }

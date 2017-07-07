@@ -302,18 +302,20 @@ namespace TimePilot.Controllers
             for (int i=0; i < ResourceVM.sprints.Count; i++)
             {
                 // Grab working reference to current sprint -- this ID is different than database ID
-                tempCurrentSprintID = ResourceVM.sprints[i].SprintID;
+                tempCurrentSprintID = ResourceVM.sprints[i].PageID;
 
+                // Save Sprint to DB
                 ResourceVM.sprints[i].ProjectKey = SelectedProject;
                 dbCurrentSprintID = SprintDB.Add(ResourceVM.sprints[i]);
+
                 if(ResourceVM.members != null && ResourceVM.members.Count >=1)
                 {
                     for (int j = 0; j < ResourceVM.members.Count; j++)
                     {
-                        if (ResourceVM.members[j].SprintID == tempCurrentSprintID)
+                        if (ResourceVM.members[j].PageID == tempCurrentSprintID)
                         {
                             ResourceVM.members[j].SprintID = dbCurrentSprintID;
-                            MemberDB.Add(ResourceVM.members[j]);
+                            ResourceVM.members[j].MemberID = MemberDB.Add(ResourceVM.members[j]);
                         }
                     }
                 }
