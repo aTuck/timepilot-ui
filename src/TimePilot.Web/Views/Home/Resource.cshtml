@@ -58,6 +58,12 @@
             text-align:center;
         }
 
+    h2.resourcepopup {
+        font-size: 20px;
+    }
+
+}
+
 </style>
 
 <div class="flex-container-header">
@@ -84,7 +90,7 @@
                     <th>Standup Duration (hrs)</th>
                     <th>Total Standup (hrs)</th>
                     <th>Misc. (hrs) <a href="#" data-toggle="popover" data-placement="bottom" title="Miscellaneous" data-content="Meetings (Backlog Review, Dev Meeting), Demos/Retros, Sprint Planning"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                    <th>Time Off (hrs)<a href="#" data-toggle="popover" data-placement="bottom" title="Time Off" data-content="Any sick days, holidays, vacation time, or other time off here "><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                    <th>Time Off (hrs)<a href="#" data-toggle="popover" data-placement="bottom" title="Time Off" data-content="Any sick days, holidays, vacation time, or other time off "><span class="glyphicon glyphicon-question-sign"></span></a></th>
                     <th>Non Dev (hrs)</th>
                     <th>Total Available (hrs)</th>
                     <th>Delete</th>
@@ -185,23 +191,21 @@
                 <input type="button" value="Delete Selected" class="button" />
                 <input type="button" value="Results Page" class="button results-button" onclick="return ResourceValidation();" data-toggle="modal" data-target="#MyModal" />
             </div>
-
-            <div class="modal fade" id="MyModal" data-keyboard="false" data-backdrop="static">
-                <!-- Warning Pop UP HTML-->
-                <div class="modalstuff">
-                    <header>
-                        <h2 class="storypopup">
-                            One or more members has negative total avalibality
-                        </h2>
-                    </header>
-                    <button class="btn closebutton" id="closebutton" data-dismiss="modal"> Edit Members </button>
-                    <button class="btn proceedbutton" id="continuebutton" data-dismiss="modal" type="submit"> Continue </button>
-                </div>
-            </div>
         }
 </div>
 
-
+<div class="modal fade" id="MyModal" data-keyboard="false" data-backdrop="static">
+    <!-- Warning Pop UP HTML-->
+    <div class="modalstuff">
+        <header>
+            <h2 class="resourcepopup">
+                One or more members has negative total avalibality
+            </h2>     
+        </header>
+        <button class="btn closebutton" id="closebutton" data-dismiss="modal"> Edit Members </button>
+        <button class="btn proceedbutton" id="continuebutton" data-dismiss="modal"> Continue </button>
+    </div>
+</div>
 
 
 <script type="text/javascript">
