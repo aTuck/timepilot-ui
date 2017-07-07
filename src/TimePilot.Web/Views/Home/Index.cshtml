@@ -30,6 +30,7 @@
 </div>
 
 <div class="project-container">
+    <p id="noproject" > </p>
     @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @id = "projectForm" }))
     {
         @Html.DropDownListFor(m => m.SelectedProject,
@@ -39,10 +40,7 @@
         <input type="submit" value="Stories Page" class="button" id="submit" />
     }
     
-    @if(Model.ProjectList.Count < 2)
-    {
-        <p> test</p>
-    }
+  
 
 </div>
 
@@ -51,7 +49,7 @@
 //Filters dropwdown list based on search box input
 document.getElementById("search-box").onkeyup = function() {
     // Declare variables
-    var input, filter, select, option, i, test = 0;
+    var input, filter, select, option, i, test = 0, projectcounter=0;
     input = document.getElementById('search-box');
     filter = input.value.toUpperCase();
     select = document.getElementById('projectList');
@@ -68,11 +66,19 @@ document.getElementById("search-box").onkeyup = function() {
                 option[i].style.background = "#c0d9db";
             }
             test++;
+            
         } else {
-            option[i].style.display = "none";    
+            option[i].style.display = "none";
+            projectcounter++;
         }
-    }
 
+        if (projectcounter == option.length) {
+            noproject.innerHTML = "There are no stories found, please search again" ;
+        }
+        else if (projectcounter < option.length) {
+            noproject.innerHTML = " ";
+        }   
+    }  
 }
 
 //Sorts dropdown list based on sort order selected

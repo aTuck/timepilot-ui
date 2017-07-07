@@ -255,6 +255,13 @@ h1:hover{
     align-items: center;
 }
 
+#noproject{
+    text-align: center;
+    font-size: 18px;
+    color: #e56060;
+    font-weight: bold;
+}
+
 .btn:focus, .btn:active, .btn:target{
     outline:none;
 }
