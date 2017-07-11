@@ -111,22 +111,10 @@ input[type="submit"]:hover{
 
 .buttons-container{
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     margin-top: 20px;
     margin-bottom:20px;
     flex-wrap:wrap;
-}
-
-.btn{
-    animation: ease-out;
-    transition:0.4s;
-    margin:5px;
-}
-
-.btn:hover{
-    background-color:#5cd2db;
-    animation: ease-in;
-    transition:0.4s;
 }
 
 h2.storypopup{

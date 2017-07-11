@@ -187,9 +187,15 @@
             </div>
 
             <div class="buttons-container">
-                <input type="button" value="Previous" class="button"onclick="location.href='@Url.Action("Story", "Home")'"  />
-                <input type="button" value="Delete Selected" class="button" />
-                <input type="button" value="Results Page" class="button results-button" onclick="return ResourceValidation();" data-toggle="modal" data-target="#MyModal" />
+                <a class="link-fill" href="javascript:void(0);" onclick="history.go(-1);">
+                    <span class="glyphicon glyphicon-menu-left"></span>&nbsp;Previous 
+                </a>
+                <a class="btn btn-danger">
+                    <span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Delete Selected
+                </a>
+                <a class="link-fill" onclick="return ResourceValidation()">
+                    Results Page&nbsp;<span class="glyphicon glyphicon-menu-right"></span>
+                </a>
             </div>
         }
 </div>

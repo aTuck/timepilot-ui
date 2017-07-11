@@ -265,6 +265,24 @@ h1:hover{
 .btn:focus, .btn:active, .btn:target{
     outline:none;
 }
+
+.link-fill{
+    display: flex;
+    font-size: 20px;
+    justify-content: center;
+    align-items: center;
+    padding: 3px 5px;
+}
+.link-fill:hover{
+    background: rgba(70, 70, 70, 0.39);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.link-fill:active{
+    text-decoration: none;
+}
+
 @media only screen and (max-width: 1200px) {
   .pre-project-container {
         flex-direction: row;   
