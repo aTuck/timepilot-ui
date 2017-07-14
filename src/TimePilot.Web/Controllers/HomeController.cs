@@ -10,40 +10,29 @@ namespace TimePilot.Controllers
 {
     public class HomeController : Controller
     {
-        ApiHelper apiHelper = new ApiHelper();
+        private static ApiHelper apiHelper = new ApiHelper();
         private string projectJson;
         private string storyJson;
-        
 
         public static int [] storypointallocation;
         public static float totalAvailablility;
-        public static float AvgCapactiyperWeek;
+        public static float AvgCapacityPerWeek;
         public static float totalStoryPoints;
-        private static int hoursPerDay = 8;
+        private static string SelectedProject = "";
+
         List<TimePilot.Entities.Story> stories = new List<TimePilot.Entities.Story>();        
         List<Project> projects = new List<Project>();
-        public static string SelectedProject;
 
         ProjectViewModel ProjectVM = new ProjectViewModel();
+        StoryViewModel StoryVM = new StoryViewModel();
         ResourceCapacityViewModel ResourceVM = new ResourceCapacityViewModel();
         ResultsViewModel ResultsVM = new ResultsViewModel();
+        
 
         ProjectRepository ProjDB = new ProjectRepository();
         StoryRepository StoryDB = new StoryRepository();
         SprintRepository SprintDB = new SprintRepository();
         MemberRepository MemberDB = new MemberRepository();
-
-        public void bindStoryDataToViewModel(StoryViewModel StoryVM)
-        {
-            stories = StoryDB.GetAllByForeignId(SelectedProject);
-            StoryVM.StoryList = stories;
-        }
-
-        public void bindProjectDataToViewModel()
-        {
-            projects = ProjDB.GetAll();
-            ProjectVM.ProjectList = projects;
-        }
 
         public void receiveProjectData()
         {
@@ -61,16 +50,17 @@ namespace TimePilot.Controllers
              * page load for now until button is implemented             */
             ProjectPopulate();
             /*-----------------------------------------------------------*/
-            bindProjectDataToViewModel();
+            projects = ProjDB.GetAll();
+            ProjectVM.ProjectList = projects;
             return View(ProjectVM);
         }
 
         [HttpPost]
-        public ActionResult Index(ProjectViewModel model)
+        public ActionResult Index(ProjectViewModel m)
         {
-            SelectedProject = model.SelectedProject;
+            SelectedProject = m.SelectedProject;
             // On button click form is posted and redirects to Story view
-            if (model.SelectedProject == null)
+            if (m.SelectedProject == null)
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -98,38 +88,12 @@ namespace TimePilot.Controllers
             
         }
 
-        public void setHoursEstimationValues(ResultsViewModel model)
-        {
-            int SumOfTotalDays = 0;
-            for (int i = 0; i < model.storypointAllocation.Length; i++)
-            {
-                SumOfTotalDays = SumOfTotalDays + model.Total[i];
-            }
-            model.TotalHours = SumOfTotalDays * hoursPerDay;                                    
-            model.ReleaseAndHardening = model.SprintLength;
-            model.TotalDevQA = model.TotalHours * (1F + model.Contingency/100F);
-            model.AvgCapacitiyperWeek = AvgCapactiyperWeek;
-            model.TotalWeeks = model.TotalDevQA / AvgCapactiyperWeek;
-            model.ProjectDurationWeeks = model.ReleaseAndHardening + model.TotalWeeks;
-        }
 
-        public void setVelocityValidationValues(ResultsViewModel model)
-        {
-            model.totalStoryPoints = totalStoryPoints;
-            model.totalPointsVelocity = totalStoryPoints * (1F + model.Contingency / 100F);
-            
-            if (model.TeamVelocity > 0)
-            {
-                model.TotalSprints = model.totalPointsVelocity / model.TeamVelocity;
-            }
-            model.TotalWeeksVelocity = model.TotalSprints * model.SprintLength;
-            model.projectDurationWeeksVelocity = model.TotalWeeksVelocity + model.ReleaseAndHardening;
-        }
 
         public ActionResult Story()
         {
-            var StoryVM = new StoryViewModel();
-            bindStoryDataToViewModel(StoryVM);
+            stories = StoryDB.GetAllByForeignId(SelectedProject);
+            StoryVM.StoryList = stories;
             sumStoryPoints(StoryVM);
             if (StoryVM.StorypointSum != null)
             {
@@ -200,7 +164,6 @@ namespace TimePilot.Controllers
             return RedirectToAction("Story");
         }
 
-
         [HttpPost]
         public ActionResult StoryUpdate(StoryViewModel model)
         {
@@ -226,17 +189,6 @@ namespace TimePilot.Controllers
             }
             return RedirectToAction("Story");
         }
-
-
-        /*public void copySprint(ResourceCapacityViewModel model)        
-        {
-
-            List<Member> copiedMemberList = model.sprints[model.buttonIndex].members;
-            TimePilot.Web.Models.Sprint copiedSprint = new TimePilot.Web.Models.Sprint();
-            model.sprints.Add(copiedSprint);
-            model.sprints[model.sprints.Count-1].members = copiedMemberList;
-            
-        }*/
 
         public void calculateTotalStoryPoints (StoryViewModel model)
         {
@@ -283,18 +235,6 @@ namespace TimePilot.Controllers
         }
 
         [HttpPost]
-        public ActionResult Resource(ResourceCapacityViewModel RCModel)
-       {
-            ModelState.Clear();            
-            for (int i = 0; i < ResourceVM.sprints.Count; i++)
-            {
-                ResourceVM.sprints[i].ProjectKey = SelectedProject;
-                SprintDB.Add(ResourceVM.sprints[i]);
-            }
-            return RedirectToAction("Resource");
-        }
-
-        [HttpPost]
         public ActionResult ResourceUpdate(ResourceCapacityViewModel ResourceVM)
         {
             int dbCurrentSprintID = 0;
@@ -312,7 +252,7 @@ namespace TimePilot.Controllers
                 {
                     for (int j = 0; j < ResourceVM.members.Count; j++)
                     {
-                        if (ResourceVM.members[j].PageID == tempCurrentSprintID)
+                        if (ResourceVM.members[j].PageID != -1 && ResourceVM.members[j].PageID == tempCurrentSprintID)
                         {
                             ResourceVM.members[j].SprintID = dbCurrentSprintID;
                             ResourceVM.members[j].MemberID = MemberDB.Add(ResourceVM.members[j]);
@@ -322,6 +262,24 @@ namespace TimePilot.Controllers
             }
             return RedirectToAction("Resource");
         }
+
+        [HttpPost]
+        public ActionResult ResourceDelete(int[] id)
+        {
+            foreach (var item in id)
+            {
+                MemberDB.Delete(item);
+            }
+            return RedirectToAction("Resource");
+        }
+
+        /*public void copySprint(ResourceCapacityViewModel model)        
+        {
+            List<Member> copiedMemberList = model.sprints[model.buttonIndex].members;
+            TimePilot.Web.Models.Sprint copiedSprint = new TimePilot.Web.Models.Sprint();
+            model.sprints.Add(copiedSprint);
+            model.sprints[model.sprints.Count-1].members = copiedMemberList;
+        }*/
 
         public void calculateTotalDays(ResultsViewModel model)
         {
@@ -367,6 +325,34 @@ namespace TimePilot.Controllers
             return View(model);
         }
 
+        public void setHoursEstimationValues(ResultsViewModel model)
+        {
+            int SumOfTotalDays = 0;
+            for (int i = 0; i < model.storypointAllocation.Length; i++)
+            {
+                SumOfTotalDays = SumOfTotalDays + model.Total[i];
+            }
+            model.TotalHours = SumOfTotalDays * 8;
+            model.ReleaseAndHardening = model.SprintLength;
+            model.TotalDevQA = model.TotalHours * (1F + model.Contingency / 100F);
+            model.AvgCapacityperWeek = AvgCapacityPerWeek;
+            model.TotalWeeks = model.TotalDevQA / AvgCapacityPerWeek;
+            model.ProjectDurationWeeks = model.ReleaseAndHardening + model.TotalWeeks;
+        }
+
+        public void setVelocityValidationValues(ResultsViewModel model)
+        {
+            model.totalStoryPoints = totalStoryPoints;
+            model.totalPointsVelocity = totalStoryPoints * (1F + model.Contingency / 100F);
+
+            if (model.TeamVelocity > 0)
+            {
+                model.TotalSprints = model.totalPointsVelocity / model.TeamVelocity;
+            }
+            model.TotalWeeksVelocity = model.TotalSprints * model.SprintLength;
+            model.projectDurationWeeksVelocity = model.TotalWeeksVelocity + model.ReleaseAndHardening;
+        }
+
         /*private void deleteSelectedMembers(ResourceCapacityViewModel model)
         {
             for (int i = 0; i < model.sprints.Count; i++)
@@ -391,7 +377,7 @@ namespace TimePilot.Controllers
 
         }*/
 
-       /* public void calculateAvailability(ResourceCapacityViewModel model)
+        /* public void calculateAvailability(ResourceCapacityViewModel model)
         {
             for (int i = 0; i < model.sprints.Count; i++)
             {
@@ -419,7 +405,7 @@ namespace TimePilot.Controllers
         }*/
 
         //i = sprint index j = member index
-       /* public void setDefaultValues(ResourceCapacityViewModel model, int i, int j)
+        /* public void setDefaultValues(ResourceCapacityViewModel model, int i, int j)
         {
             switch (model.sprints[i].members[j].role)
             {
@@ -516,7 +502,7 @@ namespace TimePilot.Controllers
             
 
         }*/
-       
+
         private void sumStoryPoints(StoryViewModel model)
         {
             int point1 = 0;

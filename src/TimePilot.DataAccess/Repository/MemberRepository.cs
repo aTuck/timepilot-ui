@@ -69,15 +69,10 @@ namespace TimePilot.DataAccess.Repository
         public bool Delete(int MemberID)
         {
             string sql = @"DELETE from member where MemberID = @id";
-            List<Member> members = dbContext.Query<Member>(sql, new { id = MemberID }).ToList();
-            if (members.Count <= 0)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+
+            var affectedrows = dbContext.Execute(sql, new { id = MemberID });
+
+            return affectedrows > 0;
         }
 
         /* Adds a Member to the Member table

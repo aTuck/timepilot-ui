@@ -190,9 +190,8 @@
 
 
      function RefreshStoryForm() {
-
         $.ajax({
-            type: "POST",                        
+            type: "GET",                        
             success: function (result) {
                 location.href="@Url.Action("StoryPopulate", "Home")";
             }
