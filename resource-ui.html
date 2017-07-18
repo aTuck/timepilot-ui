@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TimePilot UI Test</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"/></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto|Asap" rel="stylesheet">
+  </head>
+  <body>
+
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-11">      
+              <h2>TimePilot - Resource Page</h2>
+            </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="panel panel-default">
+        <div class="panel-heading sprint-heading">
+          <div class="sprint-control-panel editable">
+            <div class="input-group">
+              <h3 class="sprint-name">eComm - Sprint 40</h3>
+            </div>
+            <div class="btn-control-panel">
+              <button type="button" class="btn btn-primary add-member-btn">Add Member</button>
+              <span class="sprint-remove glyphicon glyphicon-remove"/>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Role</th>
+                  <th>Name</th>
+                  <th>Sprint Days</th>
+                  <th>% Work</th>
+                  <th>Total Hrs.</th>
+                  <th>SU Length</th>
+                  <th>Total SU</th>
+                  <th>Misc. &nbsp;<a href="#" data-toggle="popover" data-placement="bottom" title="Miscellaneous" data-content="Meetings (Backlog Review, Dev Meeting), Demos/Retros, Sprint Planning"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                  <th>Time Off &nbsp;<a href="#" data-toggle="popover" data-placement="bottom" title="Time Off" data-content="Any sick days, holidays, vacation time, or other time off here "><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                  <th>Non Dev</th>
+                  <th>Total Avail.</th>
+                  <th><span class="glyphicon glyphicon-trash"/></th>
+                </tr>
+              <thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <ul class="nav nav-pills">
+                      <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Roles
+                        <span class="caret"></span></a>
+                          <ul class="dropdown-menu">
+                            <li value="leadDev"><a href="#">Lead Dev</a></li>
+                            <li value="seniorDev"><a href="#">Senior Dev</a></li>
+                            <li value="intermediateDev"><a href="#">Dev</a></li>
+                            <li value="juniorDev"><a href="#">Junior Dev</a></li>
+                            <li value="leadQA"><a href="#">Lead QA</a></li>
+                            <li value="seniorQA"><a href="#">Senior QA</a></li>
+                            <li value="intermediateQA"><a href="#">QA</a></li>
+                            <li value="juniorQA"><a href="#">Junior QA</a></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </div>
+                  </td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="checkbox"/></td>
+                </tr>
+                            <tr>
+                  <td>
+                    <ul class="nav nav-pills">
+                      <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Roles
+                        <span class="caret"></span></a>
+                          <ul class="dropdown-menu">
+                            <li value="leadDev"><a href="#">Lead Dev</a></li>
+                            <li value="seniorDev"><a href="#">Senior Dev</a></li>
+                            <li value="intermediateDev"><a href="#">Dev</a></li>
+                            <li value="juniorDev"><a href="#">Junior Dev</a></li>
+                            <li value="leadQA"><a href="#">Lead QA</a></li>
+                            <li value="seniorQA"><a href="#">Senior QA</a></li>
+                            <li value="intermediateQA"><a href="#">QA</a></li>
+                            <li value="juniorQA"><a href="#">Junior QA</a></li>
+                          </ul>
+                        </li>
+                    </ul>
+                  </td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="checkbox"/></td>
+                </tr>
+                            <tr>
+                  <td>
+                    <ul class="nav nav-pills">
+                      <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Roles
+                        <span class="caret"></span></a>
+                          <ul class="dropdown-menu">
+                            <li value="leadDev"><a href="#">Lead Dev</a></li>
+                            <li value="seniorDev"><a href="#">Senior Dev</a></li>
+                            <li value="intermediateDev"><a href="#">Dev</a></li>
+                            <li value="juniorDev"><a href="#">Junior Dev</a></li>
+                            <li value="leadQA"><a href="#">Lead QA</a></li>
+                            <li value="seniorQA"><a href="#">Senior QA</a></li>
+                            <li value="intermediateQA"><a href="#">QA</a></li>
+                            <li value="juniorQA"><a href="#">Junior QA</a></li>
+                          </ul>
+                        </li>
+                    </ul>
+                  </td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="checkbox"/></td>
+                </tr>
+                            <tr>
+                  <td>
+                    <ul class="nav nav-pills">
+                      <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Roles
+                        <span class="caret"></span></a>
+                          <ul class="dropdown-menu">
+                            <li value="leadDev"><a href="#">Lead Dev</a></li>
+                            <li value="seniorDev"><a href="#">Senior Dev</a></li>
+                            <li value="intermediateDev"><a href="#">Dev</a></li>
+                            <li value="juniorDev"><a href="#">Junior Dev</a></li>
+                            <li value="leadQA"><a href="#">Lead QA</a></li>
+                            <li value="seniorQA"><a href="#">Senior QA</a></li>
+                            <li value="intermediateQA"><a href="#">QA</a></li>
+                            <li value="juniorQA"><a href="#">Junior QA</a></li>
+                          </ul>
+                        </li>
+                    </ul>
+                  </td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="checkbox"/></td>
+                </tr>
+              </tbody>
+            </table>
+
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading sprint-heading">
+          <div class="sprint-control-panel editable">
+            <div class="input-group">
+              <h3 class="sprint-name">eComm - Sprint 40</h3>
+            </div>
+            <div class="btn-control-panel">
+              <button type="button" class="btn btn-primary add-member-btn">Add Member</button>
+              <span class="sprint-remove glyphicon glyphicon-remove"/>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Role</th>
+                  <th>Name</th>
+                  <th>Sprint Days</th>
+                  <th>% Work</th>
+                  <th>Total Hrs.</th>
+                  <th>SU Length</th>
+                  <th>Total SU</th>
+                  <th>Misc. &nbsp;<a href="#" data-toggle="popover" data-placement="bottom" title="Miscellaneous" data-content="Meetings (Backlog Review, Dev Meeting), Demos/Retros, Sprint Planning"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                  <th>Time Off &nbsp;<a href="#" data-toggle="popover" data-placement="bottom" title="Time Off" data-content="Any sick days, holidays, vacation time, or other time off here "><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                  <th>Non Dev</th>
+                  <th>Total Avail.</th>
+                  <th><span class="glyphicon glyphicon-trash"/></th>
+                </tr>
+              <thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <ul class="nav nav-pills">
+                      <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Roles
+                        <span class="caret"></span></a>
+                          <ul class="dropdown-menu">
+                            <li value="leadDev"><a href="#">Lead Dev</a></li>
+                            <li value="seniorDev"><a href="#">Senior Dev</a></li>
+                            <li value="intermediateDev"><a href="#">Dev</a></li>
+                            <li value="juniorDev"><a href="#">Junior Dev</a></li>
+                            <li value="leadQA"><a href="#">Lead QA</a></li>
+                            <li value="seniorQA"><a href="#">Senior QA</a></li>
+                            <li value="intermediateQA"><a href="#">QA</a></li>
+                            <li value="juniorQA"><a href="#">Junior QA</a></li>
+                          </ul>
+                        </li>
+                    </ul>
+                  </td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="checkbox"/></td>
+                </tr>
+                            <tr>
+                  <td>
+                    <ul class="nav nav-pills">
+                      <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Roles
+                        <span class="caret"></span></a>
+                          <ul class="dropdown-menu">
+                            <li value="leadDev"><a href="#">Lead Dev</a></li>
+                            <li value="seniorDev"><a href="#">Senior Dev</a></li>
+                            <li value="intermediateDev"><a href="#">Dev</a></li>
+                            <li value="juniorDev"><a href="#">Junior Dev</a></li>
+                            <li value="leadQA"><a href="#">Lead QA</a></li>
+                            <li value="seniorQA"><a href="#">Senior QA</a></li>
+                            <li value="intermediateQA"><a href="#">QA</a></li>
+                            <li value="juniorQA"><a href="#">Junior QA</a></li>
+                          </ul>
+                        </li>
+                    </ul>
+                  </td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="checkbox"/></td>
+                </tr>
+                            <tr>
+                  <td>
+                    <ul class="nav nav-pills">
+                      <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Roles
+                        <span class="caret"></span></a>
+                          <ul class="dropdown-menu">
+                            <li value="leadDev"><a href="#">Lead Dev</a></li>
+                            <li value="seniorDev"><a href="#">Senior Dev</a></li>
+                            <li value="intermediateDev"><a href="#">Dev</a></li>
+                            <li value="juniorDev"><a href="#">Junior Dev</a></li>
+                            <li value="leadQA"><a href="#">Lead QA</a></li>
+                            <li value="seniorQA"><a href="#">Senior QA</a></li>
+                            <li value="intermediateQA"><a href="#">QA</a></li>
+                            <li value="juniorQA"><a href="#">Junior QA</a></li>
+                          </ul>
+                        </li>
+                    </ul>
+                  </td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="checkbox"/></td>
+                </tr>
+                            <tr>
+                  <td>
+                    <ul class="nav nav-pills">
+                      <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Roles
+                        <span class="caret"></span></a>
+                          <ul class="dropdown-menu">
+                            <li value="leadDev"><a href="#">Lead Dev</a></li>
+                            <li value="seniorDev"><a href="#">Senior Dev</a></li>
+                            <li value="intermediateDev"><a href="#">Dev</a></li>
+                            <li value="juniorDev"><a href="#">Junior Dev</a></li>
+                            <li value="leadQA"><a href="#">Lead QA</a></li>
+                            <li value="seniorQA"><a href="#">Senior QA</a></li>
+                            <li value="intermediateQA"><a href="#">QA</a></li>
+                            <li value="juniorQA"><a href="#">Junior QA</a></li>
+                          </ul>
+                        </li>
+                    </ul>
+                  </td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control"/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="text" class="form-control" readonly/></td>
+                  <td><input type="checkbox"/></td>
+                </tr>
+              </tbody>
+            </table>
+
+        </div>
+      </div>
+
+      <div class="crud-control-panel">
+        <button class="btn btn-lg btn-primary ctrl-btn" id="add-sprint"> + </button>
+        <button class="delete-selected btn btn-danger ctrl-btn"><span class="glyphicon glyphicon-trash"></span> Delete Selected</button>
+      </div>
+
+      <div class="nav-control-panel">
+        <button class="btn ctrl-btn btn-primary nav-btn"><span class="glyphicon glyphicon-menu-left"/></span> &nbsp; Previous </button>
+        <button class="btn ctrl-btn btn-primary nav-btn">Results &nbsp; <span class="glyphicon glyphicon-menu-right"></span></button>
+      </div>
+    </div>
+  </body>
+</html>
+
+<script>
+  $('.dropdown-toggle').dropdown()
+
+  $(function () {
+    $('[data-toggle="popover"]').popover()
+  })
+
+  $(document).on('click', function (e) {
+    $('[data-toggle="popover"],[data-original-title]').each(function () {
+      if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0 ) {
+        (($(this).popover('hide').data('bs.popover') || {}).inState || {}).click = false
+      }
+    });
+  });
+
+  $(document).on('mouseover', '.editable', function(e){
+    e.preventDefault();
+    $('.edit-sprint-btn').css('display', 'block');
+  })
+  $(document).on('mouseleave', '.editable', function(e){
+    e.preventDefault();
+    $('.edit-sprint-btn').css('display', 'none');
+  })
+  $(document).on('click', '.sprint-name', function(e) {
+    e.preventDefault();
+    setToEdit(this);
+  });
+  $(document).on('blur', '.sprint-name-edit', function(e) {
+    e.preventDefault();
+    setToText(this);
+  });
+  function setToEdit(sprintName){
+    $(sprintName.parentNode.parentNode).removeClass('editable')
+    var text = $(sprintName).text();
+    $(sprintName).replaceWith("<input type='text' class='form-control input-lg sprint-name-edit' value='"+text+"' maxlength='45'/> ");
+    $('.sprint-name-edit').focus();
+    $('.sprint-name-edit').select();
+  }
+  function setToText(sprintNameEdit){
+    $(sprintNameEdit.parentNode.parentNode).addClass('editable')
+    var text = $.trim($(sprintNameEdit).val());
+    if (text != ""){
+      $(sprintNameEdit).replaceWith("<h3 class='sprint-name'>"+text+"</h3>");
+    }
+    else{
+      $(sprintNameEdit).replaceWith("<h3 class='sprint-name'>Enter sprint name...</h3>");
+    }
+  }
+
+  $('.sprint-remove').on('click', function(){
+    confirm("Delete this sprint?");
+  });
+  $('.delete-selected').on('click', function(){
+    confirm("Delete selected members?");
+  });
+
+/* detach and re-append dropdown menu */
+(function(){
+  var dropdownMenu
+  $(document).on('show.bs.dropdown', function(e) { 
+    dropdownMenu = $(e.target).find('.dropdown-menu');       
+    $('body').append(dropdownMenu.detach());          
+    dropdownMenu.css('display', 'block');             
+    dropdownMenu.position({                           
+      'my': 'left top',                            
+      'at': 'left bottom',                         
+      'of': $(e.relatedTarget)                      
+    })                                                
+  });                                                   
+  $(document).on('hide.bs.dropdown', function(e) {       
+    $(e.target).append(dropdownMenu.detach());        
+    dropdownMenu.hide();                              
+  }); 
+})();
+</script>
+
+<style>
+  html body{
+    top: 0px;
+    padding: 0px;
+    margin: 0px;
+    font-family: 'Roboto', sans-serif;
+  }
+  th{
+    font-size:13px;
+    text-align: center;
+  }
+  td{
+    text-align: center;
+  }
+  h3{
+    margin-top:10px;
+  }
+  input[type=text]{
+    width: 65px;
+  }
+  input[type=checkbox]{
+    width: 20px;
+    height: 20px;
+  }
+  input[type=checkbox]:hover{
+      cursor: pointer;
+  }
+  .btn:focus, .btn:active{
+    outline:none !important;
+    box-shadow:none !important;
+  }
+  .navbar-default{
+    border: none;
+    margin-bottom: 40px;
+    box-shadow: 0 2px 1px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  }
+  .sprint-heading{
+    display:flex;
+    justify-content: flex-start;
+  }
+  .sprint-name-edit{
+    width:700px;
+  }
+  .sprint-name:hover{
+    cursor: pointer;
+  }
+  .add-member-btn{
+    margin-left: 15px;
+  }
+  .sprint-control-panel{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+  .nav-control-panel{
+    display: flex;
+    justify-content: space-around;
+    height: 45px;
+    margin-top: 55px;
+    margin-bottom: 20px;
+  }
+  .nav-btn{
+    display: flex;
+    align-items: center;
+    padding: 0px 16px;
+  }
+  .crud-control-panel{
+    display: flex;
+    justify-content: space-between;
+  }
+  .btn-control-panel{
+    display: flex;
+    justify-content: space-between;
+    width: 140px;
+  }
+  .edit-sprint-btn{
+    display: none;
+  }
+  .ctrl-btn{
+    margin-right: 10px;
+  }
+  .ctrl-btn:last-child{
+    margin-right:0px;
+  }
+  .panel{
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  }
+  .panel-body{
+    overflow-x: auto;
+  }
+  .sprint-remove{
+    margin-top: -5px;
+    margin-right: -9px;
+  }
+  .sprint-remove:hover{
+    cursor: pointer;
+  }
+  @media only screen and (max-width: 460px){
+    .sprint-name {font-size: 18px;}
+  }
+
+</style>
