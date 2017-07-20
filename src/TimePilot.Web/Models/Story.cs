@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿/*using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -22,4 +22,4 @@ namespace TimePilot.Web.Models
         public int storyId { get; set; }
         public Boolean isSelectedToDelete { get; set; }
     }
-}
+}*/

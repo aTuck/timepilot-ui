@@ -10,9 +10,8 @@ namespace TimePilot.Web.ViewModels
 {
     public class StoryViewModel
     {
-        public int[] StorypointSum { get; set; }
-        public int totalNumberStoryPoints { get; set; }
+        public int[] StoryPointAllocation { get; set; }
+        public int totalStoryPoints { get; set; }
         public List<Story> StoryList { get; set; }
-        public bool isSelectedToDelete { get; set; }
     }
 }

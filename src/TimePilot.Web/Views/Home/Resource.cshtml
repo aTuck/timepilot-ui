@@ -181,16 +181,17 @@
             </table>
             <input type="button" value="+" class="button add-sprint" data-toggle="tooltip" title="Add a sprint" data-placement="right"/>
             <div class="total-capacity">
-                <p><b>Total Dev Capacity:</b>  <span class="final-value"/>0</p>
-                <p><b>Average Per Sprint: </b> <span class="final-value"/>0</p>
-                <p><b>Average Per Week: </b> <span class="final-value"/>0</p>
+                <p><b>Total Dev Capacity:</b> <span class="final-value"/>0</p>
+                <p><b>Average Per Sprint:</b> <span class="final-value"/>0</p>
+                <p><b>Average Per Week:  </b> <span class="final-value"/>0</p>
             </div>
+            @Html.HiddenFor(m => m.totalDevCapacity, new { @class = "total-dev-capacity-hidden" });
 
             <div class="buttons-container">
                 <a class="link-fill" href="javascript:void(0);" onclick="history.go(-1);">
                     <span class="glyphicon glyphicon-menu-left"></span>&nbsp;Previous 
                 </a>
-                <a class="btn btn-danger" onclick="return deleteMembers()">
+                <a class="btn button" onclick="return deleteMembers()">
                     <span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Delete Selected
                 </a>
                 <a class="link-fill" onclick="return ResourceValidation()">
@@ -302,6 +303,7 @@
         var sprints = document.getElementsByClassName("sprint-title").length;
         for (i = 0; i < ttls.length; i++) {temp += parseFloat(ttls[i].value);}
         ttlDevCapac.textContent = round(parseFloat(temp), 1);
+        $('.total-dev-capacity-hidden').val(round(parseFloat(temp), 1));
         avgPerSprint.textContent = round(parseFloat(temp / sprints), 1);
         avgPerWeek.textContent = round(parseFloat((temp / sprints) / 2), 1);
     }
@@ -338,7 +340,6 @@
                 elems[0].value = 10;   // Sprint Days
                 elems[1].value = 50;   // % Work
                 elems[2].value = 0.25; // Standup Duration
-                //elems[3].value = 2.5;  // Standups
                 elems[3].value = 6;    // Misc.
                 elems[4].value = 0;    // Time Off
                 break;
@@ -346,7 +347,6 @@
                 elems[0].value = 10;   // Sprint Days
                 elems[1].value = 70;   // % Work
                 elems[2].value = 0.25; // Standup Duration
-                //elems[3].value = 2.5;  // Standups
                 elems[3].value = 5;    // Misc.
                 elems[4].value = 0;    // Time Off
                 break;
@@ -354,7 +354,6 @@
                 elems[0].value = 10;   // Sprint Days
                 elems[1].value = 80;   // % Work
                 elems[2].value = 0.25; // Standup Duration
-                //elems[3].value = 2.5;  // Standups
                 elems[3].value = 4;    // Misc.
                 elems[4].value = 0;    // Time Off
                 break;
@@ -362,7 +361,6 @@
                 elems[0].value = 10;   // Sprint Days
                 elems[1].value = 90;   // % Work
                 elems[2].value = 0.25; // Standup Duration
-                //elems[3].value = 2.5;  // Standups
                 elems[3].value = 4;    // Misc.
                 elems[4].value = 0;    // Time Off
                 break;
@@ -370,7 +368,6 @@
                 elems[0].value = 10;   // Sprint Days
                 elems[1].value = 50;   // % Work
                 elems[2].value = 0.25; // Standup Duration
-                //elems[3].value = 2.5;  // Standups
                 elems[3].value = 6;    // Misc.
                 elems[4].value = 0;    // Time Off
                 break;
@@ -378,7 +375,6 @@
                 elems[0].value = 10;   // Sprint Days
                 elems[1].value = 70;   // % Work
                 elems[2].value = 0.25; // Standup Duration
-                //elems[3].value = 2.5;  // Standups
                 elems[3].value = 5;    // Misc.
                 elems[4].value = 0;    // Time Off
                 break;
@@ -386,7 +382,6 @@
                 elems[0].value = 10;   // Sprint Days
                 elems[1].value = 80;   // % Work
                 elems[2].value = 0.25; // Standup Duration
-                //elems[3].value = 2.5;  // Standups
                 elems[3].value = 4;    // Misc.
                 elems[4].value = 0;    // Time Off
                 break;
@@ -394,7 +389,6 @@
                 elems[0].value = 10;   // Sprint Days
                 elems[1].value = 90;   // % Work
                 elems[2].value = 0.25; // Standup Duration
-                //elems[3].value = 2.5;  // Standups
                 elems[3].value = 4;    // Misc.
                 elems[4].value = 0;    // Time Off
                 break;
@@ -425,7 +419,6 @@
     })
 
     // DOM modication for adding Sprints/Members
-    // TODO: Change HTML of add member to actual member row
     $(document).ready(function () {
         var pageState = @Html.Raw(Json.Encode(Model.pageState));
         var memberTotal = 0;

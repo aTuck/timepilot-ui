@@ -5,9 +5,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
 <style>
-    table {
+    table{
         font-family: arial, sans-serif;
         border-collapse: collapse;
         border-style: hidden;
@@ -15,40 +14,34 @@
         padding: 10px;
     }
 
-    td, th {
+    td, th{
         border: 1px solid #dddddd;
         text-align: left;
         padding: 8px;
         border-style: hidden;
     }
 
-    #myTable tr:nth-child(even) {
+    #myTable tr:nth-child(even){
         background-color:#c5e7e0;
     }
-     #myTable tr:nth-child(odd) {
+    #myTable tr:nth-child(odd){
         background-color: #ddf0ec;
     }
 
-     .velocitytable tr:nth-child(even)
-    {
-          background-color:#d1cbe1;
-         
-        
-     }
-      .velocitytable tr:nth-child(odd)
-    {
+    .velocitytable tr:nth-child(even){
+        background-color:#d1cbe1;
+    }
+    .velocitytable tr:nth-child(odd){
         background-color: #e0dfea;
-     }
+    }
 
-      .hourstable tr:nth-child(even)
-      {
+    .hourstable tr:nth-child(even){
         background-color:#b0e3e5
-      }
-
-      .hourstable tr:nth-child(odd){
-          background-color:#d6f9f6
-      }
-    h2 {
+    }
+    .hourstable tr:nth-child(odd){
+        background-color:#d6f9f6
+    }
+    h2{
         padding: 10px;
     }
     onbottom{
@@ -58,7 +51,6 @@
 </style>
 
 <div class="container">
-
     <div class="flex-container-header">
         <h1>Time Pilot</h1>
         <p>
@@ -69,21 +61,16 @@
         </p>
     </div>
 
-
     <h2>Conversion Rate</h2>
-
     @using (Html.BeginForm("Result", "Home", FormMethod.Post))
     {
         <table id="myTable">
-
-
             <tr>
                 <th>Story pt</th>
                 <th># of Stories</th>
                 <th>Days/St pt</th>
                 <th>Total Days</th>
             </tr>
-
             @for (int i = 0; i < Model.storypointAllocation.Length; i++)
             {
                 <tr>
@@ -103,18 +90,12 @@
                         @Html.TextBoxFor(m => m.Total[i], new { @readonly = true })
                         @Html.HiddenFor(m => m.Total[i])
                     </td>
-
                 </tr>
             }
-
-
-
         </table >
 
         <h2>Hours Estimation</h2>
-
         <table class ="hourstable">
-
             <tr>
                 <td>Total Hours: @Model.TotalHours</td>
                 <td>Total Weeks: @Model.TotalWeeks</td>
@@ -124,28 +105,24 @@
                     Contingency:  @Html.TextBoxFor(m => m.Contingency, new { @onchange = "this.form.submit();" })
                     @Html.HiddenFor(m => m.Contingency)
                 </td>
-                <td>Sprint Length: @Html.DropDownListFor(m => m.SprintLength, new SelectList(Model.sprintLengthList, "Value", "Text"), "Sprint Length", new { @onchange = "this.form.submit()"})</td>
+                    <td><select Name="SprintLength" onchange="this.form.submit()">
+                        <option>Select length</option>
+                        <option value="2">2 weeks</option>
+                        <option value="3">3 weeks</option>
+                    </select></td>
             </tr>
             <tr>
                 <td>Total Dev & QA Hours: @Model.TotalDevQA</td>
                 <td>Release & Hardening: @Model.ReleaseAndHardening</td>
             </tr>
             <tr>
-                <td>Average Capacity Per Week: @Model.AvgCapacitiyperWeek</td>
+                <td>Average Capacity Per Week: @Model.AvgCapacityPerWeek</td>
                 <td>Project Duration Weeks: @Model.ProjectDurationWeeks</td>
             </tr>
-
-
-
-
-
         </table >
 
         <h2>Velocity Validation</h2>
-
-
         <table class= "velocitytable">
-
             <tr>
                 <td>Total Number of Story Points: @Model.totalStoryPoints </td>
                 <td>
@@ -164,17 +141,10 @@
             <tr>
                 <td>Release & Hardening: @Model.ReleaseAndHardening</td>
                 <td>Project Duration Weeks: @Model.projectDurationWeeksVelocity</td>
-
             </tr>
-
-
-
         </table>
-
 
         <input type="button" value="Previous" onclick="location.href='@Url.Action("Resource", "Home")'" class="button onbottom" />
         <input type="button" value="Home" onclick="location.href='@Url.Action("Index", "Home")'" class="button onbottom" />
-
-
     }
 </div>

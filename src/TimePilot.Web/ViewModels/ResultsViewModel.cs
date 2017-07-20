@@ -17,7 +17,7 @@ namespace TimePilot.Web.ViewModels
         public float TotalWeeks { get; set; }
         public int SprintLength { get; set; }
         public float TotalDevQA { get; set; }
-        public float AvgCapacityperWeek { get; set; }
+        public float AvgCapacityPerWeek { get; set; }
         public float ProjectDurationWeeks { get; set; }
         public int ReleaseAndHardening { get; set; }
         public float Contingency { get; set; }

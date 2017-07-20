@@ -13,6 +13,7 @@ namespace TimePilot.Web.ViewModels
         public List<Sprint> sprints { get; set; }
         public List<Member> members { get; set; }
         
+        public float totalDevCapacity { get; set; }
         public List<int> pageState { get; set; }
     }
 }
