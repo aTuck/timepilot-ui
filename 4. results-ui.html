@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Results</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"/></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto|Asap|Ubuntu" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"> </script>
+    <style>
+      html body{
+        top: 0px;
+        padding: 0px;
+        margin: 0px;
+        font-family: 'Roboto', sans-serif;
+      }
+      h3:hover, h2:hover{
+        cursor:default;
+      }
+      a:focus{
+        border:none;
+        outline:none;
+        box-shadow: none !important;
+        -webkit-box-shadow: none !important;
+      }
+      td, th{
+        text-align: center;
+        vertical-align: middle !important;
+      }
+      ol, ul, breadcrumb{
+        margin: 0px !important;
+        background: none !important;
+      }
+      hr{
+        width: 75%;
+      }
+      input[type=number]::-webkit-inner-spin-button, 
+      input[type=number]::-webkit-outer-spin-button { 
+        -webkit-appearance: none; 
+        margin: 0; 
+      }
+      input[type=range] {
+        height: 28px;
+        -webkit-appearance: none;
+        margin: 10px 0;
+        width: 100%;
+      }
+      input[type=range]:focus {
+        outline: none;
+      }
+      input[type=range]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 4px;
+        cursor: pointer;
+        animate: 0.2s;
+        box-shadow: 0px 0px 0px #000000;
+        background: #296CA6;
+        border-radius: 1px;
+        border: 0px solid #010101;
+      }
+      input[type=range]::-webkit-slider-thumb {
+        box-shadow: 1px 1px 2px #000000;
+        border: 1px solid #D6D6D6;
+        height: 20px;
+        width: 20px;
+        border-radius: 20px;
+        background: #FFFFFF;
+        cursor: pointer;
+        -webkit-appearance: none;
+        margin-top: -8.5px;
+      }
+      input[type=range]:focus::-webkit-slider-runnable-track {
+        background: #296CA6;
+      }
+      input[type=range]::-moz-range-track {
+        width: 100%;
+        height: 4px;
+        cursor: pointer;
+        animate: 0.2s;
+        box-shadow: 0px 0px 0px #000000;
+        background: #296CA6;
+        border-radius: 1px;
+        border: 0px solid #010101;
+      }
+      input[type=range]::-moz-range-thumb {
+        box-shadow: 1px 1px 2px #000000;
+        border: 1px solid #D6D6D6;
+        height: 20px;
+        width: 20px;
+        border-radius: 20px;
+        background: #FFFFFF;
+        cursor: pointer;
+      }
+      input[type=range]::-ms-track {
+        width: 100%;
+        height: 4px;
+        cursor: pointer;
+        animate: 0.2s;
+        background: transparent;
+        border-color: transparent;
+        color: transparent;
+      }
+      input[type=range]::-ms-fill-lower {
+        background: #296CA6;
+        border: 0px solid #010101;
+        border-radius: 2px;
+        box-shadow: 0px 0px 0px #000000;
+      }
+      input[type=range]::-ms-fill-upper {
+        background: #296CA6;
+        border: 0px solid #010101;
+        border-radius: 2px;
+        box-shadow: 0px 0px 0px #000000;
+      }
+      input[type=range]::-ms-thumb {
+        margin-top: 1px;
+        box-shadow: 1px 1px 2px #000000;
+        border: 1px solid #D6D6D6;
+        height: 20px;
+        width: 20px;
+        border-radius: 20px;
+        background: #FFFFFF;
+        cursor: pointer;
+      }
+      input[type=range]:focus::-ms-fill-lower {
+        background: #296CA6;
+      }
+      input[type=range]:focus::-ms-fill-upper {
+        background: #296CA6;
+      }
+      footer{
+
+        position:absolute;
+        left:0;
+        bottom:0;
+        height:auto;
+        width:100%;
+        margin-bottom: 15px;
+      }
+      /* boot-strap select change width */
+      .bootstrap-select.btn-group .dropdown-menu, .btn.dropdown-toggle.btn-default, .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn){
+        min-width: 90px !important;
+        width:100px;
+      }
+      .navbar-default{
+        border: none;
+        margin-bottom: 40px;
+        box-shadow: 0 2px 1px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+
+      }
+      .btn:focus, .btn:active{
+        outline:none !important;
+        box-shadow:none !important;
+      }
+      .nav-control-panel{
+        display: flex;
+        justify-content: space-around;
+        height: 45px;
+        margin-top: 25px;
+        margin-bottom: 20px;
+      }
+      .nav-btn{
+        display: flex;
+        align-items: baseline;
+        padding: 0px 16px;
+      }
+      .panel{
+        box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+        height: 500px;
+      }
+      .container{
+        animation: .5s cubic-bezier(.17,.67,.5,.96) 0s 1 slideInFromTop;
+      }
+      .panel-heading{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .panel-body{
+        overflow-x: auto;
+        padding: 0px 27px
+      }
+      .results-input{
+        width:80px;
+      }
+      .conversion-rate{
+        width: 46px;
+      }
+      .big-value{
+        margin-top: 0px;
+        margin-bottom: 25px;
+        font-weight: 700;
+        font-size: 40px;
+      }
+      .med-value{
+        margin-top: 0px;
+        margin-bottom: 8px;
+        font-size: 25px;
+        font-weight: 700;
+      }
+      .centered{
+        margin: auto;
+        float: none;
+        text-align: center;
+      }
+      .slider{
+        height: 40px;
+        width: 100px !important;
+      }
+      .row-vcentered{
+        display: flex;
+        align-items: center;
+      }
+      .row-hcentered{
+        display: flex;
+        justify-content: center;
+      }
+      .center-block{
+        float:none;
+        text-align: center;
+      } 
+      .logo{
+        width: 50px;
+      }
+      .logo-text{
+        font-family: 'Ubuntu', sans-serif;
+        font-size: 40px;
+        margin: 16px 0px;
+      }
+      .crumbs{
+        display:flex;
+        text-align: middle;
+      }
+      @media only screen and (max-width: 1200px) {
+        .aside-right{   
+          width: 100%;
+          display: flex; 
+          justify-content: flex-end; 
+          height: 25px 
+        }
+      } 
+      @media only screen and (max-width: 992px) {
+        .aside-right{   
+          margin-top:10px;
+          display: flex; 
+          justify-content: center;
+          height: 30px; 
+          font-size: 13px;
+        }
+      }
+      @keyframes slideInFromTop{
+        0%{
+          transform: translateY(-5%);
+          opacity: 0;
+        }
+        85%{
+          opacity: 1;
+        }
+        100%{
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+          <div class="row row-vcentered">
+            <div class="col-md-2 col-md-offset-1">      
+              <h2 class="logo-text"><img src="logo.svg" alt="pilot" class="logo">&nbsp;&nbsp;Time Pilot</h2>
+            </div>
+            <div class="col-md-6 crumbs">
+              <ol class="breadcrumb">
+                <li><a href="#">Projects</a></li>
+                <li><a href="#">Stories</a></li>
+                <li><a href="#">Resource Capacity</a></li>
+                <li class="active">Results</li>
+              </ol>
+            </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3>Conversion Rate</h3>
+            </div>
+            <div class="panel-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th> Story Points </th>
+                    <th> Number of Stories </th>
+                    <th> Days of Work per Story Point </th>
+                    <th> Total Days </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td> 1 </td>
+                    <td> 5 </td>
+                    <td> 
+                      <div class="row row-hcentered">
+                        <input type="number" class="form-control conversion-rate" maxlength="2"/>
+                      </div> 
+                    </td>
+                    <td> <label>2</label> </td>
+                  </tr>
+                  <tr>
+                    <td> 3 </td>
+                    <td> 6 </td>
+                    <td> 
+                      <div class="row row-hcentered">
+                        <input type="number" class="form-control conversion-rate" maxlength="2"/>
+                      </div> 
+                    </td>
+                    <td> <label>2</label> </td>
+                  </tr>
+                  <tr>
+                    <td> 5 </td>
+                    <td> 6 </td>
+                    <td> 
+                      <div class="row row-hcentered">
+                        <input type="number" class="form-control conversion-rate" maxlength="2"/>
+                      </div> 
+                    </td>
+                    <td> <label>4</label> </td>
+                  </tr>
+                  <tr>
+                    <td> 8 </td>
+                    <td> 3 </td>
+                    <td> 
+                      <div class="row row-hcentered">
+                        <input type="number" class="form-control conversion-rate" maxlength="2"/>
+                      </div> 
+                    </td>
+                    <td> <label>4</label> </td>
+                  </tr>
+                  <tr>
+                    <td> 13 </td>
+                    <td> 2 </td>
+                    <td> 
+                      <div class="row row-hcentered">
+                        <input type="number" class="form-control conversion-rate" maxlength="2"/>
+                      </div> 
+                    </td>
+                    <td> <label>6</label> </td>
+                  </tr>
+                  <tr>
+                    <td> 21 </td>
+                    <td> 1 </td>
+                    <td> 
+                      <div class="row row-hcentered">
+                        <input type="number" class="form-control conversion-rate" maxlength="2"/>
+                      </div> 
+                    </td>
+                    <td> <label>8</label> </td>
+                  </tr>                            
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3>Hours Estimation</h3>
+            </div>
+            <div class="panel-body">
+              <br/>
+              <div class="row">
+                <div class="col-md-6"> <label>Sprint Duration</label><select class="selectpicker"><option>2 weeks</option><option>3 weeks</option></select> </div>
+                <div class="col-md-6"> 
+                  <label>Contingency</label>
+                  <div class="row row-vcentered">
+                    <div class="col-md-8">
+                      <input type="range" min="0" max="30" step="5" class="slider" id="slider1"/>
+                    </div>
+                    <label class="col-md-4 slider-value" id="slider1-value">15%</span>
+                  </div>                  
+                </div>
+              </div>
+              <br/>
+              <div class="row">
+                <div class="col-md-6"> <label>Total Dev & QA Hours</label><div class="med-value">650</div></div>
+                <div class="col-md-6"> <label>Avg Capacity / Week</label><div class="med-value">58</div></div>
+              </div>
+              <br/>
+              <div class="row">
+                <div class="col-md-6"> <label>Total Duration</label> <h3 class="med-value">7 weeks</h3> </div>
+                <div class="col-md-6"> <label>Release & Hardening</label><div class="med-value">2 weeks</div></div>
+              </div>
+              <br/><br/>
+              <div class="row">
+                <div class="col-md-8 centered"> <label>Project Duration</label><div class="big-value">9 weeks</div></div>
+              </div>                
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="panel panel-default disabled">
+            <div class="panel-heading">
+              <h3>Velocity Validation</h3>
+            </div>
+            <div class="panel-body">
+              <br/>
+              <div class="row">
+                <div class="col-md-6"> <label>Team Velocity</label><input type="number" class="form-control results-input team-velocity"/></div>
+                <div class="col-md-6"> 
+                  <label>Contingency</label>
+                  <div class="row row-vcentered">
+                    <div class="col-md-8">
+                      <input type="range" min="0" max="30" step="5" class="slider" id="slider2"/>
+                    </div>
+                    <label class="col-md-4 slider-value" id="slider2-value">15%</span>
+                  </div>
+                </div>
+              </div>
+              <br/>
+              <div class="row">
+                <div class="col-md-6"> <label class="control-label">Total Story Points</label> <h3 class="med-value">43</h3></div>
+                <div class="col-md-6"> <label>Sprints Required</label><div class="med-value">3.44 Sprints</div></div>
+              </div>
+              <br/>
+              <div class="row">
+                <div class="col-md-6"> <label>Total Duration</label> <h3 class="med-value">7 weeks</h3> </div>
+                <div class="col-md-6"> <label>Release & Hardening</label><div class="med-value">2 weeks</div></div>
+              </div>
+              <br/><br/>
+              <div class="row">
+                <div class="col-md-8 centered"> <label>Project Duration</label><div class="big-value">9 weeks</div></div>
+              </div>  
+            </div>
+          </div>
+        </div>
+      </div>
+    <div class="nav-control-panel">
+      <button class="btn ctrl-btn btn-primary nav-btn"><span class="glyphicon glyphicon-menu-left"/></span> &nbsp; Resource Capacity </button>
+      <button class="btn ctrl-btn btn-primary nav-btn">Export to PDF &nbsp; <span class="glyphicon glyphicon-export"></span></button>
+    </div>
+    </div>
+
+     
+
+    <footer>
+      <hr>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-8 center-block footer-text">Time Pilot © 2017 &nbsp;|&nbsp; PNI Media &nbsp;|&nbsp; Team Delta-t &nbsp;|&nbsp; All Rights Reserved</div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<script>
+  /* popovers */
+  $(function () {
+    $('[data-toggle="popover"]').popover()
+  })
+  $(document).on('click', function (e) {
+    $('[data-toggle="popover"],[data-original-title]').each(function () {
+      if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0 ) {
+        (($(this).popover('hide').data('bs.popover') || {}).inState || {}).click = false
+      }
+    });
+  });
+  $(".conversion-rate").on("keypress", function(e) {
+    var keycode = e.charCode || e.keyCode;
+    if (keycode == 46 || this.value.length==2) {
+      return false;
+  }});
+  $(".team-velocity").on("keypress", function(e) {
+    var keycode = e.charCode || e.keyCode;
+    if (keycode == 46 || this.value.length==3) {
+      return false;
+  }});
+  $('.slider').on('input', function(){
+    var label = $('#'+this.id+'-value');
+    $(label).text(this.value+"%");
+  })
+
+  function footerAlign() {
+    $('footer').css('display', 'block');
+    $('footer').css('height', 'auto');
+    var footerHeight = $('footer').outerHeight();
+    $('body').css('padding-bottom', footerHeight);
+    $('footer').css('height', footerHeight);
+  }
+
+  $(document).ready(function(){
+    footerAlign();
+  });
+
+  $( window ).resize(function() {
+    footerAlign();
+  });
+</script>
