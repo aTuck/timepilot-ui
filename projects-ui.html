@@ -160,6 +160,7 @@
   }
   .panel{
     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    animation: .6s cubic-bezier(.17,.67,.5,.96) 0s 1 slideInFromLeft;
   }
   .panel-heading{
     display: flex;
@@ -209,6 +210,17 @@
       justify-content: center;
       height: 30px; 
       font-size: 13px;
+    }
+  }
+
+  @keyframes slideInFromLeft{
+    0%{
+      transform: translateX(-5%);
+      opacity: 0;
+    }
+    100%{
+      transform: translateX(0);
+      opacity: 1;
     }
   }
 </style>

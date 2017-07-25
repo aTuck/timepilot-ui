@@ -46,39 +46,39 @@
                 <tbody>
                   <tr>
                     <td> 1 </td>
-                    <td> 0 </td>
-                    <td> <input type="text" class="form-control conversion-rate"/> </td>
-                    <td> <label>999</label> </td>
+                    <td> 5 </td>
+                    <td> <input type="number" class="form-control conversion-rate" maxlength="2"/> </td>
+                    <td> <label>2</label> </td>
                   </tr>
                   <tr>
                     <td> 3 </td>
-                    <td> 0 </td>
-                    <td> <input type="text" class="form-control conversion-rate"/> </td>
-                    <td> <label>999</label> </td>
+                    <td> 6 </td>
+                    <td> <input type="number" class="form-control conversion-rate" maxlength="2"/> </td>
+                    <td> <label>2</label> </td>
                   </tr>
                   <tr>
                     <td> 5 </td>
-                    <td> 0 </td>
-                    <td> <input type="text" class="form-control conversion-rate"/> </td>
-                    <td> <label>999</label> </td>
+                    <td> 6 </td>
+                    <td> <input type="number" class="form-control conversion-rate" maxlength="2"/> </td>
+                    <td> <label>4</label> </td>
                   </tr>
                   <tr>
                     <td> 8 </td>
-                    <td> 0 </td>
-                    <td> <input type="text" class="form-control conversion-rate"/> </td>
-                    <td> <label>999</label> </td>
+                    <td> 3 </td>
+                    <td> <input type="number" class="form-control conversion-rate" maxlength="2"/> </td>
+                    <td> <label>4</label> </td>
                   </tr>
                   <tr>
                     <td> 13 </td>
-                    <td> 0 </td>
-                    <td> <input type="text" class="form-control conversion-rate"/> </td>
-                    <td> <label>555</label> </td>
+                    <td> 2 </td>
+                    <td> <input type="number" class="form-control conversion-rate" maxlength="2"/> </td>
+                    <td> <label>6</label> </td>
                   </tr>
                   <tr>
                     <td> 21 </td>
-                    <td> 0 </td>
-                    <td> <input type="text" class="form-control conversion-rate"/> </td>
-                    <td> <label>999</label> </td>
+                    <td> 1 </td>
+                    <td> <input type="number" class="form-control conversion-rate" maxlength="2"/> </td>
+                    <td> <label>8</label> </td>
                   </tr>                            
                 </tbody>
               </table>
@@ -93,29 +93,32 @@
             <div class="panel-body">
               <br/>
               <div class="row">
-                <div class="col-md-6"> <label>Total Hours:</label> <h3 class="big-value">100</h3></div>
-                <div class="col-md-6"> <label>Total Weeks:</label> <h3 class="big-value">12</h3> </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6"> <label>Contingency: </label><input type="text" class="form-control conversion-rate"/> </div>
-                <div class="col-md-6"> <label>Sprint Length: </label><select class="selectpicker"><option>2 weeks</option><option>3 weeks</option></select> </div>
-              </div>
-              <br/><br/><br/>
-              <div class="row">
-                <div class="col-md-12">Total Dev and QA Hours: 12 </div>
-              </div>
-              <br/>
-              <div class="row">
-                <div class="col-md-12">Release and Hardening: 2 </div> 
+                <div class="col-md-6"> <label>Sprint Duration</label><select class="selectpicker"><option>2 weeks</option><option>3 weeks</option></select> </div>
+                <div class="col-md-6"> <label>Contingency</label><input type="range" min="0" max="30" step="5" list="tickmarks" class="slider"/> </div>
+                <datalist id="tickmarks">
+                  <option value="0" />
+                  <option value="5" />
+                  <option value="10" />
+                  <option value="15" />
+                  <option value="20" />
+                  <option value="25" />
+                  <option value="30" />
+                </datalist>
               </div>
               <br/>
               <div class="row">
-                <div class="col-md-12">Average Capacity Per Week: 100 </div> 
+                <div class="col-md-6"> <label>Total Dev & QA Hours</label><div class="med-value">650</div></div>
+                <div class="col-md-6"> <label>Avg Capacity / Week</label><div class="med-value">58</div></div>
               </div>
               <br/>
               <div class="row">
-                <div class="col-md-12">Project Duration: 3 weeks </div> 
-              </div>                      
+                <div class="col-md-6"> <label>Total Duration</label> <h3 class="med-value">7 weeks</h3> </div>
+                <div class="col-md-6"> <label>Release & Hardening</label><div class="med-value">2 weeks</div></div>
+              </div>
+              <br/><br/>
+              <div class="row">
+                <div class="col-md-8 centered"> <label>Project Duration</label><div class="big-value">9 weeks</div></div>
+              </div>                
             </div>
           </div>
         </div>
@@ -125,54 +128,28 @@
               <h3>VELOCITY VALIDATION</h3>
             </div>
             <div class="panel-body">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th> Story Points </th>
-                    <th> Number of Stories </th>
-                    <th> Days of Work per Story Point </th>
-                    <th> Total Days </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td> 1 </td>
-                    <td> 0 </td>
-                    <td> <input type="text" class="form-control conversion-rate"/> </td>
-                    <td> <label>999</label> </td>
-                  </tr>
-                  <tr>
-                    <td> 3 </td>
-                    <td> 0 </td>
-                    <td> <input type="text" class="form-control conversion-rate"/> </td>
-                    <td> <label>999</label> </td>
-                  </tr>
-                  <tr>
-                    <td> 5 </td>
-                    <td> 0 </td>
-                    <td> <input type="text" class="form-control conversion-rate"/> </td>
-                    <td> <label>999</label> </td>
-                  </tr>
-                  <tr>
-                    <td> 8 </td>
-                    <td> 0 </td>
-                    <td> <input type="text" class="form-control conversion-rate"/> </td>
-                    <td> <label>999</label> </td>
-                  </tr>
-                  <tr>
-                    <td> 13 </td>
-                    <td> 0 </td>
-                    <td> <input type="text" class="form-control conversion-rate"/> </td>
-                    <td> <label>999</label> </td>
-                  </tr>
-                  <tr>
-                    <td> 21 </td>
-                    <td> 0 </td>
-                    <td> <input type="text" class="form-control conversion-rate"/> </td>
-                    <td> <label>555</label> </td>
-                  </tr>                            
-                </tbody>
-              </table>
+              <br/>
+              <div class="row">
+                <div class="col-md-6"> <label>Team Velocity</label><input type="text" class="form-control results-input"/></div>
+                <div class="col-md-6"> 
+                  <label>Contingency</label>
+                  <input type="range" min="0" max="30" step="5" list="tickmarks" class="slider"/>
+                </div>
+              </div>
+              <br/>
+              <div class="row">
+                <div class="col-md-6"> <label>Total Story Points</label> <h3 class="med-value">43</h3></div>
+                <div class="col-md-6"> <label>Sprints Required</label><div class="med-value">3.44 Sprints</div></div>
+              </div>
+              <br/>
+              <div class="row">
+                <div class="col-md-6"> <label>Total Duration</label> <h3 class="med-value">7 weeks</h3> </div>
+                <div class="col-md-6"> <label>Release & Hardening</label><div class="med-value">2 weeks</div></div>
+              </div>
+              <br/><br/>
+              <div class="row">
+                <div class="col-md-8 centered"> <label>Project Duration</label><div class="big-value">9 weeks</div></div>
+              </div>  
             </div>
           </div>
         </div>
@@ -198,6 +175,11 @@
       }
     });
   });
+  $(".conversion-rate").on("keypress", function(e) {
+    var keycode = e.charCode || e.keyCode;
+    if (keycode == 46 || this.value.length==2) {
+      return false;
+  }});
 </script>
 <style>
   html body{
@@ -214,6 +196,11 @@
     outline:none;
     box-shadow: none !important;
     -webkit-box-shadow: none !important;
+  }
+  input[type=number]::-webkit-inner-spin-button, 
+  input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+    margin: 0; 
   }
   /* boot-strap select change width */
   .bootstrap-select.btn-group .dropdown-menu, .btn.dropdown-toggle.btn-default, .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn){
@@ -243,6 +230,8 @@
   }
   .panel{
     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    animation: 1s cubic-bezier(.17,.67,.5,.96) 0s 1 slideInFromTop;
+    height: 500px;
   }
   .panel-heading{
     display: flex;
@@ -253,8 +242,11 @@
     overflow-x: auto;
     padding-top: 0px;
   }
-  .conversion-rate{
+  .results-input{
     width:80px;
+  }
+  .conversion-rate{
+    width: 46px;
   }
   .big-value{
     margin-top: 0px;
@@ -262,11 +254,118 @@
     font-weight: 700;
     font-size: 40px;
   }
-  .medium-value{
+  .med-value{
     margin-top: 0px;
-    margin-bottom: 25px;
+    margin-bottom: 8px;
+    font-size: 25px;
     font-weight: 700;
-    font-size: 20px;
+  }
+  .center-block{
+    float:none;
+  }
+  .centered{
+    margin: auto;
+    float: none;
+    text-align: center;
+  }
+  .slider{
+    height: 40px;
+    width: 120px !important;
+  }
+  .inline-label { 
+    white-space: nowrap;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    float:left;     
+  }
+  input[type=range] {
+    height: 28px;
+    -webkit-appearance: none;
+    margin: 10px 0;
+    width: 100%;
+  }
+  input[type=range]:focus {
+    outline: none;
+  }
+  input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 7px;
+    cursor: pointer;
+    box-shadow: 0px 0px 0px #000000;
+    background: #3071A9;
+    border-radius: 50px;
+    border: 0px solid #000000;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    box-shadow: 0px 0px 0px #000000;
+    border: 1px solid #000000;
+    height: 21px;
+    width: 22px;
+    border-radius: 50px;
+    background: #FFFFFF;
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -7.5px;
+  }
+  input[type=range]:focus::-webkit-slider-runnable-track {
+    background: #3071A9;
+  }
+  input[type=range]::-moz-range-track {
+    width: 100%;
+    height: 7px;
+    cursor: pointer;
+    animation: 0.2s;
+    box-shadow: 0px 0px 0px #000000;
+    background: #3071A9;
+    border-radius: 50px;
+    border: 0px solid #000000;
+  }
+  input[type=range]::-moz-range-thumb {
+    box-shadow: 0px 0px 0px #000000;
+    border: 1px solid #000000;
+    height: 21px;
+    width: 22px;
+    border-radius: 50px;
+    background: #FFFFFF;
+    cursor: pointer;
+  }
+  input[type=range]::-ms-track {
+    width: 100%;
+    height: 7px;
+    cursor: pointer;
+    animation: 0.2s;
+    background: transparent;
+    border-color: transparent;
+    color: transparent;
+  }
+  input[type=range]::-ms-fill-lower {
+    background: #3071A9;
+    border: 0px solid #000000;
+    border-radius: 100px;
+    box-shadow: 0px 0px 0px #000000;
+  }
+  input[type=range]::-ms-fill-upper {
+    background: #3071A9;
+    border: 0px solid #000000;
+    border-radius: 100px;
+    box-shadow: 0px 0px 0px #000000;
+  }
+  input[type=range]::-ms-thumb {
+    margin-top: 1px;
+    box-shadow: 0px 0px 0px #000000;
+    border: 1px solid #000000;
+    height: 21px;
+    width: 22px;
+    border-radius: 50px;
+    background: #FFFFFF;
+    cursor: pointer;
+  }
+  input[type=range]:focus::-ms-fill-lower {
+    background: #3071A9;
+  }
+  input[type=range]:focus::-ms-fill-upper {
+    background: #3071A9;
   }
   @media only screen and (max-width: 1200px) {
     .aside-right{   
@@ -283,6 +382,16 @@
       justify-content: center;
       height: 30px; 
       font-size: 13px;
+    }
+  }
+  @keyframes slideInFromTop{
+    0%{
+      transform: translateY(-5%);
+      opacity: 0;
+    }
+    100%{
+      transform: translateY(0);
+      opacity: 1;
     }
   }
 </style>
