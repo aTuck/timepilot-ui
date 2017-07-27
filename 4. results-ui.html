@@ -17,6 +17,7 @@
         top: 0px;
         padding: 0px;
         margin: 0px;
+        min-height: 100%;
         font-family: 'Roboto', sans-serif;
       }
       h3:hover, h2:hover{
@@ -134,8 +135,7 @@
         background: #296CA6;
       }
       footer{
-
-        position:absolute;
+        position:relative;
         left:0;
         bottom:0;
         height:auto;
@@ -151,7 +151,7 @@
         border: none;
         margin-bottom: 40px;
         box-shadow: 0 2px 1px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-
+        padding: 13px 0px;
       }
       .btn:focus, .btn:active{
         outline:none !important;
@@ -159,7 +159,7 @@
       }
       .nav-control-panel{
         display: flex;
-        justify-content: space-around;
+        justify-content: space-between;
         height: 45px;
         margin-top: 25px;
         margin-bottom: 20px;
@@ -225,34 +225,56 @@
         text-align: center;
       } 
       .logo{
+        display: inline;
         width: 50px;
       }
       .logo-text{
+        display: inline;
         font-family: 'Ubuntu', sans-serif;
         font-size: 40px;
+        vertical-align: middle;
         margin: 16px 0px;
       }
       .crumbs{
-        display:flex;
         text-align: middle;
       }
-      @media only screen and (max-width: 1200px) {
-        .aside-right{   
-          width: 100%;
-          display: flex; 
-          justify-content: flex-end; 
-          height: 25px 
+      div.form-control{
+        -webkit-box-shadow: none;
+        box-shadow: none;
+      }
+      /* Phones */
+      @media only screen and (min-width: 320px) and (max-width: 767px) {
+        div.crumbs{
+          display: none;
         }
-      } 
-      @media only screen and (max-width: 992px) {
-        .aside-right{   
-          margin-top:10px;
-          display: flex; 
-          justify-content: center;
-          height: 30px; 
-          font-size: 13px;
+        th{
+          font-size: 12px;
+        }
+        label{
+          font-size: 12px;
+        }
+        .med-value{
+          font-size: 22px;
+        }
+        .footer-text{
+          font-size: 11px;
+        }
+        .btn{
+          font-size: 12px;
+        }
+        .slider{
+          width: 85px !important;
         }
       }
+      /* iPad */
+      @media only screen and (min-width: 768px) and (max-width: 1023px) {
+        div[class='panel-body'] > div[class='row'] > div[class^='col-xs-6'],
+        div[class='panel-body'] > div[class='row'] > div[class^='col-md-6']{
+          padding-left: 115px;
+        }
+        #slider1-value, #slider2-value{
+          margin-left: 25px;
+        }
       @keyframes slideInFromTop{
         0%{
           transform: translateY(-5%);
@@ -272,10 +294,12 @@
     <nav class="navbar navbar-default">
       <div class="container-fluid">
           <div class="row row-vcentered">
-            <div class="col-md-2 col-md-offset-1">      
-              <h2 class="logo-text"><img src="logo.svg" alt="pilot" class="logo">&nbsp;&nbsp;Time Pilot</h2>
+            <div class="col-md-4 center-block">      
+              <img src="logo.svg" alt="pilot" class="logo">
+              <h2 class="logo-text">&nbsp;&nbsp;Time Pilot</h2>
             </div>
-            <div class="col-md-6 crumbs">
+            <div class="col-md-4 center-block"></div>
+            <div class="col-md-4 crumbs center-block ">
               <ol class="breadcrumb">
                 <li><a href="#">Projects</a></li>
                 <li><a href="#">Stories</a></li>
@@ -378,11 +402,11 @@
             <div class="panel-body">
               <br/>
               <div class="row">
-                <div class="col-md-6"> <label>Sprint Duration</label><select class="selectpicker"><option>2 weeks</option><option>3 weeks</option></select> </div>
-                <div class="col-md-6"> 
+                <div class="col-xs-6 "> <label>Sprint Duration</label><select class="selectpicker form-control"><option>2 weeks</option><option>3 weeks</option></select> </div>
+                <div class="col-xs-6 "> 
                   <label>Contingency</label>
                   <div class="row row-vcentered">
-                    <div class="col-md-8">
+                    <div class="col-md-8 col-xs-8 col-sm-4">
                       <input type="range" min="0" max="30" step="5" class="slider" id="slider1"/>
                     </div>
                     <label class="col-md-4 slider-value" id="slider1-value">15%</span>
@@ -391,17 +415,17 @@
               </div>
               <br/>
               <div class="row">
-                <div class="col-md-6"> <label>Total Dev & QA Hours</label><div class="med-value">650</div></div>
-                <div class="col-md-6"> <label>Avg Capacity / Week</label><div class="med-value">58</div></div>
+                <div class="col-md-6 col-xs-6"> <label>Total Dev & QA Hours</label><h3 class="med-value">650 hrs</h3></div>
+                <div class="col-md-6 col-xs-6"> <label>Avg Capacity / Week</label><h3 class="med-value">58 hrs</h3></div>
               </div>
               <br/>
               <div class="row">
-                <div class="col-md-6"> <label>Total Duration</label> <h3 class="med-value">7 weeks</h3> </div>
-                <div class="col-md-6"> <label>Release & Hardening</label><div class="med-value">2 weeks</div></div>
+                <div class="col-md-6 col-xs-6"> <label>Total Duration</label> <h3 class="med-value">7 weeks</h3> </div>
+                <div class="col-md-6 col-xs-6"> <label>Release & Hardening</label><h3 class="med-value">2 weeks</h3></div>
               </div>
               <br/><br/>
               <div class="row">
-                <div class="col-md-8 centered"> <label>Project Duration</label><div class="big-value">9 weeks</div></div>
+                <div class="col-md-8 col-xs-8 centered"> <label>Project Duration</label><div class="big-value">9 weeks</div></div>
               </div>                
             </div>
           </div>
@@ -414,30 +438,30 @@
             <div class="panel-body">
               <br/>
               <div class="row">
-                <div class="col-md-6"> <label>Team Velocity</label><input type="number" class="form-control results-input team-velocity"/></div>
-                <div class="col-md-6"> 
+                <div class="col-xs-6"> <label>Team Velocity</label><input type="number" class="form-control results-input team-velocity"/></div>
+                <div class="col-xs-6"> 
                   <label>Contingency</label>
                   <div class="row row-vcentered">
-                    <div class="col-md-8">
+                    <div class="col-md-8 col-xs-8 col-sm-4">
                       <input type="range" min="0" max="30" step="5" class="slider" id="slider2"/>
                     </div>
-                    <label class="col-md-4 slider-value" id="slider2-value">15%</span>
+                    <label class="col-xs-4 slider-value" id="slider2-value">15%</span>
                   </div>
                 </div>
               </div>
               <br/>
               <div class="row">
-                <div class="col-md-6"> <label class="control-label">Total Story Points</label> <h3 class="med-value">43</h3></div>
-                <div class="col-md-6"> <label>Sprints Required</label><div class="med-value">3.44 Sprints</div></div>
+                <div class="col-xs-6"> <label class="control-label">Total Story Points</label> <h3 class="med-value">43 points</h3></div>
+                <div class="col-xs-6"> <label>Sprints Required</label><h3 class="med-value">3.44 sprints</h3></div>
               </div>
               <br/>
               <div class="row">
-                <div class="col-md-6"> <label>Total Duration</label> <h3 class="med-value">7 weeks</h3> </div>
-                <div class="col-md-6"> <label>Release & Hardening</label><div class="med-value">2 weeks</div></div>
+                <div class="col-xs-6"> <label>Total Duration</label> <h3 class="med-value">7 weeks</h3> </div>
+                <div class="col-xs-6"> <label>Release & Hardening</label><h3 class="med-value">2 weeks</h3></div>
               </div>
               <br/><br/>
               <div class="row">
-                <div class="col-md-8 centered"> <label>Project Duration</label><div class="big-value">9 weeks</div></div>
+                <div class="col-xs-8 centered"> <label>Project Duration</label><div class="big-value">9 weeks</div></div>
               </div>  
             </div>
           </div>
@@ -488,7 +512,6 @@
     var label = $('#'+this.id+'-value');
     $(label).text(this.value+"%");
   })
-
   function footerAlign() {
     $('footer').css('display', 'block');
     $('footer').css('height', 'auto');
@@ -496,11 +519,9 @@
     $('body').css('padding-bottom', footerHeight);
     $('footer').css('height', footerHeight);
   }
-
   $(document).ready(function(){
     footerAlign();
   });
-
   $( window ).resize(function() {
     footerAlign();
   });
