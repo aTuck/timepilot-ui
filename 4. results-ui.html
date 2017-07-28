@@ -36,6 +36,8 @@
       ol, ul, breadcrumb{
         margin: 0px !important;
         background: none !important;
+        padding-left:0px !important;
+        padding-right: 0px !important;
       }
       hr{
         width: 75%;
@@ -173,8 +175,21 @@
         box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
         height: 500px;
       }
-      .container{
+      .main{
         animation: .5s cubic-bezier(.17,.67,.5,.96) 0s 1 slideInFromTop;
+      }
+      .main-flip{
+        animation: .5s cubic-bezier(.17,.67,.5,.96) 0s 1 chartFlip;
+        animation-fill-mode: forwards;
+      }
+      .panel1{
+        animation: .4s cubic-bezier(.17,.67,.5,.96) 0s 1 slidePanelFromTop;
+      }
+      .panel2{
+        animation: .6s cubic-bezier(.17,.67,.5,.96) 0s 1 slidePanelFromTop;
+      }
+      .panel3{
+        animation: .8s cubic-bezier(.17,.67,.5,.96) 0s 1 slidePanelFromTop;
       }
       .panel-heading{
         display: flex;
@@ -225,15 +240,25 @@
         text-align: center;
       } 
       .logo{
-        display: inline;
         width: 50px;
+      }
+      .logo-link{
+        text-decoration: none;
+        color: black;
+        height: 50px;
+        min-width: 52px;
+      }
+      .logo-link:hover{
+        text-decoration: none;
+        color: black;
+        cursor: pointer;
       }
       .logo-text{
         display: inline;
         font-family: 'Ubuntu', sans-serif;
         font-size: 40px;
         vertical-align: middle;
-        margin: 16px 0px;
+        margin: 16px 0px 0px -3px;
       }
       .crumbs{
         text-align: middle;
@@ -242,39 +267,6 @@
         -webkit-box-shadow: none;
         box-shadow: none;
       }
-      /* Phones */
-      @media only screen and (min-width: 320px) and (max-width: 767px) {
-        div.crumbs{
-          display: none;
-        }
-        th{
-          font-size: 12px;
-        }
-        label{
-          font-size: 12px;
-        }
-        .med-value{
-          font-size: 22px;
-        }
-        .footer-text{
-          font-size: 11px;
-        }
-        .btn{
-          font-size: 12px;
-        }
-        .slider{
-          width: 85px !important;
-        }
-      }
-      /* iPad */
-      @media only screen and (min-width: 768px) and (max-width: 1023px) {
-        div[class='panel-body'] > div[class='row'] > div[class^='col-xs-6'],
-        div[class='panel-body'] > div[class='row'] > div[class^='col-md-6']{
-          padding-left: 115px;
-        }
-        #slider1-value, #slider2-value{
-          margin-left: 25px;
-        }
       @keyframes slideInFromTop{
         0%{
           transform: translateY(-5%);
@@ -287,19 +279,67 @@
           transform: translateY(0);
         }
       }
+      @keyframes slidePanelFromTop{
+        0%{
+          transform: translateY(-15%);
+          opacity: 0;
+        }
+        85%{
+          opacity: 1;
+        }
+        100%{
+          transform: translateY(0);
+        }
+      }
+      @keyframes chartFlip{
+        0%{
+          transform: rotateY(0deg);
+        }
+        100%{
+          transform: rotateY(180deg);
+        }
+      }
+      /* Mobile 320px - 1023px */
+      @media only screen and (min-width: 320px) and (max-width: 1023px) {
+      }    
+      /* Phones 320px - 767px */
+      @media only screen and (min-width: 320px) and (max-width: 767px) {
+        div.crumbs{display: none;}
+        th{font-size: 12px;}
+        label{font-size: 12px;}
+        .med-value{font-size: 22px;}
+        .footer-text{font-size: 11px;}
+        .btn{font-size: 12px;}
+        .slider{width: 85px !important;}
+      }
+      /* iPad 768px - 1023px */
+      @media only screen and (min-width: 768px) and (max-width: 1023px) {
+        div[class='panel-body'] > div[class='row'] > div[class^='col-xs-6'],
+        div[class='panel-body'] > div[class='row'] > div[class^='col-md-6']{padding-left: 115px;}
+        #slider1-value, #slider2-value{margin-left: 25px;}
+        .panel-body{padding-top: 10px;}
+      }
+      /* Big Tablets / Small Desktops 1024-1439*/
+      @media only screen and (min-width: 1024px) and (max-width: 1439px) {
+        .med-value{font-size: 20px;}
+        label{font-size: 11px;}
+        th{font-size: 12px;}
+        .slider{width: 85px !important;}
+        div.crumbs{font-size: 18px}
+      }
     </style>
   </head>
   <body>
 
     <nav class="navbar navbar-default">
-      <div class="container-fluid">
+      <div class="container">
           <div class="row row-vcentered">
-            <div class="col-md-4 center-block">      
-              <img src="logo.svg" alt="pilot" class="logo">
-              <h2 class="logo-text">&nbsp;&nbsp;Time Pilot</h2>
+            <div class="col-md-4 col-sm-5 col-xs-12 -block">      
+              <a href="/" class="logo-link"><img src="logo.svg" alt="pilot" class="logo"></img></a>
+              <h2 class="logo-text"><a href="/" class="logo-link">&nbsp;Time Pilot</a></h2>
             </div>
-            <div class="col-md-4 center-block"></div>
-            <div class="col-md-4 crumbs center-block ">
+            <div class="col-md-2 hidden-sm hidden-xs -"></div>
+            <div class="col-md-6 col-sm-7 hidden-xs text-right crumbs">
               <ol class="breadcrumb">
                 <li><a href="#">Projects</a></li>
                 <li><a href="#">Stories</a></li>
@@ -311,10 +351,10 @@
       </div>
     </nav>
 
-    <div class="container">
+    <div class="container main">
       <div class="row">
         <div class="col-md-4">
-          <div class="panel panel-default">
+          <div class="panel panel-default panel1">
             <div class="panel-heading">
               <h3>Conversion Rate</h3>
             </div>
@@ -395,7 +435,7 @@
           </div>
         </div>
         <div class="col-md-4">
-          <div class="panel panel-default">
+          <div class="panel panel-default panel2">
             <div class="panel-heading">
               <h3>Hours Estimation</h3>
             </div>
@@ -409,7 +449,7 @@
                     <div class="col-md-8 col-xs-8 col-sm-4">
                       <input type="range" min="0" max="30" step="5" class="slider" id="slider1"/>
                     </div>
-                    <label class="col-md-4 slider-value" id="slider1-value">15%</span>
+                    <label class="col-md-4 slider-value">15%</span>
                   </div>                  
                 </div>
               </div>
@@ -420,18 +460,18 @@
               </div>
               <br/>
               <div class="row">
-                <div class="col-md-6 col-xs-6"> <label>Total Duration</label> <h3 class="med-value">7 weeks</h3> </div>
+                <div class="col-md-6 col-xs-6"> <label>Total Duration</label> <h3 class="med-value">7w 3d 6h</h3> </div>
                 <div class="col-md-6 col-xs-6"> <label>Release & Hardening</label><h3 class="med-value">2 weeks</h3></div>
               </div>
               <br/><br/>
               <div class="row">
-                <div class="col-md-8 col-xs-8 centered"> <label>Project Duration</label><div class="big-value">9 weeks</div></div>
+                <div class="col-md-8 col-xs-8 centered"> <label>Project Duration</label><div class="big-value">9w 3d 6h</div></div>
               </div>                
             </div>
           </div>
         </div>
         <div class="col-md-4">
-          <div class="panel panel-default disabled">
+          <div class="panel panel-default panel3">
             <div class="panel-heading">
               <h3>Velocity Validation</h3>
             </div>
@@ -445,7 +485,7 @@
                     <div class="col-md-8 col-xs-8 col-sm-4">
                       <input type="range" min="0" max="30" step="5" class="slider" id="slider2"/>
                     </div>
-                    <label class="col-xs-4 slider-value" id="slider2-value">15%</span>
+                    <label class="col-xs-4 slider-value">15%</span>
                   </div>
                 </div>
               </div>
@@ -456,12 +496,12 @@
               </div>
               <br/>
               <div class="row">
-                <div class="col-xs-6"> <label>Total Duration</label> <h3 class="med-value">7 weeks</h3> </div>
+                <div class="col-xs-6"> <label>Total Duration</label> <h3 class="med-value">7w 3d 6h</h3> </div>
                 <div class="col-xs-6"> <label>Release & Hardening</label><h3 class="med-value">2 weeks</h3></div>
               </div>
               <br/><br/>
               <div class="row">
-                <div class="col-xs-8 centered"> <label>Project Duration</label><div class="big-value">9 weeks</div></div>
+                <div class="col-xs-8 centered"> <label>Project Duration</label><div class="big-value">9w 3d 6h</div></div>
               </div>  
             </div>
           </div>
@@ -469,15 +509,14 @@
       </div>
     <div class="nav-control-panel">
       <button class="btn ctrl-btn btn-primary nav-btn"><span class="glyphicon glyphicon-menu-left"/></span> &nbsp; Resource Capacity </button>
-      <button class="btn ctrl-btn btn-primary nav-btn">Export to PDF &nbsp; <span class="glyphicon glyphicon-export"></span></button>
+      <!--<button class="btn ctrl-btn btn-primary nav-btn chart-flip"><span class="glyphicon glyphicon-share-alt"/></span> &nbsp; Chart Flip </button>-->
+      <button class="btn ctrl-btn btn-primary nav-btn">Export to PDF &nbsp; <span class="glyphicon glyphicon-export"></span></button>   
     </div>
     </div>
-
-     
 
     <footer>
+      <div class="container">
       <hr>
-      <div class="container-fluid">
         <div class="row">
           <div class="col-md-8 center-block footer-text">Time Pilot © 2017 &nbsp;|&nbsp; PNI Media &nbsp;|&nbsp; Team Delta-t &nbsp;|&nbsp; All Rights Reserved</div>
         </div>
@@ -498,6 +537,9 @@
       }
     });
   });
+  $('.chart-flip').on('click', function(){
+    $('.main').toggleClass('main-flip');
+  });
   $(".conversion-rate").on("keypress", function(e) {
     var keycode = e.charCode || e.keyCode;
     if (keycode == 46 || this.value.length==2) {
@@ -509,9 +551,21 @@
       return false;
   }});
   $('.slider').on('input', function(){
-    var label = $('#'+this.id+'-value');
+    var label = $('.slider-value');
     $(label).text(this.value+"%");
+    if ($(this).attr('id') == 'slider1'){
+        $("#slider2").prop("value", this.value);
+    }
+    else{
+        $("#slider1").prop("value", this.value);
+    }
   })
+  $(document).ready(function() {
+    var max_total = 30;
+    $("#slider1").on("input", function(){
+
+    });
+  });
   function footerAlign() {
     $('footer').css('display', 'block');
     $('footer').css('height', 'auto');

@@ -29,19 +29,10 @@
     <div class="container">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <h3>STORIES</h3>
+          <h3>Stories</h3>
           <a href="#"> Don't see your stories? </a>
         </div>
         <div class="panel-body">
-          <div class="aside-right">
-            <label class="controls-label">Sort Stories By:</label>
-            <select class="selectpicker">
-              <option value="desc">Name A-Z</option>
-              <option value="asc">Name Z-A</option>
-            </select>
-            <label class="controls-label">Search:</label>
-            <input class="form-control search-box" maxlength="20"/>
-          </div>
           <div class="story-container form-group">
             <table class="table">
               <thead>
@@ -57,7 +48,7 @@
                   <td> 2938293 </td>
                   <td> The story title goes here and is about this long </td>
                   <td> 
-                    <div "btn-group" data-toggle="buttons"> 
+                    <div "btn-group" data-toggle="buttons">
                       <button class="btn btn-default btn-radio active">
                         <input type="radio">1</input>
                       </button>
@@ -76,10 +67,11 @@
                       <button class="btn btn-default btn-radio">
                         <input type="radio">21</input>
                       </button>
+                    </div>
                   </td>
                   <td> <input type="checkbox"/> </td>
                 </tr>
-                                <tr>
+                <tr>
                   <td> 2938293 </td>
                   <td> The story title goes here and is about this long </td>
                   <td> 
@@ -173,10 +165,10 @@
           </div>
         </div>
       </div>
-    </div>
     <div class="nav-control-panel">
       <button class="btn ctrl-btn btn-primary nav-btn"><span class="glyphicon glyphicon-menu-left"/></span> &nbsp; Projects </button>
       <button class="btn ctrl-btn btn-primary nav-btn">Resource Capacity &nbsp; <span class="glyphicon glyphicon-menu-right"></span></button>
+    </div>
     </div>
   </body>
 </html>
@@ -193,6 +185,7 @@
       }
     });
   });
+  
 </script>
 <style>
   html body{
@@ -243,7 +236,7 @@
   }
   .nav-control-panel{
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     height: 45px;
     margin-top: 25px;
     margin-bottom: 20px;

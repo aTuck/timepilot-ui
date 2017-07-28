@@ -32,7 +32,7 @@
               <h3 class="sprint-name">eComm - Sprint 40</h3>
             </div>
             <div class="btn-control-panel">
-              <button type="button" class="btn btn-primary add-member-btn">Add Member</button>
+              <button type="button" class="btn btn-primary add-member-btn"><span class="glyphicon glyphicon-plus-sign"></span><span class="add-member-text">&nbsp; Add Member</span></button>
               <span class="sprint-remove glyphicon glyphicon-remove"/>
             </div>
           </div>
@@ -41,17 +41,17 @@
           <table class="table">
             <thead>
               <tr>
-                <th>Role</th>
+                <th><span class="glyphicon glyphicon-user"></th>
                 <th>Name</th>
                 <th>Sprint Days</th>
                 <th>% Work</th>
-                <th>Total Hrs.</th>
+                <th>Total Hrs</th>
                 <th>SU Length</th>
                 <th>Total SU</th>
-                <th>Misc. &nbsp;<a href="#" data-toggle="popover" data-placement="bottom" title="Miscellaneous" data-content="Meetings (Backlog Review, Dev Meeting), Demos/Retros, Sprint Planning"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th>Misc &nbsp;<a href="#" data-toggle="popover" data-placement="bottom" title="Miscellaneous" data-content="Meetings (Backlog Review, Dev Meeting), Demos/Retros, Sprint Planning"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th>Time Off &nbsp;<a href="#" data-toggle="popover" data-placement="bottom" title="Time Off" data-content="Any sick days, holidays, vacation time, or other time off here "><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th>Non Dev</th>
-                <th>Total Avail.</th>
+                <th>Total Capacity</th>
                 <th><span class="glyphicon glyphicon-trash"/></th>
               </tr>
             <thead>
@@ -76,7 +76,7 @@
                     </ul>
                   </div>
                 </td>
-                <td><input type="text" class="form-control"/></td>
+                <td><input type="text" class="form-control form-control-name"/></td>
                 <td><input type="text" class="form-control"/></td>
                 <td><input type="text" class="form-control"/></td>
                 <td><input type="text" class="form-control" readonly/></td>
@@ -99,7 +99,7 @@
               <h3 class="sprint-name">eComm - Sprint 40</h3>
             </div>
             <div class="btn-control-panel">
-              <button type="button" class="btn btn-primary add-member-btn">Add Member</button>
+              <button type="button" class="btn btn-primary add-member-btn"><span class="glyphicon glyphicon-plus-sign"></span><span class="add-member-text">&nbsp; Add Member</span></button>
               <span class="sprint-remove glyphicon glyphicon-remove"/>
             </div>
           </div>
@@ -108,17 +108,17 @@
           <table class="table">
             <thead>
               <tr>
-                <th>Role</th>
+                <th><span class="glyphicon glyphicon-user"></th>
                 <th>Name</th>
                 <th>Sprint Days</th>
                 <th>% Work</th>
-                <th>Total Hrs.</th>
+                <th>Total Hrs</th>
                 <th>SU Length</th>
                 <th>Total SU</th>
-                <th>Misc. &nbsp;<a href="#" data-toggle="popover" data-placement="bottom" title="Miscellaneous" data-content="Meetings (Backlog Review, Dev Meeting), Demos/Retros, Sprint Planning"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <th>Time Off &nbsp;<a href="#" data-toggle="popover" data-placement="bottom" title="Time Off" data-content="Any sick days, holidays, vacation time, or other time off here "><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th>Misc &nbsp;<a href="#" data-toggle="popover" data-placement="bottom" title="Miscellaneous" data-content="Hours spent in meetings (backlog review, dev meetings), demos/retros, or sprint planning go here"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th>Time Off &nbsp;<a href="#" data-toggle="popover" data-placement="bottom" title="Time Off" data-content="Any sick days, holidays, vacation time, or other time off go here "><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th>Non Dev</th>
-                <th>Total Avail.</th>
+                <th>Total Capacity</th>
                 <th><span class="glyphicon glyphicon-trash"/></th>
               </tr>
             <thead>
@@ -143,7 +143,7 @@
                     </ul>
                   </div>
                 </td>
-                <td><input type="text" class="form-control"/></td>
+                <td><input type="text" class="form-control form-control-name"/></td>
                 <td><input type="text" class="form-control"/></td>
                 <td><input type="text" class="form-control"/></td>
                 <td><input type="text" class="form-control" readonly/></td>
@@ -163,10 +163,10 @@
         <button class="btn btn-lg btn-primary ctrl-btn" id="add-sprint"> + </button>
         <button class="delete-selected btn btn-danger ctrl-btn"><span class="glyphicon glyphicon-trash"></span> &nbsp; Delete Selected</button>
       </div>
-    </div>
     <div class="nav-control-panel">
       <button class="btn ctrl-btn btn-primary nav-btn"><span class="glyphicon glyphicon-menu-left"/></span> &nbsp; Stories </button>
       <button class="btn ctrl-btn btn-primary nav-btn">Results &nbsp; <span class="glyphicon glyphicon-menu-right"></span></button>
+    </div>
     </div>
   </body>
 </html>
@@ -185,6 +185,11 @@
         (($(this).popover('hide').data('bs.popover') || {}).inState || {}).click = false
       }
     });
+  });
+  /* smooth auto horizontal scroll for responsiveness */
+  $('.form-control').on('focus', function() {
+    var panel = $(this).closest('.panel-body')[0];
+    $(panel).stop().animate({scrollLeft:($(this).offset().left - 400)}, 300);
   });
 
 /* title editing */
@@ -257,6 +262,7 @@
     font-size:13px;
     text-align: center;
   }
+
   h3{
     margin-top:10px;
   }
@@ -294,9 +300,15 @@
     justify-content: space-between;
     width: 100%;
   }
+  .form-control{
+    min-width: 55px;
+  }
+  .form-control-name{
+    min-width: 91px
+  }
   .nav-control-panel{
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     height: 45px;
     margin-top: 25px;
     margin-bottom: 20px;
@@ -313,7 +325,7 @@
   .btn-control-panel{
     display: flex;
     justify-content: space-between;
-    width: 140px;
+    width: 165px;
   }
   .edit-sprint-btn{
     display: none;
@@ -333,14 +345,31 @@
   .sprint-remove{
     margin-top: -5px;
     margin-right: -9px;
+    height: 14px;
   }
   .sprint-remove:hover{
     cursor: pointer;
+    color: #d43f3a;
   }
   .dropdown-toggle{
     width: 80px;
   }
-  @media only screen and (max-width: 460px){
+  .btn, .btn:active, .btn:focus{
+    border: 1px solid transparent !important;
+  }
+  .popover-title, .popover-content{
+    font-family: 'Roboto', sans-serif;
+  }
+  /* iPhone 5 */
+  @media only screen and (min-width: 320px) and (max-width: 374px){
+    .btn-control-panel {width: 60px;}
+  }
+  /* Phones */
+  @media only screen and (min-width: 320px) and (max-width: 567px){
+    th{font-size: 12px;}
     .sprint-name {font-size: 18px;}
+    .btn-control-panel {justify-content: flex-end;}
+    .add-member-text {display:none;}
+    .add-member-btn {margin-right:6px;}
   }
 </style>
