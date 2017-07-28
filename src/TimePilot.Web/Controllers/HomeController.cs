@@ -280,14 +280,6 @@ namespace TimePilot.Controllers
             return RedirectToAction("Resource");
         }
 
-        /*public void copySprint(ResourceCapacityViewModel model)        
-        {
-            List<Member> copiedMemberList = model.sprints[model.buttonIndex].members;
-            TimePilot.Web.Models.Sprint copiedSprint = new TimePilot.Web.Models.Sprint();
-            model.sprints.Add(copiedSprint);
-            model.sprints[model.sprints.Count-1].members = copiedMemberList;
-        }*/
-
         public void calculateTotalDays(ResultsViewModel model)
         {
             for (int i = 0; i < model.storypointAllocation.Length; i++)

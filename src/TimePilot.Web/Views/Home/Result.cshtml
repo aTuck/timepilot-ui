@@ -92,7 +92,7 @@
                     </td>
                 </tr>
             }
-        </table >
+        </table>
 
         <h2>Hours Estimation</h2>
         <table class ="hourstable">
@@ -105,15 +105,15 @@
                     Contingency:  @Html.TextBoxFor(m => m.Contingency, new { @onchange = "this.form.submit();" })
                     @Html.HiddenFor(m => m.Contingency)
                 </td>
-                    <td><select Name="SprintLength" onchange="this.form.submit()">
-                        <option>Select length</option>
-                        <option value="2">2 weeks</option>
-                        <option value="3">3 weeks</option>
-                    </select></td>
+                <td><select Name="SprintLength" class="sprint-length" onchange="return calculatePage();">
+                    <option>Select length</option>
+                    <option value="2">2 weeks</option>
+                    <option value="3">3 weeks</option>
+                </select></td>
             </tr>
             <tr>
                 <td>Total Dev & QA Hours: @Model.TotalDevQA</td>
-                <td>Release & Hardening: @Model.ReleaseAndHardening</td>
+                <td>Release & Hardening: <span class="release-and-hardening">0</span></td>
             </tr>
             <tr>
                 <td>Average Capacity Per Week: @Model.AvgCapacityPerWeek</td>
@@ -139,7 +139,7 @@
                 <td>Total Weeks: @Model.TotalWeeksVelocity</td>
             </tr>
             <tr>
-                <td>Release & Hardening: @Model.ReleaseAndHardening</td>
+                <td>Release & Hardening: <span class="release-and-hardening">0</span></td>
                 <td>Project Duration Weeks: @Model.projectDurationWeeksVelocity</td>
             </tr>
         </table>
@@ -148,3 +148,11 @@
         <input type="button" value="Home" onclick="location.href='@Url.Action("Index", "Home")'" class="button onbottom" />
     }
 </div>
+
+<script>
+    function calculatePage() {
+
+        /* release & hardening */
+        $('.release-and-hardening').text($('.sprint-length').val());
+    }
+</script>
