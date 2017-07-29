@@ -1,0 +1,101 @@
+﻿    html body{
+    top: 0px;
+    padding: 0px;
+    margin: 0px;
+    min-height: 100%;
+    font-family: 'Roboto', sans-serif;
+    }
+    .logo-link:hover{
+    text-decoration: none;
+    color: black;
+    cursor: pointer;
+    }
+    h3:hover, h2:hover{
+    cursor:default;
+    }
+    a:focus{
+    border:none;
+    outline:none;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    }
+    ol, ul, breadcrumb{
+    margin: 0px !important;
+    background: none !important;
+    padding-left:0px !important;
+    padding-right: 0px !important;
+    }
+    hr{
+    width: 75%;
+    }
+    footer{
+    position:relative;
+    left:0;
+    bottom:0;
+    height:auto;
+    width:100%;
+    margin-bottom: 15px;
+    }
+    .navbar-default{
+    border: none;
+    margin-bottom: 40px;
+    box-shadow: 0 2px 1px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    padding: 13px 0px;
+    }
+    .btn:focus, .btn:active{
+    outline:none !important;
+    box-shadow:none !important;
+    }
+    .nav-control-panel{
+    display: flex;
+    justify-content: space-between;
+    height: 45px;
+    margin-top: 25px;
+    margin-bottom: 20px;
+    }
+    .nav-btn{
+    display: flex;
+    align-items: baseline;
+    padding: 0px 16px;
+    }
+    .centered{
+    margin: auto;
+    float: none;
+    text-align: center;
+    }
+    .row-vcentered{
+    display: flex;
+    align-items: center;
+    }
+    .row-hcentered{
+    display: flex;
+    justify-content: center;
+    }
+    .center-block{
+    float:none;
+    text-align: center;
+    } 
+    .logo{
+    width: 50px;
+    }
+    .logo-link{
+    text-decoration: none;
+    color: black;
+    height: 50px;
+    min-width: 52px;
+    }
+
+    .logo-link:focus{
+    text-decoration: none;
+    color: black;
+    }
+    .logo-text{
+    display: inline;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 40px;
+    vertical-align: middle;
+    margin: 16px 0px 0px -3px;
+    }
+    .crumbs{
+    text-align: middle;
+    }
