@@ -7,11 +7,11 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container">
+<div class="container main">
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3>Projects</h3>
-            <a href="#"> Don't see your project? </a>
+            <a class="dont-see-projects"> Don't see your project? </a>
         </div>
         <div class="panel-body">
             <div class="aside-right">
@@ -21,20 +21,20 @@
                     <option value="asc">Name Z-A</option>
                 </select>
                 <label class="controls-label">Search:</label>
-                <input class="form-control search-box" maxlength="20" />
+                <input id="search-box" class="form-control search-box" maxlength="20" />
             </div>
             <div class="project-container form-group">
-                @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @id = "projectForm" }))
+                @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @id = "project-form" }))
                 {
                     @Html.DropDownListFor(m => m.SelectedProject,
                                             new SelectList(Model.ProjectList, "ProjectKey", "Summary"),
-                                            new { @size = "23", @class = "project-list form-control", @id = "projectList" })
+                                            new { @size = "23", @class = "project-list form-control", @id = "project-list" })
                 }
             </div>
         </div>
     </div>
     <div class="nav-control-panel">
-        <button class="btn ctrl-btn btn-primary nav-btn"><span class="glyphicon glyphicon-refresh"></span> &nbsp; Refresh </button>
+        <button class="btn ctrl-btn btn-primary nav-btn refresh-button"><span class="glyphicon glyphicon-refresh"></span> &nbsp; Grab new projects </button>
         <button class="btn ctrl-btn btn-primary nav-btn">Stories &nbsp; <span class="glyphicon glyphicon-menu-right"></span></button>
     </div>
 </div>
@@ -46,29 +46,17 @@ document.getElementById("search-box").onkeyup = function() {
     var input, filter, select, option, i, test = 0, projectcounter=0;
     input = document.getElementById('search-box');
     filter = input.value.toUpperCase();
-    select = document.getElementById('projectList');
+    select = document.getElementById('project-list');
     option = select.getElementsByTagName('option');
 
     // Loop through all list items, and hide those who don't match the search query
     for (i = 0; i < option.length; i++) {
         if (option[i].innerHTML.toUpperCase().indexOf(filter) > -1) {
             option[i].style.display = "";
-            if (test % 2 == 0) {
-                option[i].style.background = "#e2fdff";
-            }
-            else {
-                option[i].style.background = "#c0d9db";
-            }
         } else {
             option[i].style.display = "none";
             projectcounter++;
-        }
-        if (projectcounter == option.length) {
-            noproject.innerHTML = "There are no projects found, please search again" ;
-        }
-        else if (projectcounter < option.length) {
-            noproject.innerHTML = " ";
-        }   
+        } 
     }  
 }
 
@@ -78,7 +66,7 @@ document.getElementById("sort-order").onchange = function () {
     var tmpAry = new Array();
     var hiddenRef = new Array();
     sortOrder = this.value;
-    selElem = document.getElementById("projectList");
+    selElem = document.getElementById("project-list");
 
     // Add hidden options to reference array, create temp array of option data
     for (var i = 0; i < selElem.options.length; i++) {
@@ -109,6 +97,20 @@ document.getElementById("sort-order").onchange = function () {
     }
     return;
 }
+$('.refresh-button').on('click', function(){
+    $.ajax({
+        type: "GET",
+        url: "@Url.Action("ProjectPopulate")",
+        success: window.location.reload()
+    })
+});
+$('.dont-see-projects').on('click', function(){
+    $.ajax({
+        type: "GET",
+        url: "@Url.Action("ProjectPopulate")",
+        success: window.location.reload()
+    })
+});
 </script>
 
 

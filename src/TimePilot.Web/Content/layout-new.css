@@ -19,6 +19,9 @@
     box-shadow: none !important;
     -webkit-box-shadow: none !important;
     }
+    a:hover{
+        cursor:pointer;
+    }
     ol, ul, breadcrumb{
     margin: 0px !important;
     background: none !important;

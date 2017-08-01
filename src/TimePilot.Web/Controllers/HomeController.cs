@@ -45,7 +45,6 @@ namespace TimePilot.Controllers
 
         public ActionResult Index()
         {
-            ProjectPopulate();
             projects = ProjDB.GetAll();
             ProjectVM.ProjectList = projects;
             return View(ProjectVM);
@@ -70,7 +69,7 @@ namespace TimePilot.Controllers
         /* Iterates through projects grabbed from API call
          * If it's in the database, do nothing
          * If it's not in the database, add it */
-        private void ProjectPopulate()
+        public ActionResult ProjectPopulate()
         {
             receiveProjectData();
             projects = apiHelper.parseProjectData(projectJson);
@@ -82,7 +81,7 @@ namespace TimePilot.Controllers
                 if (!(temp.ProjectKey == projects[i].ProjectKey))
                     ProjDB.Add(projects[i]);
                 }
-            
+            return RedirectToAction("Index");
         }
 
         public ActionResult Story()

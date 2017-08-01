@@ -45,7 +45,7 @@ padding: 0px 16px;
 .panel{
 box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
-.container{
+.main{
 animation: .5s cubic-bezier(.17,.67,.5,.96) 0s 1 slideInFromLeft;
 }
 .panel-heading{
