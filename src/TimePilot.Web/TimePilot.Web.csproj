@@ -179,6 +179,7 @@
     <Content Include="Content\layout.css" />
     <Content Include="Content\projects-new.css" />
     <Content Include="Content\resource.css" />
+    <Content Include="Content\stories-new.css" />
     <Content Include="Content\story.css" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />

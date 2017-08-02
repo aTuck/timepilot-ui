@@ -3,11 +3,13 @@
 @model ProjectViewModel
 
 @{
-    ViewBag.Title = "Home Page - Time Pilot";
+    ViewBag.Title = "Projects | Time Pilot";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="container main">
+    @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @id = "project-form" }))
+    {
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3>Projects</h3>
@@ -24,93 +26,106 @@
                 <input id="search-box" class="form-control search-box" maxlength="20" />
             </div>
             <div class="project-container form-group">
-                @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @id = "project-form" }))
-                {
-                    @Html.DropDownListFor(m => m.SelectedProject,
-                                            new SelectList(Model.ProjectList, "ProjectKey", "Summary"),
-                                            new { @size = "23", @class = "project-list form-control", @id = "project-list" })
-                }
+                        @Html.DropDownListFor(m => m.SelectedProject,
+                                                new SelectList(Model.ProjectList, "ProjectKey", "Summary"),
+                                                new { @size = "23", @class = "project-list form-control", @id = "project-list" })
             </div>
         </div>
     </div>
     <div class="nav-control-panel">
         <button class="btn ctrl-btn btn-primary nav-btn refresh-button"><span class="glyphicon glyphicon-refresh"></span> &nbsp; Grab new projects </button>
-        <button class="btn ctrl-btn btn-primary nav-btn">Stories &nbsp; <span class="glyphicon glyphicon-menu-right"></span></button>
+        <button class="btn ctrl-btn btn-primary nav-btn btn-next disabled" disabled="disabled" type="submit">Stories &nbsp; <span class="glyphicon glyphicon-menu-right"></span></button>
     </div>
+    }
 </div>
 
 <script>
-//Filters dropwdown list based on search box input
-document.getElementById("search-box").onkeyup = function() {
-    // Declare variables
-    var input, filter, select, option, i, test = 0, projectcounter=0;
-    input = document.getElementById('search-box');
-    filter = input.value.toUpperCase();
-    select = document.getElementById('project-list');
-    option = select.getElementsByTagName('option');
+    //Filters dropdown
+    document.getElementById("search-box").onkeyup = function() {
+        // Declare variables
+        var input, filter, select, option, i, test = 0, projectcounter=0;
+        input = document.getElementById('search-box');
+        filter = input.value.toUpperCase();
+        select = document.getElementById('project-list');
+        option = select.getElementsByTagName('option');
 
-    // Loop through all list items, and hide those who don't match the search query
-    for (i = 0; i < option.length; i++) {
-        if (option[i].innerHTML.toUpperCase().indexOf(filter) > -1) {
-            option[i].style.display = "";
-        } else {
-            option[i].style.display = "none";
-            projectcounter++;
-        } 
-    }  
-}
-
-//Sorts dropdown list based on sort order selected
-document.getElementById("sort-order").onchange = function () {
-    // Declare variables
-    var tmpAry = new Array();
-    var hiddenRef = new Array();
-    sortOrder = this.value;
-    selElem = document.getElementById("project-list");
-
-    // Add hidden options to reference array, create temp array of option data
-    for (var i = 0; i < selElem.options.length; i++) {
-    if (selElem.options[i].style.display == "none") {
-        hiddenRef.push(selElem.options[i].value);
-    }
-        tmpAry[i] = new Array();
-        tmpAry[i][0] = selElem.options[i].value;
-        tmpAry[i][1] = selElem.options[i].text;
+        // Loop through all list items, and hide those who don't match the search query
+        for (i = 0; i < option.length; i++) {
+            if (option[i].innerHTML.toUpperCase().indexOf(filter) > -1) {
+                option[i].style.display = "";
+            } else {
+                option[i].style.display = "none";
+                projectcounter++;
+            }
+        }
     }
 
-    // Rearrange options in desired order
-    sortOrder == "desc" ? tmpAry.sort() : tmpAry.reverse()
+    //Sorts dropdown
+    document.getElementById("sort-order").onchange = function () {
+        // Declare variables
+        var tmpAry = new Array();
+        var hiddenRef = new Array();
+        sortOrder = this.value;
+        selElem = document.getElementById("project-list");
 
-    // Null out current obtion objects
-    while (selElem.options.length > 0) {
-        selElem.options[0] = null;
-    }
+        // Add hidden options to reference array, create temp array of option data
+        for (var i = 0; i < selElem.options.length; i++) {
+            if (selElem.options[i].style.display == "none") {
+                hiddenRef.push(selElem.options[i].value);
+            }
+            tmpAry[i] = new Array();
+            tmpAry[i][0] = selElem.options[i].value;
+            tmpAry[i][1] = selElem.options[i].text;
+        }
 
-    // Recreate option objects and add them back in new desired order
-    // This includes hidden options, maintaining hidden property
-    for (var i = 0; i < tmpAry.length; i++) {
-    var op = new Option(tmpAry[i][1], tmpAry[i][0]);
-    if (hiddenRef.includes(op.value)) {
-        op.style.display = "none";
-    }
-        selElem.options[i] = op;
-    }
-    return;
-}
-$('.refresh-button').on('click', function(){
-    $.ajax({
-        type: "GET",
-        url: "@Url.Action("ProjectPopulate")",
-        success: window.location.reload()
+        // Rearrange options in desired order
+        sortOrder == "desc" ? tmpAry.sort() : tmpAry.reverse()
+
+        // Null out current obtion objects
+        while (selElem.options.length > 0) {
+            selElem.options[0] = null;
+        }
+
+        // Recreate option objects and add them back in new desired order
+        // This includes hidden options, maintaining hidden property
+        for (var i = 0; i < tmpAry.length; i++) {
+            var op = new Option(tmpAry[i][1], tmpAry[i][0]);
+            if (hiddenRef.includes(op.value)) {
+                op.style.display = "none";
+            }
+            selElem.options[i] = op;
+        }
+        return;
+    };
+
+    // Refreshed projects
+    $('.refresh-button').on('click', function(){
+        refreshProjects()
+    });
+    $('.dont-see-projects').on('click', function(){
+        refreshProjects()
+    });
+    function refreshProjects() {
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("ProjectPopulate")",
+            success: window.location.reload()
+        })
+    };
+
+    // Searches automatically on type
+    $(document).on('keydown', function () {
+        $('.search-box').focus();
+    });
+
+    $('.project-list').on('mousedown', function () {
+        $('.btn-next').removeClass('disabled');
+        $('.btn-next').prop('disabled', false);
     })
-});
-$('.dont-see-projects').on('click', function(){
-    $.ajax({
-        type: "GET",
-        url: "@Url.Action("ProjectPopulate")",
-        success: window.location.reload()
+    $('.project-list').on('dblclick', function () {
+        $('#project-form').submit();
     })
-});
+
 </script>
 
 

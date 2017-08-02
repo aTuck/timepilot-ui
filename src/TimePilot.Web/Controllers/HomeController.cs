@@ -84,6 +84,7 @@ namespace TimePilot.Controllers
             return RedirectToAction("Index");
         }
 
+        [OutputCache(Duration = 0, VaryByParam = "none", NoStore = true)]
         public ActionResult Story()
         {
             stories = StoryDB.GetAllByForeignId(SelectedProject);
@@ -132,19 +133,20 @@ namespace TimePilot.Controllers
         }
 
         [HttpPost]
-        public ActionResult Story(StoryViewModel m)
+        public ActionResult StoryUpdate(StoryViewModel m)
         {
             StoryVM = m;
             if (m.StoryList != null)
             {
-                foreach (var story in m.StoryList)
+                foreach (var s in m.StoryList)
                 {
-                    StoryDB.Update(story);
+                    s.ProjectKey = SelectedProject;
+                    StoryDB.Update(s);
                 }
             }
             totalStoryPoints = m.totalStoryPoints;
             sortStoryPointsIntoBuckets();
-            return RedirectToAction("Story");
+            return RedirectToAction("Resource");
         }
 
         [HttpPost]
@@ -283,7 +285,7 @@ namespace TimePilot.Controllers
         {
             for (int i = 0; i < model.storypointAllocation.Length; i++)
             {
-                    model.Total[i] = model.numberOfStories[i] * model.DaysPerPt[i];               
+                model.Total[i] = model.numberOfStories[i] * model.DaysPerPt[i];               
             }
         }
 
