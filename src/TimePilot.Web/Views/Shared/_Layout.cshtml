@@ -7,8 +7,10 @@
         <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Asap|Ubuntu" />
         <link rel="stylesheet" href="~/Content/layout-new.css"  />
-        <link rel="stylesheet" href="~/Content/projects-new.css" />
-        <link rel="stylesheet" href="~/Content/stories-new.css" />
+        @if (IsSectionDefined("projects")){@RenderSection("projects")}
+        @if (IsSectionDefined("stories")){@RenderSection("stories")}
+        @if (IsSectionDefined("resource")){@RenderSection("resource")}
+        @if (IsSectionDefined("results")){@RenderSection("results")}
         <link rel="shortcut icon" type="image/ico" href="~/Content/favicon.ico")">
         <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
@@ -61,7 +63,7 @@
             </div>
         </nav>
         @RenderBody()
-        <footer>
+        <footer class="footer">
             <div class="container">
                 <hr>
                 <div class="row">

@@ -4,6 +4,7 @@
     margin: 0px;
     min-height: 100%;
     font-family: 'Roboto', sans-serif;
+    overflow-y:scroll;
     }
     .logo-link:hover{
     text-decoration: none;
@@ -22,7 +23,7 @@
     a:hover{
         cursor:pointer;
     }
-    ol, ul, breadcrumb{
+    .breadcrumb{
     margin: 0px !important;
     background: none !important;
     padding-left:0px !important;
@@ -30,14 +31,8 @@
     }
     hr{
     width: 75%;
-    }
-    footer{
-    position:relative;
-    left:0;
-    bottom:0;
-    height:auto;
-    width:100%;
-    margin-bottom: 15px;
+    margin: 20px auto 5px auto;
+    
     }
     .navbar-default{
     border: none;
@@ -100,5 +95,11 @@
     margin: 16px 0px 0px -3px;
     }
     .crumbs{
-    text-align: middle;
+    text-align: center;
+    }
+    .footer{
+        position: relative;
+        bottom: 0;
+        width: 100%;
+        line-height: 40px;
     }

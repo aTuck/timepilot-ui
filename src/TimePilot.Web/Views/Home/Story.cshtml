@@ -5,6 +5,7 @@
     ViewBag.Title = "Stories | Time Pilot";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@section stories{<link href="~/Content/stories-new.css" rel="stylesheet" />}
 <div class="modal fade" id="deleteStoriesModal" data-keyboard="false" role="dialog">
     <!-- Warning Pop UP HTML-->
     <div class="modalstuff">
@@ -55,7 +56,6 @@
                                     <fieldset class="radio-group">
                                         <div class="btn-group" data-toggle="buttons">
                                             <label class="btn btn-default btn-radio @(Model.StoryList[i].StoryPoints == 1 ? "active" : "")">1 
-
                                                 @Html.RadioButtonFor(m => m.StoryList[i].StoryPoints, "1",
                                                                      checked(Model.StoryList[i].StoryPoints == 1))
                                             </label>
@@ -107,7 +107,6 @@
     </div>
 }
 <div id="loading"><div id="loading_anim"></div></div>
-
 
 <script>
     // Initialize story point sum

@@ -6,7 +6,7 @@
     ViewBag.Title = "Projects | Time Pilot";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+@section projects{<link rel="stylesheet" href="~/Content/projects-new.css" />}
 <div class="container main">
     @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @id = "project-form" }))
     {
