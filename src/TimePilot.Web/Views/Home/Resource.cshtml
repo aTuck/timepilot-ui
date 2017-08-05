@@ -8,8 +8,8 @@
 }
 @section resource{<link href="~/Content/resource-new.css" rel="stylesheet" />}
 
-<div class="resource-container">
-        @using (Html.BeginForm("Resource", "Home", FormMethod.Post, new { @id = "resourceForm" }))
+@*<div class="resource-container">
+        @using (Html.BeginForm("Resource", "Home", FormMethod.Post, new { @id = "old-form" }))
         {
             int memberTotal = 0;
             Model.pageState = new List<int>();
@@ -127,7 +127,7 @@
                 </a>
             </div>
         }
-</div>
+</div>*@
 
 <div class="modal fade" id="MyModal" data-keyboard="false" data-backdrop="static">
     <!-- Warning Pop UP HTML-->
@@ -142,7 +142,7 @@
     </div>
 </div>
 
-@using (Html.BeginForm("Resource", "Home", FormMethod.Post, new { @id = "resourceForm" }))
+@using (Html.BeginForm("Resource", "Home", FormMethod.Post, new { @id = "resource-form" }))
 {
     int memberTotal = 0;
     Model.pageState = new List<int>();
@@ -153,10 +153,12 @@
             Model.pageState.Add(0);
             Model.sprints[i].PageID = i;
             <div class="panel panel-default">
+            @Html.HiddenFor(m => m.sprints[i].SprintID)
                 <div class="panel-heading sprint-heading">
                     <div class="sprint-control-panel editable">
                         <div class="input-group">
-                            <h3 class="sprint-name" name="sprints[@(i)].Name">@(Model.sprints[i].Name)</h3>
+                            <h3 class="sprint-name" id="sprint-name@(i)">@(Model.sprints[i].Name)</h3>
+                            @Html.HiddenFor(m => m.sprints[i].Name, new { @id="sprint-name"+i+"-hidden"})
                         </div>
                         <div class="btn-control-panel">
                             <button type="button" class="btn btn-primary add-member-btn"><span class="glyphicon glyphicon-plus-sign"></span><span class="add-member-text">&nbsp; Add Member</span></button>
@@ -192,15 +194,15 @@
                                     <input type="hidden" class="page-id" id="members_@(memberTotal)__PageID" name="members[@(memberTotal)].PageID" value="@i" />
                                     @Html.HiddenFor(m => m.members[j].MemberID)
                                     <td>
-                                        <select class="selectpicker">
-                                            <option value="leadDev">Lead Dev</option>
-                                            <option value="seniorDev">Senior Dev</option>
-                                            <option value="intermediateDev">Dev</option>
-                                            <option value="juniorDev">Junior Dev</option>
-                                            <option value="leadQA">Lead QA</option>
-                                            <option value="seniorQA">Senior QA</option>
-                                            <option value="intermediateQA">QA</option>
-                                            <option value="juniorQA">Junior QA</option>
+                                        <select class="role-select">
+                                            <option value="leadDev" @*selected=logic for if this is the member's role from db'*@>Lead Dev</option>
+                                            <option value="seniorDev" @*selected=logic for if this is the member's role from db'*@>Senior Dev</option>
+                                            <option value="intermediateDev" @*selected=logic for if this is the member's role from db'*@>Dev</option>
+                                            <option value="juniorDev" @*selected=logic for if this is the member's role from db'*@>Junior Dev</option>
+                                            <option value="leadQA" @*selected=logic for if this is the member's role from db'*@>Lead QA</option>
+                                            <option value="seniorQA" @*selected=logic for if this is the member's role from db'*@>Senior QA</option>
+                                            <option value="intermediateQA" @*selected=logic for if this is the member's role from db'*@>QA</option>
+                                            <option value="juniorQA" @*selected=logic for if this is the member's role from db'*@>Junior QA</option>
                                         </select>
                                     </td>
                                     <td>@Html.TextBoxFor(m => m.members[j].Name, new { @class = "form-control form-control-name", placeholder = "Name" })</td>
@@ -229,25 +231,45 @@
                 </div>
             </div>
         }
-        <div class="final-values-panel">
-            <p><b>Total Dev Capacity:</b> <span class="final-value" />0</p>
-            <p><b>Average Per Sprint:</b> <span class="final-value" />0</p>
-            <p><b>Average Per Week:  </b> <span class="final-value" />0</p>
-        </div>
-        @Html.HiddenFor(m => m.totalDevCapacity, new { @class = "total-dev-capacity-hidden" })
         <div class="crud-control-panel">
             <button class="btn btn-lg btn-primary ctrl-btn add-sprint" data-toggle="tooltip" title="Add a sprint" data-placement="right"> + </button>
             <button class="delete-selected btn btn-danger ctrl-btn"><span class="glyphicon glyphicon-trash"></span> &nbsp; Delete Selected</button>
         </div>
+        <div class="final-values-panel">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <label>Total Dev Capacity</label>
+                    <div class="final-value">0</div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <label>Average Per Sprint</label>
+                    <div class="final-value">0</div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <label>Average Per Week</label>
+                    <div class="final-value">0</div>
+                </div>
+            </div>
+        </div>
+        @Html.HiddenFor(m => m.totalDevCapacity, new { @class = "total-dev-capacity-hidden" })
         <div class="nav-control-panel">
-            <button class="btn ctrl-btn btn-primary nav-btn"><span class="glyphicon glyphicon-menu-left"></span>&nbsp; Stories </button>
-            <button class="btn ctrl-btn btn-primary nav-btn">Results &nbsp; <span class="glyphicon glyphicon-menu-right"></span></button>
+            <button class="btn ctrl-btn btn-primary nav-btn btn-prev"><span class="glyphicon glyphicon-menu-left"></span>&nbsp; Stories </button>
+            <button class="btn ctrl-btn btn-primary nav-btn btn-next">Results &nbsp; <span class="glyphicon glyphicon-menu-right"></span></button>
         </div>
     </div>
 }
 <script type="text/javascript">
+    // Always save changes
+    $(window).bind('beforeunload', function () {
+        postResourceForm();
+    });
+
     function postResourceForm() {
-        var data = $('#resourceForm').serialize();
+        var data = $('#resource-form').serialize();
         $.ajax({
             type: "POST",
             url: "@Url.Action("ResourceUpdate")",
@@ -321,7 +343,7 @@
 
         // Overall Calculations
         var ttls = document.getElementsByName("totalAvailable");
-        var sprints = document.getElementsByClassName("sprint-title").length;
+        var sprints = document.getElementsByClassName("sprint-name").length;
         for (i = 0; i < ttls.length; i++) {temp += parseFloat(ttls[i].value);}
         ttlDevCapac.textContent = round(parseFloat(temp), 1);
         $('.total-dev-capacity-hidden').val(round(parseFloat(temp), 1));
@@ -342,6 +364,7 @@
     });
     $(document).on('click', function (e) {
         $('[data-toggle="popover"],[data-original-title]').each(function () {
+            this.preventDefault();
             if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0 ) {
                 (($(this).popover('hide').data('bs.popover') || {}).inState || {}).click = false
             }
@@ -502,13 +525,6 @@
         })
         }
     }
-    /* dropdown */
-    $('.dropdown-toggle').dropdown()
-
-    /* popovers */
-    $(function () {
-        $('[data-toggle="popover"]').popover()
-    })
     $(document).on('click', function (e) {
         $('[data-toggle="popover"],[data-original-title]').each(function () {
             if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0 ) {
@@ -540,15 +556,18 @@
     function setToEdit(sprintName){
         $(sprintName.parentNode.parentNode).removeClass('editable')
         var text = $(sprintName).text();
-        $(sprintName).replaceWith("<input type='text' class='form-control input-lg sprint-name-edit' value='"+text+"' maxlength='45'/> ");
+        var id = $(sprintName).attr('id');
+        $(sprintName).replaceWith("<input type='text' class='form-control input-lg sprint-name-edit' value='"+text+"' maxlength='45' id='"+id+"'/> ");
         $('.sprint-name-edit').focus();
         $('.sprint-name-edit').select();
     }
     function setToText(sprintNameEdit){
         $(sprintNameEdit.parentNode.parentNode).addClass('editable')
         var text = $.trim($(sprintNameEdit).val());
+        var id = $(sprintNameEdit).attr('id');
         if (text != ""){
-            $(sprintNameEdit).replaceWith("<h3 class='sprint-name'>"+text+"</h3>");
+            $(sprintNameEdit).replaceWith("<h3 class='sprint-name id='"+id+"'>"+text+"</h3>");
+            $('#'+id+'-hidden').val(text);
         }
         else{
             $(sprintNameEdit).replaceWith("<h3 class='sprint-name'>Enter sprint name...</h3>");
@@ -585,8 +604,16 @@
             dropdownMenu.hide();                              
         }); 
     })();
-    // Hack to remove checkmarks from dropdown
-    $('.selectpicker').selectpicker({
-        tickIcon: '',
-    });
+    // Navigate to resource page
+    $('.btn-next').on('click', function(e) {
+        e.preventDefault();
+        window.location.href = "@Url.Action("Result", "Home")"
+    })
+
+    // Navigate to previous page
+    $('.btn-prev').on('click', function(e) {
+        e.preventDefault();
+        window.location.href = "@Url.Action("Story", "Home")"
+    })
+
 </script>

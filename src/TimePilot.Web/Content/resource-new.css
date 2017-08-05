@@ -61,6 +61,7 @@
     padding: 0px 16px;
   }
   .crud-control-panel{
+    margin-top: -25px;
     display: flex;
     justify-content: space-between;
   }
@@ -105,7 +106,22 @@
   }
   .final-values-panel{
       display: flex;
-      justify-content: space-between;
+      justify-content: space-around;
+      margin-top: 40px;
+  }
+  .final-value{
+      font-size: 40px;
+  }
+  .role-select{
+      border-radius:4px; 
+      height:34px;
+      border: 1px solid #ccc;
+  }
+  .role-select:hover{
+      cursor:pointer;
+  }
+  option:hover{
+      cursor:pointer;
   }
   /* boot-strap select change width */
     .bootstrap-select.btn-group .dropdown-menu, .btn.dropdown-toggle.btn-default, .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn){

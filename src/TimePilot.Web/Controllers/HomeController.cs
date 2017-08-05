@@ -211,6 +211,7 @@ namespace TimePilot.Controllers
             StoryPointAllocation = pointArray;
         }
 
+        [OutputCache(Duration = 0, VaryByParam = "none", NoStore = true)]
         public ActionResult Resource()
         {
             List<Member> currentMembers = new List<Member>();
