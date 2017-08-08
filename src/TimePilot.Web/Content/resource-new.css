@@ -116,6 +116,7 @@
       border-radius:4px; 
       height:34px;
       border: 1px solid #ccc;
+      padding: 8px;
   }
   .role-select:hover{
       cursor:pointer;

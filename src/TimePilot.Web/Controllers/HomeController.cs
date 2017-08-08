@@ -220,6 +220,7 @@ namespace TimePilot.Controllers
             if (ResourceVM.sprints.Count == 0)
             {
                 Sprint initSprint = new Sprint();
+                initSprint.Name= "Enter Sprint Name...";
                 ResourceVM.sprints.Add(initSprint);
             }
             for(int i = 0; i < ResourceVM.sprints.Count; i++)
