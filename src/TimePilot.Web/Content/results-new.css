@@ -1,2 +1,312 @@
-﻿body {
-}
+﻿h3:hover, h2:hover{
+        cursor:default;
+      }
+      a:focus{
+        border:none;
+        outline:none;
+        box-shadow: none !important;
+        -webkit-box-shadow: none !important;
+      }
+      td, th{
+        text-align: center;
+        vertical-align: middle !important;
+      }
+      ol, ul, breadcrumb{
+        margin: 0px !important;
+        background: none !important;
+        padding-left:0px !important;
+        padding-right: 0px !important;
+      }
+      hr{
+        width: 75%;
+      }
+      input[type=number]::-webkit-inner-spin-button, 
+      input[type=number]::-webkit-outer-spin-button { 
+        -webkit-appearance: none; 
+        margin: 0; 
+      }
+      input[type=range] {
+        height: 28px;
+        -webkit-appearance: none;
+        margin: 10px 0;
+        width: 100%;
+      }
+      input[type=range]:focus {
+        outline: none;
+      }
+      input[type=range]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 4px;
+        cursor: pointer;
+        transition: 0.2s;
+        box-shadow: 0px 0px 0px #000000;
+        background: #296CA6;
+        border-radius: 1px;
+        border: 0px solid #010101;
+      }
+      input[type=range]::-webkit-slider-thumb {
+        box-shadow: 1px 1px 2px #000000;
+        border: 1px solid #D6D6D6;
+        height: 20px;
+        width: 20px;
+        border-radius: 20px;
+        background: #FFFFFF;
+        cursor: pointer;
+        -webkit-appearance: none;
+        margin-top: -8.5px;
+      }
+      input[type=range]:focus::-webkit-slider-runnable-track {
+        background: #296CA6;
+      }
+      input[type=range]::-moz-range-track {
+        width: 100%;
+        height: 4px;
+        cursor: pointer;
+        transition: 0.2s;
+        box-shadow: 0px 0px 0px #000000;
+        background: #296CA6;
+        border-radius: 1px;
+        border: 0px solid #010101;
+      }
+      input[type=range]::-moz-range-thumb {
+        box-shadow: 1px 1px 2px #000000;
+        border: 1px solid #D6D6D6;
+        height: 20px;
+        width: 20px;
+        border-radius: 20px;
+        background: #FFFFFF;
+        cursor: pointer;
+      }
+      input[type=range]::-ms-track {
+        width: 100%;
+        height: 4px;
+        cursor: pointer;
+        transition: 0.2s;
+        background: transparent;
+        border-color: transparent;
+        color: transparent;
+      }
+      input[type=range]::-ms-fill-lower {
+        background: #296CA6;
+        border: 0px solid #010101;
+        border-radius: 2px;
+        box-shadow: 0px 0px 0px #000000;
+      }
+      input[type=range]::-ms-fill-upper {
+        background: #296CA6;
+        border: 0px solid #010101;
+        border-radius: 2px;
+        box-shadow: 0px 0px 0px #000000;
+      }
+      input[type=range]::-ms-thumb {
+        margin-top: 1px;
+        box-shadow: 1px 1px 2px #000000;
+        border: 1px solid #D6D6D6;
+        height: 20px;
+        width: 20px;
+        border-radius: 20px;
+        background: #FFFFFF;
+        cursor: pointer;
+      }
+      input[type=range]:focus::-ms-fill-lower {
+        background: #296CA6;
+      }
+      input[type=range]:focus::-ms-fill-upper {
+        background: #296CA6;
+      }
+      footer{
+        position:relative;
+        left:0;
+        bottom:0;
+        height:auto;
+        width:100%;
+        margin-bottom: 15px;
+      }
+      /* boot-strap select change width */
+      .bootstrap-select.btn-group .dropdown-menu, .btn.dropdown-toggle.btn-default, .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn){
+        min-width: 90px !important;
+        width:100px;
+        background: #fff !important;
+      }
+      .navbar-default{
+        border: none;
+        margin-bottom: 40px;
+        box-shadow: 0 2px 1px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+        padding: 13px 0px;
+      }
+      .btn:focus, .btn:active{
+        outline:none !important;
+        box-shadow:none !important;
+      }
+      .nav-control-panel{
+        display: flex;
+        justify-content: space-between;
+        height: 45px;
+        margin-top: 25px;
+        margin-bottom: 20px;
+      }
+      .nav-btn{
+        display: flex;
+        align-items: baseline;
+        padding: 0px 16px;
+      }
+      .panel{
+        box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+        height: 500px;
+      }
+      .main{
+        animation: .5s cubic-bezier(.17,.67,.5,.96) 0s 1 slideInFromTop;
+      }
+      .main-flip{
+        animation: .5s cubic-bezier(.17,.67,.5,.96) 0s 1 chartFlip;
+        animation-fill-mode: forwards;
+      }
+      .panel1{
+        animation: .4s cubic-bezier(.17,.67,.5,.96) 0s 1 slidePanelFromTop;
+      }
+      .panel2{
+        animation: .6s cubic-bezier(.17,.67,.5,.96) 0s 1 slidePanelFromTop;
+      }
+      .panel3{
+        animation: .8s cubic-bezier(.17,.67,.5,.96) 0s 1 slidePanelFromTop;
+      }
+      .panel-heading{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .panel-body{
+        overflow-x: auto;
+        padding: 0px 27px
+      }
+      .results-input{
+        width:80px;
+      }
+      .conversion-rate{
+        width: 46px;
+      }
+      .big-value{
+        margin-top: 0px;
+        margin-bottom: 25px;
+        font-weight: 700;
+        font-size: 40px;
+      }
+      .med-value{
+        margin-top: 0px;
+        margin-bottom: 8px;
+        font-size: 25px;
+        font-weight: 700;
+      }
+      .centered{
+        margin: auto;
+        float: none;
+        text-align: center;
+      }
+      .slider{
+        height: 40px;
+        width: 100px !important;
+      }
+      .row-vcentered{
+        display: flex;
+        align-items: center;
+      }
+      .row-hcentered{
+        display: flex;
+        justify-content: center;
+      }
+      .center-block{
+        float:none;
+        text-align: center;
+      } 
+      .logo{
+        width: 50px;
+      }
+      .logo-link{
+        text-decoration: none;
+        color: black;
+        height: 50px;
+        min-width: 52px;
+      }
+      .logo-link:hover{
+        text-decoration: none;
+        color: black;
+        cursor: pointer;
+      }
+      .logo-link:focus{
+        text-decoration: none;
+        color: black;
+      }
+      .logo-text{
+        display: inline;
+        font-family: 'Ubuntu', sans-serif;
+        font-size: 40px;
+        vertical-align: middle;
+        margin: 16px 0px 0px -3px;
+      }
+      .crumbs{
+        text-align: center;
+      }
+      div.form-control{
+        -webkit-box-shadow: none;
+        box-shadow: none;
+      }
+      @keyframes slideInFromTop{
+        0%{
+          transform: translateY(-5%);
+          opacity: 0;
+        }
+        85%{
+          opacity: 1;
+        }
+        100%{
+          transform: translateY(0);
+        }
+      }
+      @keyframes slidePanelFromTop{
+        0%{
+          transform: translateY(-15%);
+          opacity: 0;
+        }
+        85%{
+          opacity: 1;
+        }
+        100%{
+          transform: translateY(0);
+        }
+      }
+      @keyframes chartFlip{
+        0%{
+          transform: rotateY(0deg);
+        }
+        100%{
+          transform: rotateY(180deg);
+        }
+      }
+      /* Mobile 320px - 1023px */
+      @media only screen and (min-width: 320px) and (max-width: 1023px) {
+      }    
+      /* Phones 320px - 767px */
+      @media only screen and (min-width: 320px) and (max-width: 767px) {
+        div.crumbs{display: none;}
+        th{font-size: 12px;}
+        label{font-size: 12px;}
+        .med-value{font-size: 22px;}
+        .footer-text{font-size: 11px;}
+        .btn{font-size: 12px;}
+        .slider{width: 85px !important;}
+      }
+      /* iPad 768px - 1023px */
+      @media only screen and (min-width: 768px) and (max-width: 1023px) {
+        div[class='panel-body'] > div[class='row'] > div[class^='col-xs-6'],
+        div[class='panel-body'] > div[class='row'] > div[class^='col-md-6']{padding-left: 115px;}
+        #slider1-value, #slider2-value{margin-left: 25px;}
+        .panel-body{padding-top: 10px;}
+      }
+      /* Big Tablets / Small Desktops 1024-1439*/
+      @media only screen and (min-width: 1024px) and (max-width: 1439px) {
+        .med-value{font-size: 20px;}
+        label{font-size: 11px;}
+        th{font-size: 12px;}
+        .slider{width: 85px !important;}
+        div.crumbs{font-size: 18px}
+      }

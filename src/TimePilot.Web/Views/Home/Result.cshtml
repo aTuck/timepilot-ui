@@ -1,66 +1,12 @@
 ﻿@model TimePilot.Web.ViewModels.ResultsViewModel
 
 @{ 
-    ViewBag.Title = "Result";
+    ViewBag.Title = "Results | Time Pilot";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @section results{<link href="~/Content/results-new.css" rel="stylesheet" />}
-<style>
-    table{
-        font-family: arial, sans-serif;
-        border-collapse: collapse;
-        border-style: hidden;
-        width: 100%;
-        padding: 10px;
-    }
 
-    td, th{
-        border: 1px solid #dddddd;
-        text-align: left;
-        padding: 8px;
-        border-style: hidden;
-    }
-
-    #myTable tr:nth-child(even){
-        background-color:#c5e7e0;
-    }
-    #myTable tr:nth-child(odd){
-        background-color: #ddf0ec;
-    }
-
-    .velocitytable tr:nth-child(even){
-        background-color:#d1cbe1;
-    }
-    .velocitytable tr:nth-child(odd){
-        background-color: #e0dfea;
-    }
-
-    .hourstable tr:nth-child(even){
-        background-color:#b0e3e5
-    }
-    .hourstable tr:nth-child(odd){
-        background-color:#d6f9f6
-    }
-    h2{
-        padding: 10px;
-    }
-    onbottom{
-        margin-top: 10px;
-        margin-bottom: 10px;
-    }
-</style>
-
-<div class="container">
-    <div class="flex-container-header">
-        <h1>Time Pilot</h1>
-        <p>
-            <a class="pre-activebread" href="Index">Project Selection</a> >
-            <a class="pre-activebread" href="Story">Story Points</a> >
-            <a class="pre-activebread" href="Resource">Resource Capacity</a> >
-            <a class="activebread">Conversion Rate & Results</a>
-        </p>
-    </div>
-
+@*<div>
     <h2>Conversion Rate</h2>
     @using (Html.BeginForm("Result", "Home", FormMethod.Post))
     {
@@ -147,12 +93,295 @@
         <input type="button" value="Previous" onclick="location.href='@Url.Action("Resource", "Home")'" class="button onbottom" />
         <input type="button" value="Home" onclick="location.href='@Url.Action("Index", "Home")'" class="button onbottom" />
     }
+@*</div>*@
+
+<div class="container main">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-default panel1">
+                <div class="panel-heading">
+                    <h3>Conversion Rate</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th> Story Points </th>
+                                <th> Number of Stories </th>
+                                <th> Days of Work per Story Point </th>
+                                <th> Total Days </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td> 1 </td>
+                                <td id="tier1-num-of-stories"> 5 </td>
+                                <td>
+                                    <div class="row row-hcentered">
+                                        <input type="number" id="tier1" class="form-control conversion-rate" min="0" max="99" onchange="return calculatePage();" />
+                                    </div>
+                                </td>
+                                <td> <label id="tier1-label" class="tier-label">0</label> </td>
+                            </tr>
+                            <tr>
+                                <td> 3 </td>
+                                <td id="tier3-num-of-stories"> 6 </td>
+                                <td>
+                                    <div class="row row-hcentered">
+                                        <input type="number" id="tier3" class="form-control conversion-rate" min="0" max="99" onchange="return calculatePage();" />
+                                    </div>
+                                </td>
+                                <td> <label id="tier3-label" class="tier-label">0</label> </td>
+                            </tr>
+                            <tr>
+                                <td> 5 </td>
+                                <td id="tier5-num-of-stories"> 6 </td>
+                                <td>
+                                    <div class="row row-hcentered">
+                                        <input type="number" id="tier5" class="form-control conversion-rate" min="0" max="99" onchange="return calculatePage();" />
+                                    </div>
+                                </td>
+                                <td> <label id="tier5-label" class="tier-label">0</label> </td>
+                            </tr>
+                            <tr>
+                                <td> 8 </td>
+                                <td id="tier8-num-of-stories"> 3 </td>
+                                <td>
+                                    <div class="row row-hcentered">
+                                        <input type="number" id="tier8" class="form-control conversion-rate" min="0" max="99" onchange="return calculatePage();" />
+                                    </div>
+                                </td>
+                                <td> <label id="tier8-label" class="tier-label">0</label> </td>
+                            </tr>
+                            <tr>
+                                <td> 13 </td>
+                                <td id="tier13-num-of-stories"> 2 </td>
+                                <td>
+                                    <div class="row row-hcentered">
+                                        <input type="number" id="tier13" class="form-control conversion-rate" min="0" max="99" onchange="return calculatePage();" />
+                                    </div>
+                                </td>
+                                <td> <label id="tier13-label" class="tier-label">0</label> </td>
+                            </tr>
+                            <tr>
+                                <td> 21 </td>
+                                <td id="tier21-num-of-stories"> 1 </td>
+                                <td>
+                                    <div class="row row-hcentered">
+                                        <input type="number" id="tier21" class="form-control conversion-rate" min="0" max="99" onchange="return calculatePage();" />
+                                    </div>
+                                </td>
+                                <td> <label id="tier21-label" class="tier-label">0</label> </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="row row-vcentered">
+                        <div class="col-xs-6 center-block">
+                            <label> Total Days - <span class="total-days">0</span></label>
+                        </div>
+                        <div class="col-xs-6 center-block">
+                            <label> Total Hours - <span class="total-hours">0</span></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default panel2">
+                <div class="panel-heading">
+                    <h3>Hours Estimation</h3>
+                </div>
+                <div class="panel-body">
+                    <br />
+                    <div class="row">
+                        <div class="col-xs-6 "> <label>Sprint Duration</label><select class="selectpicker form-control sprint-length" onchange="return calculatePage();"><option value="2">2 weeks</option><option value="3">3 weeks</option></select> </div>
+                        <div class="col-xs-6 ">
+                            <label>Contingency</label>
+                            <div class="row row-vcentered">
+                                <div class="col-md-8 col-xs-8 col-sm-4">
+                                    <input type="range" min="0" max="30" step="5" class="slider" id="slider1" />
+                                </div>
+                                <label class="col-md-4 slider-value">15%</label>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-6 col-xs-6"> <label>Dev & QA Required</label><h3 class="med-value dev-qa-required">0 hrs</h3></div>
+                        <div class="col-md-6 col-xs-6"> <label>Avg Capacity / Week</label><h3 class="med-value">58 hrs</h3></div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-6 col-xs-6"> <label>Total Duration</label> <h3 class="med-value hoursval-total-duration">0w 0d 0h</h3> </div>
+                        <div class="col-md-6 col-xs-6"> <label>Release & Hardening</label><h3 class="med-value release-and-hardening">2 weeks</h3></div>
+                    </div>
+                    <br /><br />
+                    <div class="row">
+                        <div class="col-md-10 col-xs-10 centered"> <label>Project Duration</label><div class="big-value hoursval-project-duration">0w 0d 0h</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default panel3">
+                <div class="panel-heading">
+                    <h3>Velocity Validation</h3>
+                </div>
+                <div class="panel-body">
+                    <br />
+                    <div class="row">
+                        <div class="col-xs-6"> <label>Team Velocity</label><input type="number" class="form-control results-input team-velocity" /></div>
+                        <div class="col-xs-6">
+                            <label>Contingency</label>
+                            <div class="row row-vcentered">
+                                <div class="col-md-8 col-xs-8 col-sm-4">
+                                    <input type="range" min="0" max="30" step="5" class="slider" id="slider2" />
+                                </div>
+                                <label class="col-xs-4 slider-value">15%</label>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-xs-6"> <label class="control-label">Total Story Points</label> <h3 class="med-value total-story-points">113 points</h3></div>
+                        <div class="col-xs-6"> <label>Sprints Required</label><h3 class="med-value sprints-required">3.44 sprints</h3></div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-xs-6"> <label>Total Duration</label> <h3 class="med-value velocityval-total-duration">0w 0d 0h</h3> </div>
+                        <div class="col-xs-6"> <label>Release & Hardening</label><h3 class="med-value release-and-hardening">2 weeks</h3></div>
+                    </div>
+                    <br /><br />
+                    <div class="row">
+                        <div class="col-xs-10 centered"> <label>Project Duration</label><div class="big-value velocityval-project-duration">0w 0d 0h</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="nav-control-panel">
+        <button class="btn ctrl-btn btn-primary nav-btn"><span class="glyphicon glyphicon-menu-left" ></span> &nbsp; Resource Capacity </button>
+        <!--<button class="btn ctrl-btn btn-primary nav-btn chart-flip"><span class="glyphicon glyphicon-share-alt"/></span> &nbsp; Chart Flip </button>-->
+        <button class="btn ctrl-btn btn-primary nav-btn">Export to PDF &nbsp; <span class="glyphicon glyphicon-export"></span></button>
+    </div>
 </div>
 
 <script>
-    function calculatePage() {
+  $(document).ready(function(){
+    calculatePage();
+  });
 
-        /* release & hardening */
-        $('.release-and-hardening').text($('.sprint-length').val());
+  /* popovers */
+  $(function () {
+    $('[data-toggle="popover"]').popover()
+  })
+  $(document).on('click', function (e) {
+    $('[data-toggle="popover"],[data-original-title]').each(function () {
+      if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0 ) {
+        (($(this).popover('hide').data('bs.popover') || {}).inState || {}).click = false
+      }
+    });
+  });
+
+  /* limit input lengths */
+  $('.conversion-rate').on('keypress', function(e) {
+    var keycode = e.charCode || e.keyCode;
+    if (keycode == 46 || this.value.length==2) {
+      return false;
     }
+  });
+  $('.team-velocity').on('keypress', function(e) {
+    var keycode = e.charCode || e.keyCode;
+    if (keycode == 46 || this.value.length==3) {
+      return false;
+  }});
+
+  /* total days calculations */
+  $('.conversion-rate').on('keyup', function(){
+    $('#'+this.id+'-label').text(($(this).val())*(parseInt($('#'+this.id+'-num-of-stories').text())));
+    calculatePage();
+  })
+
+  /* sprints required calculations */
+  $('.team-velocity').on('keyup', function(){
+    calculatePage();
+  })
+
+  /* lock sliders together & calculate */
+  $('.slider').on('input', function(){
+    var label = $('.slider-value');
+    $(label).text(this.value+"%");
+    if ($(this).attr('id') == 'slider1'){
+        $('#slider2').prop('value', this.value);
+    }
+    else{
+        $('#slider1').prop('value', this.value);
+    }
+    calculatePage();
+  })
+
+  /* release & hardening */
+  $('.sprint-length').on('change', function(){
+    $('.release-and-hardening').text($('select.sprint-length').val()+' weeks');
+    calculatePage();
+  });
+
+  /* main calculations */
+  function calculatePage(){
+    var totalDays = 0;
+    var totalHours = 0;
+    var devQaRequired = 0;
+    var totalStoryPoints = 113; /* TEMPORARY - PUT IN DATA BASED OFF RESOURCE */
+    var avgCapacityPerWeek = 58; /* TEMPORARY - PUT IN DATA BASED OFF RESOURCE */
+    var contingency = parseFloat(1) + parseFloat($('.slider').val()/100);
+    var releaseAndHardening = $('select.sprint-length').val();
+    var teamVelocity = $('.team-velocity').val();
+
+    $('.tier-label').each(function(){
+      totalDays += parseInt($(this).text());
+    })
+    totalHours = Math.round(totalDays * 8);
+    devQaRequired = Math.round(parseFloat(totalHours * contingency));
+    hoursvalTotalDuration = parseDuration(devQaRequired / avgCapacityPerWeek);
+    hoursvalProjectDuration = parseDuration((devQaRequired / avgCapacityPerWeek) + parseInt(releaseAndHardening));
+    totalStoryPoints = Math.round(totalStoryPoints * contingency);
+    sprintsRequired = (totalStoryPoints/teamVelocity).toFixed(2);
+    velocityvalTotalDuration = parseDuration(sprintsRequired*releaseAndHardening);
+    velocityvalProjectDuration = parseDuration((sprintsRequired*releaseAndHardening)+ parseInt(releaseAndHardening));
+
+    $('.total-days').text(totalDays);
+    $('.total-hours').text(totalHours);
+    $('.dev-qa-required').text(devQaRequired + ' hrs');
+    $('.hoursval-total-duration').text(hoursvalTotalDuration);
+    $('.hoursval-project-duration').text(hoursvalProjectDuration);
+    $('.total-story-points').text(totalStoryPoints);
+    if(isFinite(sprintsRequired)){
+      $('.sprints-required').text(sprintsRequired+' spts');
+    }
+    else{
+      $('.sprints-required').text('Infinity');
+    }
+    $('.velocityval-total-duration').text(velocityvalTotalDuration);
+    $('.velocityval-project-duration').text(velocityvalProjectDuration);
+  };
+
+  /* helper for display of durations */
+  function parseDuration(duration){
+    weeks = Math.trunc(duration);
+    days  = Math.trunc((duration % 1).toFixed(2)*7);
+    hours = Math.trunc((duration % 1).toFixed(2)*24)
+
+    if(isFinite(duration)){
+      return(weeks+'w '+days+'d '+hours+'h');
+    }
+    else{
+      return('Infinity');
+    }
+  }
+
+  /* flip cards around for charts
+  $('.chart-flip').on('click', function(){
+    $('.main').toggleClass('main-flip');
+  });
+  */
 </script>

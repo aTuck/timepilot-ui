@@ -75,6 +75,15 @@ namespace TimePilot.DataAccess.Repository
             return affectedrows > 0;
         }
 
+        public bool DeleteAllByForeignID(int SprintID)
+        {
+            string sql = @"DELETE from member where SprintID = @id";
+
+            var affectedrows = dbContext.Execute(sql, new { id = SprintID });
+
+            return affectedrows > 0;
+        }
+
         /* Adds a Member to the Member table
          * Always returns true */
         public int Add(Member member)

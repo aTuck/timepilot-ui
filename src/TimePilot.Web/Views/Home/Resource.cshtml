@@ -3,7 +3,7 @@
 @using System.Linq;
 
 @{
-    ViewBag.Title = "Resource Capacity";
+    ViewBag.Title = "Resources | Time Pilot";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @section resource{<link href="~/Content/resource-new.css" rel="stylesheet" />}
@@ -153,12 +153,13 @@
             Model.pageState.Add(0);
             Model.sprints[i].PageID = i;
             <div id="@i" class="panel panel-default">
-            @Html.HiddenFor(m => m.sprints[i].SprintID)
+                @Html.HiddenFor(m => m.sprints[i].SprintID, new { @class = "sprint-id" })
                 <div class="panel-heading sprint-heading">
                     <div class="sprint-control-panel editable">
                         <div class="input-group">
                             <h3 class="sprint-name" id="sprint-name-@i">@(Model.sprints[i].Name)</h3>
                             @Html.HiddenFor(m => m.sprints[i].Name, new { @id="sprint-name-"+i+"-hidden"})
+                            <input class="page-id" type="hidden" id="sprints_@(i)__PageID" name="sprints[@(i)].PageID" value="@i" />
                         </div>
                         <div class="btn-control-panel">
                             <button type="button" class="btn btn-primary add-member-btn" id="@i"><span class="glyphicon glyphicon-plus-sign"></span><span class="add-member-text">&nbsp; Add Member</span></button>
@@ -191,6 +192,7 @@
                             {
                                 Model.pageState[i]++;
                                 <tr id="@i-@membersInThisSprint" class="member-row">
+                                    <input type="hidden" class="sprint-id" id="members_@(memberTotal)__SprintID" name="members[@(memberTotal)].SprintID" value="@Model.members[j].SprintID" />
                                     <input type="hidden" class="page-id" id="members_@(memberTotal)__PageID" name="members[@(memberTotal)].PageID" value="@i" />
                                     @Html.HiddenFor(m => m.members[j].MemberID)
                                     <td>
@@ -454,7 +456,7 @@
     })
 
     // Do calculations on page load
-    $(document).on('ready change', function(){
+    $(document).ready(function(){
         $(".member-row").each(function(){
             if($(this).css('display') != 'none'){
                 var data = this.getElementsByClassName("raw-data");
@@ -486,15 +488,15 @@
             pageState.push(0);
             var sprintNum = pageState.length - 1;
             // Populate placeholder sprint with correct HTML
-            //$('#'+sprintNum).html('<th class="sprints sprint-title"><input type="text" id="sprints_'+sprintNum+'__Name" name="sprints['+sprintNum+'].Name" placeholder="Sprint name"/></th><td class="sprint-button"><input type="button" value="Add Member" id='+sprintNum+' class="sprintbutton add-member" /> <input type="hidden" id="sprints_'+sprintNum+'__PageID" name="sprints['+sprintNum+'].PageID" value="'+sprintNum+'" /></td>');
             $('#'+sprintNum).show();
             $('#'+sprintNum).html(''+
             '<div class="panel-heading sprint-heading">'+
+                '<input class="sprint-id" id="sprints_'+sprintNum+'__SprintID" name="sprints['+sprintNum+'].SprintID" type="hidden" value="-1">'+
                 '<div class="sprint-control-panel editable">'+
                     '<div class="input-group">'+
-                        '<h3 class="sprint-name">Enter Sprint Name...</h3>'+
-                        '<input type="hidden" id="sprints_'+sprintNum+'__Name" name="sprints['+sprintNum+'].Name"'+
-                        '<input type="hidden" id="sprints_'+sprintNum+'__PageID" name="sprints['+sprintNum+'].PageID" value="'+sprintNum+'" />'+
+                        '<h3 id="sprint-name-'+sprintNum+'" class="sprint-name">Enter Sprint Name...</h3>'+
+                        '<input id="sprint-name-'+sprintNum+'-hidden" name="sprints['+sprintNum+'].Name" type="hidden" value="Enter Sprint Name..."/>'+
+                        '<input class="page-id" id="sprints_'+sprintNum+'__PageID" name="sprints['+sprintNum+'].PageID" type="hidden" value="'+sprintNum+'" />'+
                     '</div>'+
                     '<div class="btn-control-panel">'+
                         '<button type="button" class="btn btn-primary add-member-btn" id="'+sprintNum+'"><span class="glyphicon glyphicon-plus-sign"></span><span class="add-member-text">&nbsp; Add Member</span></button>'+
@@ -526,7 +528,7 @@
             '</div>'+'')
 
             // Append member placeholder and add default member
-            $('<tr id="'+sprintNum+'-'+pageState[sprintNum]+'"></tr>').insertAfter('#tbody-'+sprintNum);
+            $('#tbody-'+sprintNum).append('<tr id="'+sprintNum+'-'+pageState[sprintNum]+'" class="member-row"></tr>')
             addMember(sprintNum, pageState[sprintNum]);
 
             // Append Sprint placeholder
@@ -535,20 +537,6 @@
         });
 
         function addMember(sprintNum, memberNum){
-            //$('#'+sprintNum+'-'+memberNum).html('<td>
-            //        <td> <input type="text" class="sprint-name" id="members_'+memberTotal+'__Name" name="members['+memberTotal+'].Name" placeholder="Name"/></td>
-            //        <td> <input type="text" class="raw-data" id="members_'+memberTotal+'__SprintDays" name="members['+memberTotal+'].SprintDays"/> </td>
-            //        <td> <input type="text" class="raw-data" id="members_'+memberTotal+'__PercentWork" name="members['+memberTotal+'].PercentWork"/> </td>
-            //        <td> <input type="text" class="total" Name="totalHours" readonly /> </td>
-            //        <td> <input type="text" class="raw-data" id="members_'+memberTotal+'__StandupDuration" name="members['+memberTotal+'].StandupDuration"/> </td>
-            //        <td> <input type="text" class="total" Name="standUps" readonly /> </td>
-            //        <td> <input type="text" class="raw-data" id="members_'+memberTotal+'__Misc" name="members['+memberTotal+'].Misc" /> </td>
-            //        <td> <input type="text" class="raw-data" id="members_'+memberTotal+'__TimeOff" name="members['+memberTotal+'].TimeOff"/> </td>
-            //        <td> <input type="text" class="total" Name="nonDevHours" readonly /> </td>
-            //        <td> <input type="text" class="total" Name="totalAvailable" readonly /> </td>
-            //        <td> <!-- Does nothing right now --> <input type="checkbox" name="chkDelete" value="-1"/> </td>
-            //        <input type="hidden" id="members_'+memberTotal+'__PageID" name="members['+memberTotal+'].PageID" class="page-id" value="'+sprintNum+'" ');
-            
             $('#'+sprintNum+'-'+memberNum).html(''+
                     '<td>'+
                         '<select class="role-select">'+
@@ -576,12 +564,24 @@
                     '<input type="hidden" id="members_'+memberTotal+'__PageID" name="members['+memberTotal+'].PageID" class="page-id" value="'+sprintNum+'"'+
                 '</tr>'+'');
 
-            $('<tr id="'+sprintNum+'-'+(memberNum+1)+'">').insertAfter('#'+sprintNum+'-'+memberNum);
+            $('<tr id="'+sprintNum+'-'+(memberNum+1)+'" class="member-row">').insertAfter('#'+sprintNum+'-'+memberNum);
             pageState[sprintNum]++;
             memberTotal++;
         }
     });
-
+    function deleteSprint(sprint){
+        var data = $(sprint.getElementsByClassName("sprint-id")[0]).val();
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("ResourceSprintDelete")",
+            data: { id: data },
+            traditional: true,
+            success: function (result) {
+                $(sprint).hide();
+                $(sprint.getElementsByClassName("page-id")[0]).val(-1);
+            }
+        })
+    }
     function deleteMembers(){
         var data = [];
         $("input[name='chkDelete']:checked").each(function () {
@@ -593,7 +593,7 @@
         else if (data.length >0) {
             $.ajax({
                 type: "POST",
-                url: "@Url.Action("ResourceDelete")",
+                url: "@Url.Action("ResourceMemberDelete")",
                 data: { id: data },
                 traditional: true,
                 success: function (result) {
@@ -659,9 +659,10 @@
     }
 
     /* delete confirmations */
-    $('.sprint-remove').on('click', function(){
+    $(document).on('click', '.sprint-remove', function(e){
         if(confirm("Delete this sprint?")){
-            // Delete Sprint logic
+            deleteSprint(this.parentNode.parentNode.parentNode.parentNode);
+            return false;
         }
     });
     $('.delete-selected').on('click', function(){
