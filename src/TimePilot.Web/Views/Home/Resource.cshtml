@@ -8,127 +8,6 @@
 }
 @section resource{<link href="~/Content/resource-new.css" rel="stylesheet" />}
 
-@*<div class="resource-container">
-        @using (Html.BeginForm("Resource", "Home", FormMethod.Post, new { @id = "old-form" }))
-        {
-            int memberTotal = 0;
-            Model.pageState = new List<int>();
-            <table id="myTable">
-                <tr>
-                    <th>Role</th>
-                    <th>Name</th>
-                    <th>Sprint Days</th>
-                    <th>% Work</th>
-                    <th>Total (hrs)</th>
-                    <th>Standup Duration (hrs)</th>
-                    <th>Total Standup (hrs)</th>
-                    <th>Misc. (hrs) <a href="#" data-toggle="popover" data-placement="bottom" title="Miscellaneous" data-content="Meetings (Backlog Review, Dev Meeting), Demos/Retros, Sprint Planning"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                    <th>Time Off (hrs)<a href="#" data-toggle="popover" data-placement="bottom" title="Time Off" data-content="Any sick days, holidays, vacation time, or other time off "><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                    <th>Non Dev (hrs)</th>
-                    <th>Total Available (hrs)</th>
-                    <th>Delete</th>
-                </tr>
-                @for (int i = 0; i < Model.sprints.Count(); i++)
-                {
-                    Model.pageState.Add(0);
-                    Model.sprints[i].PageID = i;
-                    <tr id="@i" class="sprint-row">
-                        @Html.HiddenFor(m => m.sprints[i].SprintID)
-                        <th class="sprints sprint-title">
-                            @Html.TextBoxFor(m => m.sprints[i].Name, new { @placeholder = "Sprint name" })
-                        </th>
-
-                        <td class="sprint-button">
-                            <input type="button" value="Add Member" id=@(i) class="sprintbutton add-member" />
-                            <input type="hidden" id="sprints_@(i)__PageID" name="sprints[@(i)].PageID" value="@i" />
-                        </td>
-                    </tr>
-
-                    int membersInThisSprint = 0;
-                    for (int j = 0; j < Model.members.Count; j++)
-                    {
-                        if (Model.members[j].SprintID == Model.sprints[i].SprintID)
-                        {
-                            Model.pageState[i]++;
-                            <tr id="@i-@membersInThisSprint" class="member-row">
-                                <input type="hidden" class="page-id" id="members_@(memberTotal)__PageID" name="members[@(memberTotal)].PageID" value="@i" />
-                                @Html.HiddenFor(m => m.members[j].MemberID)
-                                <td>
-                                    <select>
-                                        <option value="" disabled selected >Role</option>
-                                        <option value="leadDev">Lead Dev</option>
-                                        <option value="seniorDev">Senior Dev</option>
-                                        <option value="intermediateDev">Dev</option>
-                                        <option value="juniorDev">Junior Dev</option>
-                                        <option value="leadQA">Lead QA</option>
-                                        <option value="seniorQA">Senior QA</option>
-                                        <option value="intermediateQA">QA</option>
-                                        <option value="juniorQA">Junior QA</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    @Html.TextBoxFor(m => m.members[j].Name, new { @class = "sprint-name", placeholder = "Name" })
-                                </td>
-                                <td>
-                                    @Html.TextBoxFor(m => m.members[j].SprintDays, new { @class = "raw-data" })
-                                </td>
-                                <td>
-                                    @Html.TextBoxFor(m => m.members[j].PercentWork, new { @class = "raw-data" })
-                                </td>
-
-                                <td>
-                                    <input type="text" class="total" Name="totalHours" readonly />
-                                </td>
-                                <td>
-                                    @Html.TextBoxFor(m => m.members[j].StandupDuration, new { @class = "raw-data" })
-                                </td>
-                                <td>
-                                    <input type="text" class="total" Name="standUps" readonly />
-                                </td>
-                                <td>
-                                    @Html.TextBoxFor(m => m.members[j].Misc, new { @class = "raw-data" })
-                                </td>
-                                <td>
-                                    @Html.TextBoxFor(m => m.members[j].TimeOff, new { @class = "raw-data" })
-                                </td>
-                                <td>
-                                    <input type="text" class="total" Name="nonDevHours" readonly />
-                                </td>
-                                <td>
-                                    <input type="text" class="total" Name="totalAvailable" readonly />
-                                </td>
-                                <td>
-                                    <input type="checkbox" name="chkDelete" value="@Model.members[j].MemberID"/>
-                                </td>
-                            </tr>
-                            membersInThisSprint++;
-                            memberTotal++;
-                        }
-                    }
-                    <tr id="@i-@membersInThisSprint"></tr>
-                    if (i == (Model.sprints.Count() - 1))
-                    {
-                        <tr id="@(i + 1)"/>
-                    }
-                }
-            </table>
-            <input type="button" value="+" class="button add-sprint" data-toggle="tooltip" title="Add a sprint" data-placement="right"/>
-
-
-            <div class="buttons-container">
-                <a class="link-fill" href="javascript:void(0);" onclick="history.go(-1);">
-                    <span class="glyphicon glyphicon-menu-left"></span>&nbsp;Previous 
-                </a>
-                <a class="btn button" onclick="return deleteMembers()">
-                    <span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Delete Selected
-                </a>
-                <a class="link-fill" onclick="return ResourceValidation()">
-                    Results Page&nbsp;<span class="glyphicon glyphicon-menu-right"></span>
-                </a>
-            </div>
-        }
-</div>*@
-
 <div class="modal fade" id="MyModal" data-keyboard="false" data-backdrop="static">
     <!-- Warning Pop UP HTML-->
     <div class="modalstuff">
@@ -235,28 +114,21 @@
         }
         <div class="crud-control-panel">
             <button class="btn btn-lg btn-primary ctrl-btn add-sprint" data-toggle="tooltip" title="Add a sprint" data-placement="right"> + </button>
-            <button class="delete-selected btn btn-danger ctrl-btn"><span class="glyphicon glyphicon-trash"></span> &nbsp; Delete Selected</button>
-        </div>
-        <div class="final-values-panel">
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <label>Total Dev Capacity</label>
-                    <div class="final-value">0</div>
-                </div>
+            <div class="form-group">
+                <label>Total Dev Capacity</label>
+                <div class="final-value">0</div>
             </div>
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <label>Average Per Sprint</label>
-                    <div class="final-value">0</div>
-                </div>
+            <div class="form-group">
+                <label>Average Per Sprint</label>
+                <div class="final-value">0</div>
             </div>
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <label>Average Per Week</label>
-                    <div class="final-value">0</div>
-                </div>
+            <div class="form-group">
+                <label>Average Per Week</label>
+                <div class="final-value">0</div>
             </div>
-        </div>
+                <button class="delete-selected btn btn-danger ctrl-btn"><span class="glyphicon glyphicon-trash"></span> &nbsp; Delete Selected</button>
+            </div>
+
         @Html.HiddenFor(m => m.totalDevCapacity, new { @class = "total-dev-capacity-hidden" })
         <div class="nav-control-panel">
             <button class="btn ctrl-btn btn-primary nav-btn btn-prev"><span class="glyphicon glyphicon-menu-left"></span>&nbsp; Stories </button>
@@ -269,6 +141,15 @@
     $(window).bind('beforeunload', function () {
         postResourceForm();
     });
+    //$(document).on('blur', '.form-control', function(){
+    //    postResourceForm();
+    //})
+    //$(document).on('change', '.role-select', function(){
+    //    postResourceForm();
+    //})
+    //$(document).on('blue', '.sprint-name-edit', function(){
+    //    postResourceForm();
+    //})
 
     function postResourceForm() {
         var data = $('#resource-form').serialize();
@@ -487,6 +368,7 @@
             this.blur();
             pageState.push(0);
             var sprintNum = pageState.length - 1;
+
             // Populate placeholder sprint with correct HTML
             $('#'+sprintNum).show();
             $('#'+sprintNum).html(''+
@@ -577,7 +459,7 @@
             data: { id: data },
             traditional: true,
             success: function (result) {
-                $(sprint).hide();
+                $(sprint).detach().hide();
                 $(sprint.getElementsByClassName("page-id")[0]).val(-1);
             }
         })
@@ -603,7 +485,7 @@
                         $(this.parentNode.parentNode.getElementsByClassName("raw-data")).each(function(){
                             $(this).removeClass('raw-data');
                         })
-                        $(this.parentNode.parentNode).hide();
+                        $(this.parentNode.parentNode).detach().hide();
                     })
                 }
             })

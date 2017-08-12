@@ -12,16 +12,19 @@ namespace TimePilot.Controllers
         private static ApiHelper apiHelper = new ApiHelper();
         private string projectJson;
         private string storyJson;
+        private string epicJson;
 
-        public static float totalAvailablility;
         public static float totalDevCapacity;
-        public static float totalStoryPoints;
+        public static int totalStoryPoints;
+        public static int totalNumOfSprints;
 
         public static int[] StoryPointAllocation;
         private static string SelectedProject = "";
+        public static string SelectedEpic;
 
         List<Story> stories = new List<Story>();        
         List<Project> projects = new List<Project>();
+        List<Epic> epics = new List<Epic>();
 
         ProjectViewModel ProjectVM = new ProjectViewModel();
         StoryViewModel StoryVM = new StoryViewModel();
@@ -41,9 +44,13 @@ namespace TimePilot.Controllers
 
         public void receiveStoryData()
         {
-            storyJson = apiHelper.getDataFromJira("https://pnimedia.jira.com/rest/api/2/search?jql=project=" + "'" + SelectedProject + "'" + "%20AND%20type%20in(story,improvement)%20and%20(Sprint=EMPTY%20OR%20Sprint%20not%20in(openSprints(),futureSprints()))%20AND%20status%20not%20in(closed,done,resolved,accepted)&fields=customfield_10013,id,description,summary&maxResults=1000");
+            storyJson = apiHelper.getDataFromJira("https://pnimedia.jira.com/rest/api/2/search?jql=project=" + "'" + SelectedProject + "'" + "%20AND%20type%20in(story,improvement)%20and%20(Sprint=EMPTY%20OR%20Sprint%20not%20in(openSprints(),futureSprints()))%20AND%20status%20not%20in(closed,done,resolved,accepted)&fields=customfield_10013,customfield_10830,id,description,summary&maxResults=1000");
         }
 
+        public void recieveEpicData()
+        {
+            epicJson = apiHelper.getDataFromJira("https://pnimedia.jira.com/rest/api/2/search?jql=project=" + "'" + SelectedProject + "'" + "%20AND%20type%20in(epic)%20and%20(Sprint=EMPTY%20OR%20Sprint%20not%20in(openSprints(),futureSprints()))%20AND%20status%20not%20in(closed,done,resolved,accepted)&fields=customfield_10013,customfield_10830,id,description,summary&maxResults=1000");
+        }
         public ActionResult Index()
         {
             projects = ProjDB.GetAll();
@@ -90,6 +97,10 @@ namespace TimePilot.Controllers
         {
             stories = StoryDB.GetAllByForeignId(SelectedProject);
             StoryVM.StoryList = stories;
+            recieveEpicData();
+            epics = apiHelper.parseEpicData(epicJson);
+            StoryVM.EpicList = epics;
+            sortStoryPointsIntoBuckets();
             return View(StoryVM);
         }
 
@@ -196,6 +207,8 @@ namespace TimePilot.Controllers
         public ActionResult ResourceUpdate(ResourceCapacityViewModel m)
         {
             ResourceVM = m;
+            totalDevCapacity = m.totalDevCapacity;
+            totalNumOfSprints = m.sprints.Count;
             int dbCurrentSprintID = 0;
             int tempCurrentSprintID = 0;
             for (int i=0; i < m.sprints.Count; i++)
@@ -219,7 +232,7 @@ namespace TimePilot.Controllers
                     }
                 }
             }
-            totalDevCapacity = m.totalDevCapacity;
+            
             return RedirectToAction("Resource");
         }
 
@@ -243,22 +256,34 @@ namespace TimePilot.Controllers
 
         public ActionResult Result()
         {
-            sortStoryPointsIntoBuckets();
             ResultsVM.storyPointAllocation = StoryPointAllocation;
-
             ResultsVM.DaysPerPt = ConversionRateDB.GetAllByForeignId(SelectedProject);
+            
+            // New project - initialize conversion rates
+            if (ResultsVM.DaysPerPt.Count <= 0 )
+            {
+                var storyPointTiers = new List<int> { 1, 3, 5, 8, 13, 21 };
+                var initDaysPerPt = new List<Conversion>();
+                for (int i = 0; i < storyPointTiers.Count; i++) { initDaysPerPt.Add(generateConversion(storyPointTiers[i])); };
+                ResultsVM.DaysPerPt = initDaysPerPt;
+            }
 
             ResultsVM.totalDevCapacity = totalDevCapacity;
             ResultsVM.totalStoryPoints = totalStoryPoints;
+            ResultsVM.totalNumOfSprints = totalNumOfSprints;
 
             return View(ResultsVM);
         }
 
         [HttpPost]
-        public ActionResult ResultUpdate(ResultsViewModel m)
+        public void ResultUpdate(ResultsViewModel m)
         {
-            // Save conversion rate logic
-            return RedirectToAction("Result");
+            List<int> listOfIDs = new List<int>();
+            for (int i = 0; i<m.DaysPerPt.Count; i++)
+            {
+                m.DaysPerPt[i].ProjectKey = SelectedProject;
+                listOfIDs.Add(ConversionRateDB.Add(m.DaysPerPt[i]));
+            }
         }
 
         private void sortStoryPointsIntoBuckets()
@@ -311,6 +336,13 @@ namespace TimePilot.Controllers
             pointArray[6] = noneOftheAbove;
 
             StoryPointAllocation = pointArray;
+        }
+
+        private Conversion generateConversion(int n)
+        {
+            Conversion c = new Conversion();
+            c.StoryPoints = n;
+            return c;
         }
     }
 }

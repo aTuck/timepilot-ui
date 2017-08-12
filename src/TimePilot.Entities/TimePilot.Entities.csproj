@@ -112,6 +112,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Conversion.cs" />
+    <Compile Include="Epic.cs" />
     <Compile Include="Member.cs" />
     <Compile Include="Project.cs" />
     <Compile Include="Sprint.cs" />

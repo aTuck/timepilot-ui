@@ -113,66 +113,28 @@
                             </tr>
                         </thead>
                         <tbody>
+                        @using (Html.BeginForm("Result", "Home", FormMethod.Post, new { @id = "conversion-form" }))
+                        {
+                            for (int i = 0; i < Model.DaysPerPt.Count(); i++)
+                            {
                             <tr>
-                                <td> 1 </td>
-                                <td id="tier1-num-of-stories"> 5 </td>
+                                @Html.HiddenFor(m => m.DaysPerPt[i].ConversionRateID, new { @id = "conversionID-tier-" + Model.DaysPerPt[i].StoryPoints })
+                                @Html.HiddenFor(m => m.DaysPerPt[i].StoryPoints)
+                                <td> @Model.DaysPerPt[i].StoryPoints </td>
+                                <td id="tier-@Model.DaysPerPt[i].StoryPoints-num-of-stories"> @Model.storyPointAllocation[@i] </td>
                                 <td>
                                     <div class="row row-hcentered">
-                                        <input type="number" id="tier1" class="form-control conversion-rate" min="0" max="99" onchange="return calculatePage();" />
+                                        @Html.TextBoxFor(m=>m.DaysPerPt[i].ConversionRate, new {    @type="number",
+                                                                                                    @id ="tier-"+Model.DaysPerPt[i].StoryPoints,
+                                                                                                    @class ="form-control conversion-rate",
+                                                                                                    min = "0", max = "99",
+                                                                                                    @onchange = "return calculatePage()"   })
                                     </div>
                                 </td>
-                                <td> <label id="tier1-label" class="tier-label">0</label> </td>
+                                <td> <label id="tier-@Model.DaysPerPt[i].StoryPoints-label" class="tier-label">0</label> </td>
                             </tr>
-                            <tr>
-                                <td> 3 </td>
-                                <td id="tier3-num-of-stories"> 6 </td>
-                                <td>
-                                    <div class="row row-hcentered">
-                                        <input type="number" id="tier3" class="form-control conversion-rate" min="0" max="99" onchange="return calculatePage();" />
-                                    </div>
-                                </td>
-                                <td> <label id="tier3-label" class="tier-label">0</label> </td>
-                            </tr>
-                            <tr>
-                                <td> 5 </td>
-                                <td id="tier5-num-of-stories"> 6 </td>
-                                <td>
-                                    <div class="row row-hcentered">
-                                        <input type="number" id="tier5" class="form-control conversion-rate" min="0" max="99" onchange="return calculatePage();" />
-                                    </div>
-                                </td>
-                                <td> <label id="tier5-label" class="tier-label">0</label> </td>
-                            </tr>
-                            <tr>
-                                <td> 8 </td>
-                                <td id="tier8-num-of-stories"> 3 </td>
-                                <td>
-                                    <div class="row row-hcentered">
-                                        <input type="number" id="tier8" class="form-control conversion-rate" min="0" max="99" onchange="return calculatePage();" />
-                                    </div>
-                                </td>
-                                <td> <label id="tier8-label" class="tier-label">0</label> </td>
-                            </tr>
-                            <tr>
-                                <td> 13 </td>
-                                <td id="tier13-num-of-stories"> 2 </td>
-                                <td>
-                                    <div class="row row-hcentered">
-                                        <input type="number" id="tier13" class="form-control conversion-rate" min="0" max="99" onchange="return calculatePage();" />
-                                    </div>
-                                </td>
-                                <td> <label id="tier13-label" class="tier-label">0</label> </td>
-                            </tr>
-                            <tr>
-                                <td> 21 </td>
-                                <td id="tier21-num-of-stories"> 1 </td>
-                                <td>
-                                    <div class="row row-hcentered">
-                                        <input type="number" id="tier21" class="form-control conversion-rate" min="0" max="99" onchange="return calculatePage();" />
-                                    </div>
-                                </td>
-                                <td> <label id="tier21-label" class="tier-label">0</label> </td>
-                            </tr>
+                            }
+                        }
                         </tbody>
                     </table>
                     <div class="row row-vcentered">
@@ -208,7 +170,7 @@
                     <br />
                     <div class="row">
                         <div class="col-md-6 col-xs-6"> <label>Dev & QA Required</label><h3 class="med-value dev-qa-required">0 hrs</h3></div>
-                        <div class="col-md-6 col-xs-6"> <label>Avg Capacity / Week</label><h3 class="med-value">58 hrs</h3></div>
+                        <div class="col-md-6 col-xs-6"> <label>Avg Capacity / Week</label><h3 class="med-value avg-capacity-per-week">0 hrs</h3></div>
                     </div>
                     <br />
                     <div class="row">
@@ -243,7 +205,7 @@
                     </div>
                     <br />
                     <div class="row">
-                        <div class="col-xs-6"> <label class="control-label">Total Story Points</label> <h3 class="med-value total-story-points">113 points</h3></div>
+                        <div class="col-xs-6"> <label class="control-label">Total Story Points</label> <h3 class="med-value total-story-points">(@Model.totalStoryPoints) points</h3></div>
                         <div class="col-xs-6"> <label>Sprints Required</label><h3 class="med-value sprints-required">3.44 sprints</h3></div>
                     </div>
                     <br />
@@ -260,15 +222,19 @@
         </div>
     </div>
     <div class="nav-control-panel">
-        <button class="btn ctrl-btn btn-primary nav-btn"><span class="glyphicon glyphicon-menu-left" ></span> &nbsp; Resource Capacity </button>
+        <button class="btn ctrl-btn btn-primary nav-btn btn-prev"><span class="glyphicon glyphicon-menu-left" ></span> &nbsp; Resource Capacity </button>
+        <button class="btn ctrl-btn btn-primary nav-btn btn-home"><span class="glyphicon glyphicon-home"></span></button>
         <!--<button class="btn ctrl-btn btn-primary nav-btn chart-flip"><span class="glyphicon glyphicon-share-alt"/></span> &nbsp; Chart Flip </button>-->
-        <button class="btn ctrl-btn btn-primary nav-btn">Export to PDF &nbsp; <span class="glyphicon glyphicon-export"></span></button>
+        <button class="btn ctrl-btn btn-success nav-btn btn-export">Export to PDF &nbsp; <span class="glyphicon glyphicon-send"></span></button>
     </div>
 </div>
 
 <script>
   $(document).ready(function(){
-    calculatePage();
+      $('.conversion-rate').each(function(){
+          $('#'+this.id+'-label').text(($(this).val())*(parseInt($('#'+this.id+'-num-of-stories').text())));
+      })
+      calculatePage();
   });
 
   /* popovers */
@@ -297,10 +263,14 @@
   }});
 
   /* total days calculations */
-  $('.conversion-rate').on('keyup', function(){
+  $('.conversion-rate').on('keyup change', function(){
     $('#'+this.id+'-label').text(($(this).val())*(parseInt($('#'+this.id+'-num-of-stories').text())));
     calculatePage();
   })
+
+  $(window).bind('beforeunload', function () {
+      postConversionForm();
+  });
 
   /* sprints required calculations */
   $('.team-velocity').on('keyup', function(){
@@ -331,8 +301,11 @@
     var totalDays = 0;
     var totalHours = 0;
     var devQaRequired = 0;
-    var totalStoryPoints = 113; /* TEMPORARY - PUT IN DATA BASED OFF RESOURCE */
-    var avgCapacityPerWeek = 58; /* TEMPORARY - PUT IN DATA BASED OFF RESOURCE */
+    var avgCapacityPerWeek = 0;
+    var totalStoryPoints = @Model.totalStoryPoints;
+    var totalDevCapacity = @Model.totalDevCapacity;
+    var totalNumOfSprints = @Model.totalNumOfSprints;
+    var numOfWeeks = $('select.sprint-length').val();
     var contingency = parseFloat(1) + parseFloat($('.slider').val()/100);
     var releaseAndHardening = $('select.sprint-length').val();
     var teamVelocity = $('.team-velocity').val();
@@ -342,6 +315,7 @@
     })
     totalHours = Math.round(totalDays * 8);
     devQaRequired = Math.round(parseFloat(totalHours * contingency));
+    avgCapacityPerWeek = Math.round((totalDevCapacity/totalNumOfSprints)/numOfWeeks);
     hoursvalTotalDuration = parseDuration(devQaRequired / avgCapacityPerWeek);
     hoursvalProjectDuration = parseDuration((devQaRequired / avgCapacityPerWeek) + parseInt(releaseAndHardening));
     totalStoryPoints = Math.round(totalStoryPoints * contingency);
@@ -352,9 +326,10 @@
     $('.total-days').text(totalDays);
     $('.total-hours').text(totalHours);
     $('.dev-qa-required').text(devQaRequired + ' hrs');
+    $('.avg-capacity-per-week').text(avgCapacityPerWeek + ' hrs');
     $('.hoursval-total-duration').text(hoursvalTotalDuration);
     $('.hoursval-project-duration').text(hoursvalProjectDuration);
-    $('.total-story-points').text(totalStoryPoints);
+    $('.total-story-points').text(totalStoryPoints + ' points');
     if(isFinite(sprintsRequired)){
       $('.sprints-required').text(sprintsRequired+' spts');
     }
@@ -379,6 +354,27 @@
     }
   }
 
+  $('.btn-prev').on('click', function(e) {
+      e.preventDefault();
+      window.location.href = "@Url.Action("Resource", "Home")"
+  });
+
+    $('.btn-home').on('click', function(e) {
+        e.preventDefault();
+        window.location.href = "@Url.Action("Index", "Home")"
+    });
+
+    function postConversionForm(handleData){
+        var data = $('#conversion-form').serialize();
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("ResultUpdate")",
+            data: data,
+            traditional: true,
+            success: function (returnData) {
+            }
+        })
+    };
   /* flip cards around for charts
   $('.chart-flip').on('click', function(){
     $('.main').toggleClass('main-flip');

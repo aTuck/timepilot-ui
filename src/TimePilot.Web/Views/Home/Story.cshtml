@@ -25,6 +25,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3>Stories</h3>
+                @Html.DropDownListFor(m => m.selectedEpic, new SelectList(Model.EpicList, "EpicKey", "EpicKey"), new { })
                 <a class="dont-see-stories" href="javascript:void(0);"> Don't see your stories? </a>
             </div>
             <div class="panel-body">

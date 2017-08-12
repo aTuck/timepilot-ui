@@ -13,5 +13,6 @@ namespace TimePilot.Web.ViewModels
         public List<Conversion> DaysPerPt { get; set; }
         public float totalDevCapacity { get; set; }
         public float totalStoryPoints { get; set; }
+        public int totalNumOfSprints { get; set; }
     }
 }

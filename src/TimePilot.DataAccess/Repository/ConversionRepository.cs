@@ -35,7 +35,7 @@ namespace TimePilot.DataAccess.Repository
             // This will be the return value if no ID was found
             Conversion dummyConversion = new Conversion { ConversionRateID = -1 };
 
-            string sql = @"SELECT * from ConversionRate where ConversionKey = @id";
+            string sql = @"SELECT * from ConversionRate where ConversionRateID = @id";
             List<Conversion> Conversions = dbContext.Query<Conversion>(sql, new { id = conversion.ConversionRateID }).ToList();
             if (Conversions.Count <= 0)
             {
@@ -49,7 +49,18 @@ namespace TimePilot.DataAccess.Repository
 
         public bool Update(Conversion conversion)
         {
-            throw new NotImplementedException();
+            string sql = @"UPDATE ConversionRate SET   StoryPoints = @sp, ConversionRate = @cr, 
+                                                       ProjectKey = @pk
+                                                 WHERE ConversionRateID = @id";
+            dbContext.Query<Member>(sql, new
+            {
+                id = conversion.ConversionRateID,
+                sp = conversion.StoryPoints,
+                cr = conversion.ConversionRate,
+                pk = conversion.ProjectKey
+            });
+
+            return true;
         }
 
         /* Deletes a Conversion from the Conversion table
@@ -71,16 +82,29 @@ namespace TimePilot.DataAccess.Repository
 
         /* Adds a Conversion to the Conversion table
          * Always returns true */
-        public bool Add(Conversion conversion)
+        public int Add(Conversion conversion)
         {
-            //TSQL string to insert the Conversion passed to this function into the Conversion table
-            string sql = @"INSERT INTO ConversionRate (StoryPoints, ConversionRate, ProjectKey) VALUES (@sp, @r, @k)";
+            Conversion check = GetById(conversion);
+            if (check.ConversionRateID == -1)
+            {
+                //TSQL string to insert the Conversion passed to this function into the Conversion table
+                string sql = @"INSERT INTO ConversionRate (StoryPoints, ConversionRate, ProjectKey) 
+                                                           VALUES (@sp, @r, @k)
+                                                           SELECT CAST(SCOPE_IDENTITY() as int)";
 
-            //Do a query sending sql string and assigning "@p" variable in sql string to the t object passed in
-            dbContext.Query(sql, new { sp = conversion.StoryPoints, r = conversion.ConversionRate, k = conversion.ProjectKey});
+                //Do a query sending sql string and assigning "@p" variable in sql string to the t object passed in
+                var addedConversionID = dbContext.Query<int>(sql, new { sp = conversion.StoryPoints,
+                                                                        r = conversion.ConversionRate,
+                                                                        k = conversion.ProjectKey}).Single();
 
-            //Conversion didn't exist, now it does
-            return true;
+                //Conversion didn't exist, now it does
+                return addedConversionID;
+            }
+            else
+            {
+                Update(conversion);
+                return conversion.ConversionRateID;
+            }
         }
 
         public List<Conversion> SearchConversions(string search)

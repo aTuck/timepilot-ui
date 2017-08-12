@@ -124,6 +124,10 @@
   option:hover{
       cursor:pointer;
   }
+  .add-sprint{
+      width: 100px;
+      font-size: 50px;
+  }
   /* boot-strap select change width */
     .bootstrap-select.btn-group .dropdown-menu, .btn.dropdown-toggle.btn-default, .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn){
         min-width: 90px !important;

@@ -13,5 +13,7 @@ namespace TimePilot.Web.ViewModels
         public int[] StoryPointAllocation { get; set; }
         public int totalStoryPoints { get; set; }
         public List<Story> StoryList { get; set; }
+        public List<Epic> EpicList { get; set; }
+        public string selectedEpic { get; set; }
     }
 }

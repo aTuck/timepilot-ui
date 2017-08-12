@@ -56,12 +56,29 @@ namespace TimePilot.Controllers
                     story.StoryKey = (string)result["key"];
                     story.Summary = (string)result["fields"]["summary"];
                     story.StoryPoints = (int?)result["fields"]["customfield_10013"] ?? 0;
+                    story.EpicKey = (string)result["fields"]["customfield_10830"];
 
                     stories.Add(story);
                 }
             }
 
             return stories;
+        }
+
+        public List<Epic> parseEpicData(string jsonString)
+        {
+            List<Epic> epics = new List<Epic>();
+            JObject results = JObject.Parse(jsonString);
+            if (jsonString.Contains("issues"))
+            {
+                foreach (var result in results["issues"])
+                {
+                    Epic epic = new Epic();
+                    epic.EpicKey = (string)result["key"];
+                    epics.Add(epic);
+                }
+            }
+            return epics;
         }
 
         public List<Project> parseProjectData(string jsonString)
