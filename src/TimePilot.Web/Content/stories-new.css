@@ -29,9 +29,12 @@
   }
   #story-id-cell {
     min-width: 120px;
-  }
 
-  th:last-child, td:last-child{
+  }
+  .cell-centered{
+    text-align: center;
+  }
+  th:first-child, td:first-child{
       text-align:center;
   }
   .btn.active, .btn-radio:active{
@@ -106,6 +109,8 @@
       justify-content: flex-start;
       align-items: flex-end;
       padding: 25px 20px;
+      min-width: 350px;
+      max-width: 80%;
   }
   .story-point-total-panel{
       min-width: 250px;

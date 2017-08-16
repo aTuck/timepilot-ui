@@ -10,5 +10,7 @@ namespace TimePilot.Entities
         public string Summary { get; set; }
         public int StoryPoints { get; set; }
         public string ProjectKey { get; set; }
+
+        public int isHidden { get; set; }
     }
 }

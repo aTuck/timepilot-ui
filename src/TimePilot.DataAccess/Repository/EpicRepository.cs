@@ -27,7 +27,7 @@ namespace TimePilot.DataAccess.Repository
 
         public List<Epic> GetAllByForeignId(string ProjectKey)
         {
-            string sql = @"SELECT * from Epic where ProjectKey = @pk";
+            string sql = @"SELECT * from Epic where ProjectKey = @pk ORDER BY Summary ASC";
 
             //maxRows = this._maxResults, hardcoded to 1000 for now due to maxResults being null
             List<Epic> epics = dbContext.Query<Epic>(sql, new { pk = ProjectKey }).ToList();

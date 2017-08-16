@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Web.Mvc;
 using TimePilot.Web.ViewModels;
@@ -102,7 +103,12 @@ namespace TimePilot.Controllers
             stories = StoryDB.GetAllByForeignId(SelectedProject);
             epics = EpicDB.GetAllByForeignId(SelectedProject);
             StoryVM.StoryList = stories;
-            for (int i = 0; i < epics.Count; i++) { StoryVM.EpicList.Add(epics[i].EpicKey, epics[i]); }
+            for (int i = 0; i < epics.Count; i++) {
+                if (checkForEpicInStories(epics[i].EpicKey))
+                {
+                    StoryVM.EpicList.Add(epics[i].EpicKey, epics[i]);
+                }
+            }
             sortStoryPointsIntoBuckets();
             return View(StoryVM);
         }
@@ -145,27 +151,10 @@ namespace TimePilot.Controllers
             return RedirectToAction("Story");
         }
 
-        public ActionResult StoryBringBackDeleted()
-        {
-            receiveStoryData();
-            stories = apiHelper.parseStoryData(storyJson);
-            Story temp;
-            for (int i = 0; i < stories.Count; i++)
-            {
-                stories[i].ProjectKey = SelectedProject;
-                temp = StoryDB.GetById(stories[i]);
-                if (temp.ProjectKey == null)
-                {
-                    StoryDB.Add(stories[i]);
-                }
-                
-            }
-            return RedirectToAction("Story");
-        }
-
         [HttpPost]
         public ActionResult StoryUpdate(StoryViewModel m)
         {
+            List<Story> storiesToBeSorted = new List<Story>();
             StoryVM = m;
             if (m.StoryList != null)
             {
@@ -173,9 +162,15 @@ namespace TimePilot.Controllers
                 {
                     s.ProjectKey = SelectedProject;
                     StoryDB.Update(s);
+
+                    if (s.isHidden == 0)
+                    {
+                        storiesToBeSorted.Add(s);
+                    }
                 }
             }
             totalStoryPoints = m.totalStoryPoints;
+            StoryVM.StoryList = storiesToBeSorted;
             sortStoryPointsIntoBuckets();
             return RedirectToAction("Resource");
         }
@@ -355,6 +350,18 @@ namespace TimePilot.Controllers
             pointArray[6] = noneOftheAbove;
 
             StoryPointAllocation = pointArray;
+        }
+
+        private bool checkForEpicInStories(string key)
+        {
+            for (int i = 0; i < StoryVM.StoryList.Count; i++)
+            {
+                if (StoryVM.StoryList[i].EpicKey == key)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private Conversion generateConversion(int n)
