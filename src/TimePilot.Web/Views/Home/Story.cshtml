@@ -25,23 +25,30 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3>Stories</h3>
-                @Html.DropDownListFor(m => m.selectedEpic, new SelectList(Model.EpicList, "EpicKey", "EpicKey"), new { })
                 <a class="dont-see-stories" href="javascript:void(0);"> Don't see your stories? </a>
             </div>
             <div class="panel-body">
                 <div class="story-container form-group">
-                    <div class="row row-hcentered">
-                        <h2 id="story-point-header">Story Points:<span class="story-point-total"></span></h2>
-                        @Html.HiddenFor(m => m.totalStoryPoints,
-                                        new { @class = "story-point-total-hidden" })
+                    <div class="row row-hcentered row-vcentered pre-table-panel">
+                        <div class="filter-by-epic-panel">
+                            <label>Filter by Epic: &nbsp;</label>
+                            @Html.DropDownListFor(m => m.selectedEpic, new SelectList(Model.EpicList, "Key", "Value.Summary"), "No Epic",
+                                                                    new {@class = "epic-dropdown form-control" })
+                        </div>
+                        <div class="story-point-total-panel">
+                            <h2 id="story-point-header">Story Points:<span class="story-point-total"></span></h2>
+                            @Html.HiddenFor(m => m.totalStoryPoints,
+                                    new { @class = "story-point-total-hidden" })
+                        </div>
                     </div>
                     <table class="table">
                         <thead>
                             <tr>
-                                <th> Story ID </th>
-                                <th> Summary </th>
-                                <th> Story Points </th>
-                                <th> <span class="glyphicon glyphicon-trash"/> </th>
+                                <th class="col-xs-2 table-col-1"> Epic </th>
+                                <th class="col-xs-2 table-col-2"> Story ID </th>
+                                <th class="col-xs-4 table-col-3"> Summary </th>
+                                <th class="col-xs-3 table-col-4"> Story Points </th>
+                                <th class="col-xs-1 table-col-5"> <span class="glyphicon glyphicon-trash"/> </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -50,7 +57,18 @@
                             <tr>
                                 @Html.HiddenFor(m => m.StoryList[i].StoryID)
                                 @Html.HiddenFor(m => m.StoryList[i].StoryKey)
+                                @Html.HiddenFor(m => m.StoryList[i].EpicKey, new { @class = "hidden-epic-key" })
                                 @Html.HiddenFor(m => m.StoryList[i].Summary)
+                                @{  var selectedProject = Model.StoryList[0].StoryKey.Split('-')[0];
+                                    if (Model.StoryList[i].EpicKey != null && Model.EpicList.ContainsKey(Model.StoryList[i].EpicKey))
+                                    {
+                                        <td id="story-id-cell"> <a href="https://pnimedia.jira.com/browse/@Model.StoryList[i].EpicKey" target="_blank"><span class="badge">@Model.EpicList[Model.StoryList[i].EpicKey].Summary</span></a></td>
+                                    }
+                                    else
+                                    {
+                                        <td id="story-id-cell"> <span class="badge">No Epic</span></td>
+                                    }
+                                }
                                 <td id="story-id-cell"> <a href="https://pnimedia.jira.com/browse/@Model.StoryList[i].StoryKey" target="_blank">@Model.StoryList[i].StoryKey</a></td>
                                 <td> <p>@Model.StoryList[i].Summary</p> </td>
                                 <td id="story-points-cell">
@@ -207,11 +225,41 @@
     });
     function sumStoryPoints() {
         var total = 0;
-        $("input[type='radio']:checked").each(function () {
-            total += parseInt(this.value);
+        $("tbody > tr").each(function () {
+            if (!($(this).hasClass('hidden-story'))) {
+                total += parseInt($(this).find("input[type='radio']:checked").val()) || 0;
+            }
         });
+        //$("input[type='radio']:checked").each(function () {
+        //    total += parseInt(this.value);
+        //});
         document.getElementsByClassName('story-point-total')[0].textContent = " " + total;
         $('.story-point-total-hidden').val(total);
+    }
+
+
+    $('.epic-dropdown').on('change', function () {
+        epicFilter($(this).val());
+    })
+    function epicFilter(key) {
+        if (!key) {
+            $('tbody > tr').each(function () {
+                $(this).removeClass('hidden-story')
+                $(this).show();
+            })
+            return;
+        }
+        $('tbody > tr').each(function () {
+            if (this.getElementsByClassName('hidden-epic-key')[0].value != key) {
+                $(this).addClass('hidden-story')
+                $(this).hide();
+            }
+            else {
+                $(this).removeClass('hidden-story')
+                $(this).show();
+            }
+        });
+        sumStoryPoints();
     }
 </script>
 

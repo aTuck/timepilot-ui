@@ -54,9 +54,9 @@ namespace TimePilot.Controllers
 
                     story.StoryID = (int)result["id"];
                     story.StoryKey = (string)result["key"];
+                    story.EpicKey = (string)result["fields"]["customfield_10830"];
                     story.Summary = (string)result["fields"]["summary"];
                     story.StoryPoints = (int?)result["fields"]["customfield_10013"] ?? 0;
-                    story.EpicKey = (string)result["fields"]["customfield_10830"];
 
                     stories.Add(story);
                 }
@@ -75,6 +75,7 @@ namespace TimePilot.Controllers
                 {
                     Epic epic = new Epic();
                     epic.EpicKey = (string)result["key"];
+                    epic.Summary = (string)result["fields"]["summary"];
                     epics.Add(epic);
                 }
             }

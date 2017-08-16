@@ -83,12 +83,12 @@ namespace TimePilot.DataAccess.Repository
         public bool Add(Story story)
         {
             //TSQL string to insert the project passed to this function into the project table
-            string sql = @"INSERT INTO story (StoryID, StoryKey, Summary, StoryPoints, Projectkey) 
-                           VALUES (@id, @k, @s, @p, @pk)";
+            string sql = @"INSERT INTO story (StoryID, StoryKey, EpicKey, Summary, StoryPoints, Projectkey) 
+                           VALUES (@id, @k, @ek, @s, @p, @pk)";
 
             //Do a query sending sql string and assigning variables in sql string to the story object passed in
             dbContext.Query(sql, new { id = story.StoryID, k = story.StoryKey,
-                                       s = story.Summary, p = story.StoryPoints,
+                                       ek = story.EpicKey, s = story.Summary, p = story.StoryPoints,
                                        pk = story.ProjectKey}).ToList();
 
             //Story didn't exist, now it does

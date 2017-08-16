@@ -9,6 +9,7 @@ namespace TimePilot.Entities
     {
         public string EpicKey { get; set; }
         public string Summary { get; set; }
+        public string ProjectKey { get; set; }
         public List<Story> storiesInEpic { get; set; }
     }
 }

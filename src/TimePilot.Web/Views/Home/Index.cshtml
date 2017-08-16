@@ -38,6 +38,7 @@
     </div>
     }
 </div>
+<div id="loading"><div id="loading_anim"></div></div>
 
 <script>
     //Filters dropdown
@@ -108,10 +109,13 @@
         refreshProjects()
     });
     function refreshProjects() {
+        $('#loading').show();
         $.ajax({
             type: "GET",
             url: "@Url.Action("ProjectPopulate")",
-            success: window.location.reload()
+            success: function(){
+                location.reload();
+            }
         })
     };
 
@@ -125,9 +129,13 @@
         $('.btn-next').prop('disabled', false);
     })
     $('.project-list').on('dblclick', function () {
+        $('#loading').show();
         $('#project-form').submit();
     })
 
+    $('.btn-next').on('click', function () {
+        $('#loading').show();
+    })
 </script>
 
 

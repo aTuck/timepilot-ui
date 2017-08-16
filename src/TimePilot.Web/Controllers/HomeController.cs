@@ -10,6 +10,7 @@ namespace TimePilot.Controllers
     public class HomeController : Controller
     {
         private static ApiHelper apiHelper = new ApiHelper();
+
         private string projectJson;
         private string storyJson;
         private string epicJson;
@@ -19,7 +20,7 @@ namespace TimePilot.Controllers
         public static int totalNumOfSprints;
 
         public static int[] StoryPointAllocation;
-        private static string SelectedProject = "";
+        private static string SelectedProject;
         public static string SelectedEpic;
 
         List<Story> stories = new List<Story>();        
@@ -36,6 +37,7 @@ namespace TimePilot.Controllers
         SprintRepository SprintDB = new SprintRepository();
         MemberRepository MemberDB = new MemberRepository();
         ConversionRepository ConversionRateDB = new ConversionRepository();
+        EpicRepository EpicDB = new EpicRepository();
 
         public void receiveProjectData()
         {
@@ -51,6 +53,7 @@ namespace TimePilot.Controllers
         {
             epicJson = apiHelper.getDataFromJira("https://pnimedia.jira.com/rest/api/2/search?jql=project=" + "'" + SelectedProject + "'" + "%20AND%20type%20in(epic)%20and%20(Sprint=EMPTY%20OR%20Sprint%20not%20in(openSprints(),futureSprints()))%20AND%20status%20not%20in(closed,done,resolved,accepted)&fields=customfield_10013,customfield_10830,id,description,summary&maxResults=1000");
         }
+
         public ActionResult Index()
         {
             projects = ProjDB.GetAll();
@@ -95,11 +98,11 @@ namespace TimePilot.Controllers
         [OutputCache(Duration = 0, VaryByParam = "none", NoStore = true)]
         public ActionResult Story()
         {
+            StoryVM.EpicList = new Dictionary<string, Epic>();
             stories = StoryDB.GetAllByForeignId(SelectedProject);
+            epics = EpicDB.GetAllByForeignId(SelectedProject);
             StoryVM.StoryList = stories;
-            recieveEpicData();
-            epics = apiHelper.parseEpicData(epicJson);
-            StoryVM.EpicList = epics;
+            for (int i = 0; i < epics.Count; i++) { StoryVM.EpicList.Add(epics[i].EpicKey, epics[i]); }
             sortStoryPointsIntoBuckets();
             return View(StoryVM);
         }
@@ -122,6 +125,22 @@ namespace TimePilot.Controllers
                 {
                     StoryDB.Update(stories[i]);
                 }
+            }
+            return RedirectToAction("EpicPopulate");
+        }
+
+        public ActionResult EpicPopulate()
+        {
+            recieveEpicData();
+            epics = apiHelper.parseEpicData(epicJson);
+            Epic temp = new Epic();
+            for (int i = 0; i < epics.Count; i++)
+            {
+                // TODO: Bring this logic into repository
+                epics[i].ProjectKey = SelectedProject;
+                temp = EpicDB.GetById(epics[i]);
+                if (temp.ProjectKey == null)
+                    EpicDB.Add(epics[i]);
             }
             return RedirectToAction("Story");
         }
