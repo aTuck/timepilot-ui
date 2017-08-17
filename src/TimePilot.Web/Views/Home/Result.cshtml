@@ -158,7 +158,13 @@
                     <div class="row">
                         <div class="col-xs-6 "> <label>Sprint Duration</label><select class="selectpicker form-control sprint-length" onchange="return calculatePage();"><option value="2">2 weeks</option><option value="3">3 weeks</option></select> </div>
                         <div class="col-xs-6 ">
-                            <label>Contingency</label>
+                            <label>Contingency&nbsp;</label>
+                                <a href="#" data-toggle="popover" 
+                                            data-placement="bottom" 
+                                            title="Contingency Guide" 
+                                            data-content="Use 10% contingency for maintenance, sprints, or projects. Use 20% contingency for projects up to 3 months. Use 30% contingency for projects longer than 3 months.">
+                                            <span class="glyphicon glyphicon-question-sign"></span>
+                                </a>
                             <div class="row row-vcentered">
                                 <div class="col-md-8 col-xs-8 col-sm-4">
                                     <input type="range" min="0" max="30" step="5" class="slider" id="slider1" />
@@ -192,7 +198,16 @@
                 <div class="panel-body">
                     <br />
                     <div class="row">
-                        <div class="col-xs-6"> <label>Team Velocity</label><input type="number" class="form-control results-input team-velocity" /></div>
+                        <div class="col-xs-6"> 
+                            <label>Team Velocity&nbsp;</label> 
+                                <a href="#" data-toggle="popover" 
+                                   data-placement="bottom" 
+                                   title="Finding Team Velocity" 
+                                   data-content="Use the Project Duration from the Hours Estimate panel to determine an accurate team velocity. Both Project Durations should roughly match up when your team velocity is accurate.">
+                                   <span class="glyphicon glyphicon-question-sign"></span>
+                                </a>
+                            <input type="number" class="form-control results-input team-velocity" />
+                        </div>
                         <div class="col-xs-6">
                             <label>Contingency</label>
                             <div class="row row-vcentered">
