@@ -63,13 +63,20 @@
             </div>
         </nav>
         @RenderBody()
+        <div id="loading"><div id="loading_anim"><img src="~/Content/loading-spinner.svg" alt="pilot" id="spinner-plane" /></div></div>
         <footer class="footer">
             <div class="container">
                 <hr>
                 <div class="row">
-                    <div class="col-md-8 center-block footer-text">Time Pilot © 2017 &nbsp;|&nbsp; PNI Media &nbsp;|&nbsp; Team Delta-t &nbsp;|&nbsp; All Rights Reserved</div>
+                    <div class="col-md-8 center-block footer-text">Time Pilot <span id="secret">© </span>2017 &nbsp;|&nbsp; PNI Media &nbsp;|&nbsp; Team Delta-t &nbsp;|&nbsp; All Rights Reserved</div>
                 </div>
             </div>
         </footer>
     </body>
 </html>
+<script>
+    //easter egg to show loading spinner
+    $('#secret').on('click', function () {
+        $('#loading').css('display', 'block');
+    });
+</script>

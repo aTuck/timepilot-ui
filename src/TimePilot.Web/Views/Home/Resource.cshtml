@@ -228,10 +228,10 @@
         var ttls = document.getElementsByName("totalAvailable");
         var sprints = document.getElementsByClassName("sprint-name").length;
         for (i = 0; i < ttls.length; i++) {temp += parseFloat(ttls[i].value);}
-        ttlDevCapac.textContent = round(parseFloat(temp), 1);
+        ttlDevCapac.textContent = round(parseFloat(temp), 1)+' hrs';
         $('.total-dev-capacity-hidden').val(round(parseFloat(temp), 1));
-        avgPerSprint.textContent = round(parseFloat(temp / sprints), 1);
-        avgPerWeek.textContent = round(parseFloat((temp / sprints) / 2), 1);
+        avgPerSprint.textContent = round(parseFloat(temp / sprints), 1)+' hrs';
+        avgPerWeek.textContent = round(parseFloat((temp / sprints) / 2), 1)+' hrs';
     }
 
     // Prevent rounding errors
@@ -575,6 +575,7 @@
     // Navigate to resource page
     $('.btn-next').on('click', function(e) {
         e.preventDefault();
+        $('#loading').show();
         window.location.href = "@Url.Action("Result", "Home")"
     })
 

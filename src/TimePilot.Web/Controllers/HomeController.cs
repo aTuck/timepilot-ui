@@ -19,6 +19,7 @@ namespace TimePilot.Controllers
         public static float totalDevCapacity;
         public static int totalStoryPoints;
         public static int totalNumOfSprints;
+        public static bool isDoneSortingToBuckets = false;
 
         public static int[] StoryPointAllocation;
         private static string SelectedProject;
@@ -99,6 +100,7 @@ namespace TimePilot.Controllers
         [OutputCache(Duration = 0, VaryByParam = "none", NoStore = true)]
         public ActionResult Story()
         {
+            isDoneSortingToBuckets = false;
             StoryVM.EpicList = new Dictionary<string, Epic>();
             stories = StoryDB.GetAllByForeignId(SelectedProject);
             epics = EpicDB.GetAllByForeignId(SelectedProject);
@@ -172,6 +174,7 @@ namespace TimePilot.Controllers
             totalStoryPoints = m.totalStoryPoints;
             StoryVM.StoryList = storiesToBeSorted;
             sortStoryPointsIntoBuckets();
+            isDoneSortingToBuckets = true;
             return RedirectToAction("Resource");
         }
 
@@ -270,6 +273,10 @@ namespace TimePilot.Controllers
 
         public ActionResult Result()
         {
+            while (!isDoneSortingToBuckets)
+            {
+                System.Threading.Thread.Sleep(200);
+            }
             ResultsVM.storyPointAllocation = StoryPointAllocation;
             ResultsVM.DaysPerPt = ConversionRateDB.GetAllByForeignId(SelectedProject);
             

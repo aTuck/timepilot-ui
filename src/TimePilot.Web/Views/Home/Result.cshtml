@@ -1,99 +1,99 @@
 ﻿@model TimePilot.Web.ViewModels.ResultsViewModel
 
-@{ 
+@{
     ViewBag.Title = "Results | Time Pilot";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @section results{<link href="~/Content/results-new.css" rel="stylesheet" />}
 
 @*<div>
-    <h2>Conversion Rate</h2>
-    @using (Html.BeginForm("Result", "Home", FormMethod.Post))
-    {
-        <table id="myTable">
-            <tr>
-                <th>Story pt</th>
-                <th># of Stories</th>
-                <th>Days/St pt</th>
-                <th>Total Days</th>
-            </tr>
-            @for (int i = 0; i < Model.storypointAllocation.Length; i++)
-            {
+        <h2>Conversion Rate</h2>
+        @using (Html.BeginForm("Result", "Home", FormMethod.Post))
+        {
+            <table id="myTable">
+                <tr>
+                    <th>Story pt</th>
+                    <th># of Stories</th>
+                    <th>Days/St pt</th>
+                    <th>Total Days</th>
+                </tr>
+                @for (int i = 0; i < Model.storypointAllocation.Length; i++)
+                {
+                    <tr>
+                        <td>
+                            @Model.storypointAllocation[i]
+                            @Html.HiddenFor(m => m.storypointAllocation[i])
+                        </td>
+                        <td>
+                            @Model.numberOfStories[i]
+                            @Html.HiddenFor(m => m.numberOfStories[i])
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.DaysPerPt[i], new {@onchange = "this.form.submit();" })
+                            @Html.HiddenFor(m => m.DaysPerPt[i])
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.Total[i], new { @readonly = true })
+                            @Html.HiddenFor(m => m.Total[i])
+                        </td>
+                    </tr>
+                }
+            </table>
+
+            <h2>Hours Estimation</h2>
+            <table class ="hourstable">
+                <tr>
+                    <td>Total Hours: @Model.TotalHours</td>
+                    <td>Total Weeks: @Model.TotalWeeks</td>
+                </tr>
                 <tr>
                     <td>
-                        @Model.storypointAllocation[i]
-                        @Html.HiddenFor(m => m.storypointAllocation[i])
+                        Contingency:  @Html.TextBoxFor(m => m.Contingency, new { @onchange = "this.form.submit();" })
+                        @Html.HiddenFor(m => m.Contingency)
                     </td>
+                    <td><select Name="SprintLength" class="sprint-length" onchange="return calculatePage();">
+                        <option>Select length</option>
+                        <option value="2">2 weeks</option>
+                        <option value="3">3 weeks</option>
+                    </select></td>
+                </tr>
+                <tr>
+                    <td>Total Dev & QA Hours: @Model.TotalDevQA</td>
+                    <td>Release & Hardening: <span class="release-and-hardening">0</span></td>
+                </tr>
+                <tr>
+                    <td>Average Capacity Per Week: @Model.AvgCapacityPerWeek</td>
+                    <td>Project Duration Weeks: @Model.ProjectDurationWeeks</td>
+                </tr>
+            </table >
+
+            <h2>Velocity Validation</h2>
+            <table class= "velocitytable">
+                <tr>
+                    <td>Total Number of Story Points: @Model.totalStoryPoints </td>
                     <td>
-                        @Model.numberOfStories[i]
-                        @Html.HiddenFor(m => m.numberOfStories[i])
-                    </td>
-                    <td>
-                        @Html.TextBoxFor(m => m.DaysPerPt[i], new {@onchange = "this.form.submit();" })
-                        @Html.HiddenFor(m => m.DaysPerPt[i])
-                    </td>
-                    <td>
-                        @Html.TextBoxFor(m => m.Total[i], new { @readonly = true })
-                        @Html.HiddenFor(m => m.Total[i])
+                        Team Velocity: @Html.TextBoxFor(m => m.TeamVelocity, new { @onchange = "this.form.submit();" })
+                        @Html.HiddenFor(m => m.TeamVelocity)
                     </td>
                 </tr>
-            }
-        </table>
+                <tr>
+                    <td>Contingency: @Model.Contingency</td>
+                    <td>Total Sprints Required to Complete: @Model.TotalSprints</td>
+                </tr>
+                <tr>
+                    <td>Total: @Model.totalPointsVelocity</td>
+                    <td>Total Weeks: @Model.TotalWeeksVelocity</td>
+                </tr>
+                <tr>
+                    <td>Release & Hardening: <span class="release-and-hardening">0</span></td>
+                    <td>Project Duration Weeks: @Model.projectDurationWeeksVelocity</td>
+                </tr>
+            </table>
 
-        <h2>Hours Estimation</h2>
-        <table class ="hourstable">
-            <tr>
-                <td>Total Hours: @Model.TotalHours</td>
-                <td>Total Weeks: @Model.TotalWeeks</td>
-            </tr>
-            <tr>
-                <td>
-                    Contingency:  @Html.TextBoxFor(m => m.Contingency, new { @onchange = "this.form.submit();" })
-                    @Html.HiddenFor(m => m.Contingency)
-                </td>
-                <td><select Name="SprintLength" class="sprint-length" onchange="return calculatePage();">
-                    <option>Select length</option>
-                    <option value="2">2 weeks</option>
-                    <option value="3">3 weeks</option>
-                </select></td>
-            </tr>
-            <tr>
-                <td>Total Dev & QA Hours: @Model.TotalDevQA</td>
-                <td>Release & Hardening: <span class="release-and-hardening">0</span></td>
-            </tr>
-            <tr>
-                <td>Average Capacity Per Week: @Model.AvgCapacityPerWeek</td>
-                <td>Project Duration Weeks: @Model.ProjectDurationWeeks</td>
-            </tr>
-        </table >
-
-        <h2>Velocity Validation</h2>
-        <table class= "velocitytable">
-            <tr>
-                <td>Total Number of Story Points: @Model.totalStoryPoints </td>
-                <td>
-                    Team Velocity: @Html.TextBoxFor(m => m.TeamVelocity, new { @onchange = "this.form.submit();" })
-                    @Html.HiddenFor(m => m.TeamVelocity)
-                </td>
-            </tr>
-            <tr>
-                <td>Contingency: @Model.Contingency</td>
-                <td>Total Sprints Required to Complete: @Model.TotalSprints</td>
-            </tr>
-            <tr>
-                <td>Total: @Model.totalPointsVelocity</td>
-                <td>Total Weeks: @Model.TotalWeeksVelocity</td>
-            </tr>
-            <tr>
-                <td>Release & Hardening: <span class="release-and-hardening">0</span></td>
-                <td>Project Duration Weeks: @Model.projectDurationWeeksVelocity</td>
-            </tr>
-        </table>
-
-        <input type="button" value="Previous" onclick="location.href='@Url.Action("Resource", "Home")'" class="button onbottom" />
-        <input type="button" value="Home" onclick="location.href='@Url.Action("Index", "Home")'" class="button onbottom" />
-    }
-@*</div>*@
+            <input type="button" value="Previous" onclick="location.href='@Url.Action("Resource", "Home")'" class="button onbottom" />
+            <input type="button" value="Home" onclick="location.href='@Url.Action("Index", "Home")'" class="button onbottom" />
+        }
+    @*</div>*@
 
 <div class="container main">
     <div class="row">
@@ -113,36 +113,40 @@
                             </tr>
                         </thead>
                         <tbody>
-                        @using (Html.BeginForm("Result", "Home", FormMethod.Post, new { @id = "conversion-form" }))
-                        {
-                            for (int i = 0; i < Model.DaysPerPt.Count(); i++)
+                            @using (Html.BeginForm("Result", "Home", FormMethod.Post, new { @id = "conversion-form" }))
                             {
-                            <tr>
-                                @Html.HiddenFor(m => m.DaysPerPt[i].ConversionRateID, new { @id = "conversionID-tier-" + Model.DaysPerPt[i].StoryPoints })
-                                @Html.HiddenFor(m => m.DaysPerPt[i].StoryPoints)
-                                <td> @Model.DaysPerPt[i].StoryPoints </td>
-                                <td id="tier-@Model.DaysPerPt[i].StoryPoints-num-of-stories"> @Model.storyPointAllocation[@i] </td>
-                                <td>
-                                    <div class="row row-hcentered">
-                                        @Html.TextBoxFor(m=>m.DaysPerPt[i].ConversionRate, new {    @type="number",
-                                                                                                    @id ="tier-"+Model.DaysPerPt[i].StoryPoints,
-                                                                                                    @class ="form-control conversion-rate",
-                                                                                                    min = "0", max = "99",
-                                                                                                    @onchange = "return calculatePage()"   })
-                                    </div>
-                                </td>
-                                <td> <label id="tier-@Model.DaysPerPt[i].StoryPoints-label" class="tier-label">0</label> </td>
-                            </tr>
+                                for (int i = 0; i < Model.DaysPerPt.Count(); i++)
+                                {
+                                    <tr>
+                                        @Html.HiddenFor(m => m.DaysPerPt[i].ConversionRateID, new { @id = "conversionID-tier-" + Model.DaysPerPt[i].StoryPoints })
+                                        @Html.HiddenFor(m => m.DaysPerPt[i].StoryPoints)
+                                        <td> @Model.DaysPerPt[i].StoryPoints </td>
+                                        <td id="tier-@Model.DaysPerPt[i].StoryPoints-num-of-stories"> @Model.storyPointAllocation[@i] </td>
+                                        <td>
+                                            <div class="row row-hcentered">
+                                                @Html.TextBoxFor(m => m.DaysPerPt[i].ConversionRate, new
+                                   {
+                                       @type = "number",
+                                       @id = "tier-" + Model.DaysPerPt[i].StoryPoints,
+                                       @class = "form-control conversion-rate",
+                                       min = "0",
+                                       max = "99",
+                                       @onchange = "return calculatePage()"
+                                   })
+                                            </div>
+                                        </td>
+                                        <td> <label id="tier-@Model.DaysPerPt[i].StoryPoints-label" class="tier-label">0</label> </td>
+                                    </tr>
+                                }
                             }
-                        }
                         </tbody>
                     </table>
                     <div class="row row-vcentered">
                         <div class="col-xs-6 center-block">
-                            <label> Total Days &nbsp;&nbsp; <span class="total-days badge">0</span></label>
+                            <label> Total Hours &nbsp;&nbsp; <span class="total-hours badge">0</span></label>
                         </div>
                         <div class="col-xs-6 center-block">
-                            <label> Total Hours &nbsp;&nbsp; <span class="total-hours badge">0</span></label>
+                            <label> Total Days &nbsp;&nbsp; <span class="total-days badge">0</span></label>
                         </div>
                     </div>
                 </div>
@@ -159,12 +163,12 @@
                         <div class="col-xs-6 "> <label>Sprint Duration</label><select class="selectpicker form-control sprint-length" onchange="return calculatePage();"><option value="2">2 weeks</option><option value="3">3 weeks</option></select> </div>
                         <div class="col-xs-6 ">
                             <label>Contingency&nbsp;</label>
-                                <a href="#" data-toggle="popover" 
-                                            data-placement="bottom" 
-                                            title="Contingency Guide" 
-                                            data-content="Use 10% contingency for maintenance, sprints, or projects. Use 20% contingency for projects up to 3 months. Use 30% contingency for projects longer than 3 months.">
-                                            <span class="glyphicon glyphicon-question-sign"></span>
-                                </a>
+                            <a href="#" data-toggle="popover"
+                               data-placement="bottom"
+                               title="Contingency Guide"
+                               data-content="Use 10% contingency for maintenance, sprints, or projects. Use 20% contingency for projects up to 3 months. Use 30% contingency for projects longer than 3 months.">
+                                <span class="glyphicon glyphicon-question-sign"></span>
+                            </a>
                             <div class="row row-vcentered">
                                 <div class="col-md-8 col-xs-8 col-sm-4">
                                     <input type="range" min="0" max="30" step="5" class="slider" id="slider1" />
@@ -198,14 +202,14 @@
                 <div class="panel-body">
                     <br />
                     <div class="row">
-                        <div class="col-xs-6"> 
-                            <label>Team Velocity&nbsp;</label> 
-                                <a href="#" data-toggle="popover" 
-                                   data-placement="bottom" 
-                                   title="Finding Team Velocity" 
-                                   data-content="Use the Project Duration from the Hours Estimate panel to determine an accurate team velocity. Both Project Durations should roughly match up when your team velocity is accurate.">
-                                   <span class="glyphicon glyphicon-question-sign"></span>
-                                </a>
+                        <div class="col-xs-6">
+                            <label>Team Velocity&nbsp;</label>
+                            <a href="#" data-toggle="popover"
+                               data-placement="bottom"
+                               title="Finding Team Velocity"
+                               data-content="Use the Project Duration from the Hours Estimate panel to determine an accurate team velocity. Both Project Durations should roughly match up when your team velocity is accurate.">
+                                <span class="glyphicon glyphicon-question-sign"></span>
+                            </a>
                             <input type="number" class="form-control results-input team-velocity" />
                         </div>
                         <div class="col-xs-6">
@@ -237,7 +241,7 @@
         </div>
     </div>
     <div class="nav-control-panel">
-        <button class="btn ctrl-btn btn-primary nav-btn btn-prev"><span class="glyphicon glyphicon-menu-left" ></span> &nbsp; Resource Capacity </button>
+        <button class="btn ctrl-btn btn-primary nav-btn btn-prev"><span class="glyphicon glyphicon-menu-left"></span> &nbsp; Resource Capacity </button>
         <button class="btn ctrl-btn btn-primary nav-btn btn-home"><span class="glyphicon glyphicon-home"></span></button>
         <!--<button class="btn ctrl-btn btn-primary nav-btn chart-flip"><span class="glyphicon glyphicon-share-alt"/></span> &nbsp; Chart Flip </button>-->
         <button class="btn ctrl-btn btn-success nav-btn btn-export">Export to PDF &nbsp; <span class="glyphicon glyphicon-send"></span></button>
@@ -245,134 +249,153 @@
 </div>
 
 <script>
-  $(document).ready(function(){
-      $('.conversion-rate').each(function(){
-          $('#'+this.id+'-label').text(($(this).val())*(parseInt($('#'+this.id+'-num-of-stories').text())));
-      })
-      calculatePage();
-  });
-
-  /* popovers */
-  $(function () {
-    $('[data-toggle="popover"]').popover()
-  })
-  $(document).on('click', function (e) {
-    $('[data-toggle="popover"],[data-original-title]').each(function () {
-      if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0 ) {
-        (($(this).popover('hide').data('bs.popover') || {}).inState || {}).click = false
-      }
+    $(document).ready(function(){
+        $('.conversion-rate').each(function(){
+            $('#'+this.id+'-label').text(($(this).val())*(parseInt($('#'+this.id+'-num-of-stories').text())));
+        })
+        calculatePage();
     });
-  });
 
-  /* limit input lengths */
-  $('.conversion-rate').on('keypress', function(e) {
-    var keycode = e.charCode || e.keyCode;
-    if (keycode == 46 || this.value.length==2) {
-      return false;
-    }
-  });
-  $('.team-velocity').on('keypress', function(e) {
-    var keycode = e.charCode || e.keyCode;
-    if (keycode == 46 || this.value.length==3) {
-      return false;
-  }});
-
-  /* total days calculations */
-  $('.conversion-rate').on('keyup change', function(){
-    $('#'+this.id+'-label').text(($(this).val())*(parseInt($('#'+this.id+'-num-of-stories').text())));
-    calculatePage();
-  })
-
-  $(window).bind('beforeunload', function () {
-      postConversionForm();
-  });
-
-  /* sprints required calculations */
-  $('.team-velocity').on('keyup', function(){
-    calculatePage();
-  })
-
-  /* lock sliders together & calculate */
-  $('.slider').on('input', function(){
-    var label = $('.slider-value');
-    $(label).text(this.value+"%");
-    if ($(this).attr('id') == 'slider1'){
-        $('#slider2').prop('value', this.value);
-    }
-    else{
-        $('#slider1').prop('value', this.value);
-    }
-    calculatePage();
-  })
-
-  /* release & hardening */
-  $('.sprint-length').on('change', function(){
-    $('.release-and-hardening').text($('select.sprint-length').val()+' weeks');
-    calculatePage();
-  });
-
-  /* main calculations */
-  function calculatePage(){
-    var totalDays = 0;
-    var totalHours = 0;
-    var devQaRequired = 0;
-    var avgCapacityPerWeek = 0;
-    var totalStoryPoints = @Model.totalStoryPoints;
-    var totalDevCapacity = @Model.totalDevCapacity;
-    var totalNumOfSprints = @Model.totalNumOfSprints;
-    var numOfWeeks = $('select.sprint-length').val();
-    var contingency = parseFloat(1) + parseFloat($('.slider').val()/100);
-    var releaseAndHardening = $('select.sprint-length').val();
-    var teamVelocity = $('.team-velocity').val();
-
-    $('.tier-label').each(function(){
-      totalDays += parseInt($(this).text());
+    /* popovers */
+    $(function () {
+        $('[data-toggle="popover"]').popover()
     })
-    totalHours = Math.round(totalDays * 8);
-    devQaRequired = Math.round(parseFloat(totalHours * contingency));
-    avgCapacityPerWeek = Math.round((totalDevCapacity/totalNumOfSprints)/numOfWeeks);
-    hoursvalTotalDuration = parseDuration(devQaRequired / avgCapacityPerWeek);
-    hoursvalProjectDuration = parseDuration((devQaRequired / avgCapacityPerWeek) + parseInt(releaseAndHardening));
-    totalStoryPoints = Math.round(totalStoryPoints * contingency);
-    sprintsRequired = (totalStoryPoints/teamVelocity).toFixed(2);
-    velocityvalTotalDuration = parseDuration(sprintsRequired*releaseAndHardening);
-    velocityvalProjectDuration = parseDuration((sprintsRequired*releaseAndHardening)+ parseInt(releaseAndHardening));
+    $(document).on('click', function (e) {
+        $('[data-toggle="popover"],[data-original-title]').each(function () {
+            if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0 ) {
+                (($(this).popover('hide').data('bs.popover') || {}).inState || {}).click = false
+            }
+        });
+    });
 
-    $('.total-days').text(totalDays);
-    $('.total-hours').text(totalHours);
-    $('.dev-qa-required').text(devQaRequired + ' hrs');
-    $('.avg-capacity-per-week').text(avgCapacityPerWeek + ' hrs');
-    $('.hoursval-total-duration').text(hoursvalTotalDuration);
-    $('.hoursval-project-duration').text(hoursvalProjectDuration);
-    $('.total-story-points').text(totalStoryPoints + ' points');
-    if(isFinite(sprintsRequired)){
-      $('.sprints-required').text(sprintsRequired+' spts');
-    }
-    else{
-      $('.sprints-required').text('Infinity');
-    }
-    $('.velocityval-total-duration').text(velocityvalTotalDuration);
-    $('.velocityval-project-duration').text(velocityvalProjectDuration);
-  };
+    /* limit input lengths */
+    $('.conversion-rate').on('keypress', function(e) {
+        var keycode = e.charCode || e.keyCode;
+        if (keycode == 46) {
+            return false;
+        }else if(this.value.length==2 && getSelectedText()){
+            return true;
+        }else if(this.value.length==2 ){
+            return false;
+        }
+    });
+    $('.team-velocity').on('keypress', function(e) {
+        var keycode = e.charCode || e.keyCode;
+        if (keycode == 46) {
+            return false;
+        }else if(this.value.length==3 && getSelectedText()){
+            return true;
+        }else if(this.value.length==3 ){
+            return false;
+        }
+    });
 
-  /* helper for display of durations */
-  function parseDuration(duration){
-    weeks = Math.trunc(duration);
-    days  = Math.trunc((duration % 1).toFixed(2)*7);
-    hours = Math.trunc((duration % 1).toFixed(2)*24)
+    /* total days calculations */
+    $('.conversion-rate').on('keyup change', function(){
+        $('#'+this.id+'-label').text(($(this).val())*(parseInt($('#'+this.id+'-num-of-stories').text())));
+        calculatePage();
+    })
 
-    if(isFinite(duration)){
-      return(weeks+'w '+days+'d '+hours+'h');
-    }
-    else{
-      return('Infinity');
-    }
-  }
+    $(window).bind('beforeunload', function () {
+        postConversionForm();
+    });
 
-  $('.btn-prev').on('click', function(e) {
-      e.preventDefault();
-      window.location.href = "@Url.Action("Resource", "Home")"
-  });
+    /* sprints required calculations */
+    $('.team-velocity').on('keyup', function(){
+        calculatePage();
+    })
+
+    /* lock sliders together & calculate */
+    $('.slider').on('input', function(){
+        var label = $('.slider-value');
+        $(label).text(this.value+"%");
+        if ($(this).attr('id') == 'slider1'){
+            $('#slider2').prop('value', this.value);
+        }
+        else{
+            $('#slider1').prop('value', this.value);
+        }
+        calculatePage();
+    })
+
+    /* release & hardening */
+    $('.sprint-length').on('change', function(){
+        $('.release-and-hardening').text($('select.sprint-length').val()+' weeks');
+        calculatePage();
+    });
+
+    function getSelectedText() {
+        var text = "";
+        if (typeof window.getSelection != "undefined") {
+            text = window.getSelection().toString();
+        } else if (typeof document.selection != "undefined" && document.selection.type == "Text") {
+            text = document.selection.createRange().text;
+        }
+        if (text != ""){return true}
+    }
+
+    /* main calculations */
+    function calculatePage(){
+        var totalDays = 0;
+        var totalHours = 0;
+        var devQaRequired = 0;
+        var avgCapacityPerWeek = 0;
+        var totalStoryPoints = @Model.totalStoryPoints;
+        var totalDevCapacity = @Model.totalDevCapacity;
+        var totalNumOfSprints = @Model.totalNumOfSprints;
+        var numOfWeeks = $('select.sprint-length').val();
+        var contingency = parseFloat(1) + parseFloat($('.slider').val()/100);
+        var releaseAndHardening = $('select.sprint-length').val();
+        var teamVelocity = $('.team-velocity').val();
+
+        $('.tier-label').each(function(){
+            totalDays += parseInt($(this).text());
+        })
+        totalHours = Math.round(totalDays * 8);
+        devQaRequired = Math.round(parseFloat(totalHours * contingency));
+        avgCapacityPerWeek = Math.round((totalDevCapacity/totalNumOfSprints)/numOfWeeks);
+        hoursvalTotalDuration = parseDuration(devQaRequired / avgCapacityPerWeek);
+        hoursvalProjectDuration = parseDuration((devQaRequired / avgCapacityPerWeek) + parseInt(releaseAndHardening));
+        totalStoryPoints = Math.round(totalStoryPoints * contingency);
+        sprintsRequired = (totalStoryPoints/teamVelocity).toFixed(2);
+        velocityvalTotalDuration = parseDuration(sprintsRequired*releaseAndHardening);
+        velocityvalProjectDuration = parseDuration((sprintsRequired*releaseAndHardening)+ parseInt(releaseAndHardening));
+
+        $('.total-days').text(totalDays);
+        $('.total-hours').text(totalHours);
+        $('.dev-qa-required').text(devQaRequired + ' hrs');
+        $('.avg-capacity-per-week').text(avgCapacityPerWeek + ' hrs');
+        $('.hoursval-total-duration').text(hoursvalTotalDuration);
+        $('.hoursval-project-duration').text(hoursvalProjectDuration);
+        $('.total-story-points').text(totalStoryPoints + ' points');
+        if(isFinite(sprintsRequired)){
+            $('.sprints-required').text(sprintsRequired+' spts');
+        }
+        else{
+            $('.sprints-required').text('Infinity');
+        }
+        $('.velocityval-total-duration').text(velocityvalTotalDuration);
+        $('.velocityval-project-duration').text(velocityvalProjectDuration);
+    };
+
+    /* helper for display of durations */
+    function parseDuration(duration){
+        weeks = Math.trunc(duration);
+        days  = Math.trunc((duration % 1).toFixed(2)*7);
+        hours = Math.trunc((duration % 1).toFixed(2)*24)
+
+        if(isFinite(duration)){
+            return(weeks+'w '+days+'d '+hours+'h');
+        }
+        else{
+            return('Infinity');
+        }
+    }
+
+    $('.btn-prev').on('click', function(e) {
+        e.preventDefault();
+        window.location.href = "@Url.Action("Resource", "Home")"
+    });
 
     $('.btn-home').on('click', function(e) {
         e.preventDefault();
@@ -390,9 +413,9 @@
             }
         })
     };
-  /* flip cards around for charts
-  $('.chart-flip').on('click', function(){
-    $('.main').toggleClass('main-flip');
-  });
-  */
+    /* flip cards around for charts
+    $('.chart-flip').on('click', function(){
+      $('.main').toggleClass('main-flip');
+    });
+    */
 </script>
