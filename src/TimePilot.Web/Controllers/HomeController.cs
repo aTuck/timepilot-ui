@@ -273,6 +273,11 @@ namespace TimePilot.Controllers
 
         public ActionResult Result()
         {
+            // Bug:
+            // When proceeding through resource page too quick, sorting
+            // the correct stories into buckets isn't complete yet and results
+            // page uses incorrect stories.
+            // Fix: Spin until it's done
             while (!isDoneSortingToBuckets)
             {
                 System.Threading.Thread.Sleep(200);
@@ -280,7 +285,7 @@ namespace TimePilot.Controllers
             ResultsVM.storyPointAllocation = StoryPointAllocation;
             ResultsVM.DaysPerPt = ConversionRateDB.GetAllByForeignId(SelectedProject);
             
-            // New project - initialize conversion rates
+            // For new projects - initialize conversion rates
             if (ResultsVM.DaysPerPt.Count <= 0 )
             {
                 var storyPointTiers = new List<int> { 1, 3, 5, 8, 13, 21 };

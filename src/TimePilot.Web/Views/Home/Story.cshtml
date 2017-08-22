@@ -33,81 +33,94 @@
                         <div class="filter-by-epic-panel">
                             <label>Filter by Epic: &nbsp;</label>
                             @Html.DropDownListFor(m => m.selectedEpic, new SelectList(Model.EpicList, "Key", "Value.Summary"), "No Epic",
-                                                                    new {@class = "epic-dropdown form-control" })
+                                             new { @class = "epic-dropdown form-control" })
                         </div>
                         
                         <div class="story-point-total-panel">
                             <h2 id="story-point-header">Story Points:<span class="story-point-total"></span></h2>
                             @Html.HiddenFor(m => m.totalStoryPoints,
-                                    new { @class = "story-point-total-hidden" })
+                            new { @class = "story-point-total-hidden" })
                         </div>
                     </div>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th class="col-xs-1 cell-centered"> <span class="glyphicon glyphicon-trash"/> </th>
-                                <th class="col-xs-1 cell-centered"> Epic </th>
-                                <th class="col-xs-1 cell-centered"> Story ID </th>
-                                <th class="col-xs-4"> Summary </th>
-                                <th class="col-xs-1"> Story Points </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @for (int i = 0; i < Model.StoryList.Count(); i++)
+                        @{ if (Model.StoryList.Count() <= 0)
                             {
-                            <tr>
-                                @Html.HiddenFor(m => m.StoryList[i].StoryID)
-                                @Html.HiddenFor(m => m.StoryList[i].StoryKey)
-                                @Html.HiddenFor(m => m.StoryList[i].EpicKey, new { @class = "hidden-epic-key" })
-                                @Html.HiddenFor(m => m.StoryList[i].Summary)
-                                @Html.HiddenFor(m => m.StoryList[i].isHidden, new { @value = 0, @class="hidden-bool" })
-                                <td class="cell-centered"> <input type="checkbox" name="chk-delete" value="@Model.StoryList[i].StoryID"/> </td>
-                                @{
-                                    if (Model.StoryList[i].EpicKey != null && Model.EpicList.ContainsKey(Model.StoryList[i].EpicKey))
-                                    {
-                                        <td id="story-id-cell" class="cell-centered"> <a href="https://pnimedia.jira.com/browse/@Model.StoryList[i].EpicKey" target="_blank"><span class="badge">@Model.EpicList[Model.StoryList[i].EpicKey].Summary</span></a></td>
-                                    }
-                                    else
-                                    {
-                                        <td id="story-id-cell" class="cell-centered"> <span class="badge">No Epic</span></td>
-                                    }
-                                }
-                                <td id="story-id-cell" class="cell-centered"> <a href="https://pnimedia.jira.com/browse/@Model.StoryList[i].StoryKey" target="_blank">@Model.StoryList[i].StoryKey</a></td>
-                                <td> <p>@Model.StoryList[i].Summary</p> </td>
-                                <td id="story-points-cell">
-                                    <fieldset class="radio-group">
-                                        <div class="btn-group" data-toggle="buttons">
-                                            <label class="btn btn-default btn-radio @(Model.StoryList[i].StoryPoints == 1 ? "active" : "")">1 
-                                                @Html.RadioButtonFor(m => m.StoryList[i].StoryPoints, "1",
-                                                                     checked(Model.StoryList[i].StoryPoints == 1))
-                                            </label>
-                                            <label class="btn btn-default btn-radio @(Model.StoryList[i].StoryPoints == 3 ? "active" : "")">3
-                                                @Html.RadioButtonFor(m => m.StoryList[i].StoryPoints, "3",
-                                                                     checked(Model.StoryList[i].StoryPoints == 3))
-                                            </label>
-                                            <label class="btn btn-default btn-radio @(Model.StoryList[i].StoryPoints == 5 ? "active" : "")">5
-                                                @Html.RadioButtonFor(m => m.StoryList[i].StoryPoints, "5",
-                                                                     checked(Model.StoryList[i].StoryPoints == 5))
-                                            </label>
-                                            <label class="btn btn-default btn-radio @(Model.StoryList[i].StoryPoints == 8 ? "active" : "")">8
-                                                @Html.RadioButtonFor(m => m.StoryList[i].StoryPoints, "8",
-                                                                     checked (Model.StoryList[i].StoryPoints == 8))
-                                            </label>
-                                            <label class="btn btn-default btn-radio @(Model.StoryList[i].StoryPoints == 13 ? "active" : "")">13
-                                                @Html.RadioButtonFor(m => m.StoryList[i].StoryPoints, "13",
-                                                                     checked(Model.StoryList[i].StoryPoints == 13))
-                                            </label>
-                                            <label class="btn btn-default btn-radio @(Model.StoryList[i].StoryPoints == 21 ? "active" : "")">21
-                                                @Html.RadioButtonFor(m => m.StoryList[i].StoryPoints, "21",
-                                                                     checked(Model.StoryList[i].StoryPoints == 21))
-                                            </label>
-                                        </div>
-                                    </fieldset>
-                                </td>
-                            </tr>
+                                <div class="row no-stories-panel"> 
+                                    <div class="col-xs-7 centered missing-stories-block">
+                                        <img class="magnifying-glass" src="~/Content/magnifying-glass.svg"/>
+                                        <h1>Hmm, where are those stories? Click that <span class="refresh-stories-fake-button">&nbsp;Refresh Stories&nbsp;</span> button!</h1>
+                                    </div>
+                                </div>
                             }
-                        </tbody>
-                    </table>
+                            else
+                            {
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="col-xs-1 cell-centered"> <span class="glyphicon glyphicon-trash" />  </th>
+                                        <th class="col-xs-1 cell-centered"> Epic </th>
+                                        <th class="col-xs-1 cell-centered"> Story ID </th>
+                                        <th class="col-xs-4"> Summary </th>
+                                        <th class="col-xs-1"> Story Points </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (int i = 0; i < Model.StoryList.Count(); i++)
+                                    {
+                                    <tr>
+                                        @Html.HiddenFor(m => m.StoryList[i].StoryID)
+                                        @Html.HiddenFor(m => m.StoryList[i].StoryKey)
+                                        @Html.HiddenFor(m => m.StoryList[i].EpicKey, new { @class = "hidden-epic-key" })
+                                        @Html.HiddenFor(m => m.StoryList[i].Summary)
+                                        @Html.HiddenFor(m => m.StoryList[i].isHidden, new { @value = 0, @class = "hidden-bool" })
+                                        <td class="cell-centered"> <input type="checkbox" name="chk-delete" value="@Model.StoryList[i].StoryID"/> </td>
+                                        @{
+                                            if (Model.StoryList[i].EpicKey != null && Model.EpicList.ContainsKey(Model.StoryList[i].EpicKey))
+                                            {
+                                                <td id="story-id-cell" class="cell-centered"> <a href="https://pnimedia.jira.com/browse/@Model.StoryList[i].EpicKey" target="_blank"><span class="badge">@Model.EpicList[Model.StoryList[i].EpicKey].Summary</span></a></td>
+                                            }
+                                            else
+                                            {
+                                                <td id="story-id-cell" class="cell-centered"> <span class="badge">No Epic</span></td>
+                                            }
+                                        }
+                                        <td id="story-id-cell" class="cell-centered"> <a href="https://pnimedia.jira.com/browse/@Model.StoryList[i].StoryKey" target="_blank">@Model.StoryList[i].StoryKey</a></td>
+                                        <td> <p>@Model.StoryList[i].Summary</p> </td>
+                                        <td id="story-points-cell">
+                                            <fieldset class="radio-group">
+                                                <div class="btn-group" data-toggle="buttons">
+                                                    <label class="btn btn-default btn-radio @(Model.StoryList[i].StoryPoints == 1 ? "active" : "")">1 
+                                                        @Html.RadioButtonFor(m => m.StoryList[i].StoryPoints, "1",
+                                                                          checked(Model.StoryList[i].StoryPoints == 1))
+                                                    </label>
+                                                    <label class="btn btn-default btn-radio @(Model.StoryList[i].StoryPoints == 3 ? "active" : "")">3
+                                                        @Html.RadioButtonFor(m => m.StoryList[i].StoryPoints, "3",
+                                                                          checked(Model.StoryList[i].StoryPoints == 3))
+                                                    </label>
+                                                    <label class="btn btn-default btn-radio @(Model.StoryList[i].StoryPoints == 5 ? "active" : "")">5
+                                                        @Html.RadioButtonFor(m => m.StoryList[i].StoryPoints, "5",
+                                                                          checked(Model.StoryList[i].StoryPoints == 5))
+                                                    </label>
+                                                    <label class="btn btn-default btn-radio @(Model.StoryList[i].StoryPoints == 8 ? "active" : "")">8
+                                                        @Html.RadioButtonFor(m => m.StoryList[i].StoryPoints, "8",
+                                                                          checked(Model.StoryList[i].StoryPoints == 8))
+                                                    </label>
+                                                    <label class="btn btn-default btn-radio @(Model.StoryList[i].StoryPoints == 13 ? "active" : "")">13
+                                                        @Html.RadioButtonFor(m => m.StoryList[i].StoryPoints, "13",
+                                                                          checked(Model.StoryList[i].StoryPoints == 13))
+                                                    </label>
+                                                    <label class="btn btn-default btn-radio @(Model.StoryList[i].StoryPoints == 21 ? "active" : "")">21
+                                                        @Html.RadioButtonFor(m => m.StoryList[i].StoryPoints, "21",
+                                                                          checked(Model.StoryList[i].StoryPoints == 21))
+                                                    </label>
+                                                </div>
+                                            </fieldset>
+                                        </td>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                            }
+                        }
                 </div>
             </div>
         

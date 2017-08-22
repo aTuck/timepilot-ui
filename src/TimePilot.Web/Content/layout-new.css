@@ -17,6 +17,9 @@ h3:hover, h2:hover {
     cursor: default;
 }
 
+h3{
+    margin: 10px 0px;
+}
 a:focus {
     border: none;
     outline: none;
