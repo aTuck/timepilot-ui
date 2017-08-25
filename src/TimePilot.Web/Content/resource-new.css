@@ -43,7 +43,7 @@
     width: 100%;
   }
   .form-control{
-    min-width: 55px;
+    min-width: 76px;
   }
   .form-control-name{
     min-width: 91px
@@ -64,6 +64,7 @@
     margin-top: 40px;
     display: flex;
     justify-content: space-between;
+    align-items: stretch;
   }
   .btn-control-panel{
     display: flex;
@@ -127,6 +128,26 @@
   .add-sprint{
       width: 100px;
       font-size: 50px;
+  }
+  #checkbox-cell{
+      min-width: 36px;
+  }
+  .btn-modal{
+      display: none;
+  }
+  .modal-body{
+      padding: 75px;
+  }
+  .modal-warning{
+      display: flex;
+      margin: 0px auto;
+      width: 100px;
+      margin-bottom: 35px;
+  }
+  .modal-text{
+      font-size: 24px;
+      text-align: center;
+      width: 100%;
   }
   /* boot-strap select change width */
     .bootstrap-select.btn-group .dropdown-menu, .btn.dropdown-toggle.btn-default, .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn){

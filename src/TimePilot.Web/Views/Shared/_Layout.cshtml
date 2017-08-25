@@ -36,27 +36,24 @@
                     <div class="col-md-6 col-sm-7 hidden-xs text-right crumbs">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item @(currentPage == "home-index" ? "active" : "")">
-                                @if (currentPage != "home-index")
+                                @if (currentPage == "home-story" || currentPage != "home-resource" || currentPage != "home-result")
                                 {@Html.ActionLink("Projects", "Index");}
                                 else
                                 {@Html.Raw("Projects");}
                             </li>
                             <li class="breadcrumb-item @(currentPage == "home-story" ? "active" : "")">
-                                @if (currentPage != "home-story")
+                                @if (currentPage == "home-resource" || currentPage == "home-result")
                                 {@Html.ActionLink("Stories", "Story");}
                                 else
                                 {@Html.Raw("Stories");}
                             </li>
                             <li class="breadcrumb-item @(currentPage == "home-resource" ? "active" : "")">
-                                @if (currentPage != "home-resource")
+                                @if (currentPage == "home-result")
                                 {@Html.ActionLink("Resource Capacity", "Resource");}
                                 else
                                 {@Html.Raw("Resource Capacity");}
                             </li>
-                            <li class="breadcrumb-item @(currentPage == "home-result" ? "active" : "")">
-                                @if (currentPage != "home-result") { @Html.ActionLink("Results", "Result");}
-                                else {@Html.Raw("Results");}
-                            </li>
+                            <li class="breadcrumb-item" > Results </li>
                         </ol>
                     </div>
                 </div>

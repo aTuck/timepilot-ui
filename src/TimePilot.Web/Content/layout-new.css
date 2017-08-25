@@ -17,9 +17,10 @@ h3:hover, h2:hover {
     cursor: default;
 }
 
-h3{
+h3 {
     margin: 10px 0px;
 }
+
 a:focus {
     border: none;
     outline: none;
@@ -102,15 +103,19 @@ hr {
     min-width: 52px;
 }
 
-    .logo-link:focus {
-        text-decoration: none;
-        color: black;
-    }
+.logo-link:focus {
+    text-decoration: none;
+    color: black;
+}
 
 .logo-text {
     display: inline;
-    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Ubunutu', sans-serif;
     font-size: 40px;
+    line-height: 52px;
+    letter-spacing: -1.5px;
+    /*text-transform: uppercase;*/
+    color: #CC0000 !important;
     vertical-align: middle;
     margin: 16px 0px 0px -3px;
 }
@@ -163,7 +168,14 @@ hr {
     animation: 2.4s cubic-bezier(0.43, 0.77, 0.61, 0.28) infinite spin;
 }
 
-.secret {
+.trash-select-all:hover {
+    cursor: pointer;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 @keyframes spin {

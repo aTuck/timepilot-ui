@@ -125,14 +125,14 @@
                                         <td>
                                             <div class="row row-hcentered">
                                                 @Html.TextBoxFor(m => m.DaysPerPt[i].ConversionRate, new
-                                   {
-                                       @type = "number",
-                                       @id = "tier-" + Model.DaysPerPt[i].StoryPoints,
-                                       @class = "form-control conversion-rate",
-                                       min = "0",
-                                       max = "99",
-                                       @onchange = "return calculatePage()"
-                                   })
+                                                {
+                                                    @type = "number",
+                                                    @id = "tier-" + Model.DaysPerPt[i].StoryPoints,
+                                                    @class = "form-control conversion-rate",
+                                                    min = "0",
+                                                    max = "99",
+                                                    @onchange = "return calculatePage()"
+                                                })
                                             </div>
                                         </td>
                                         <td> <label id="tier-@Model.DaysPerPt[i].StoryPoints-label" class="tier-label">0</label> </td>

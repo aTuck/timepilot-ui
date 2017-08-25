@@ -32,7 +32,7 @@
                     <div class="row row-hcentered row-vcentered pre-table-panel">
                         <div class="filter-by-epic-panel">
                             <label>Filter by Epic: &nbsp;</label>
-                            @Html.DropDownListFor(m => m.selectedEpic, new SelectList(Model.EpicList, "Key", "Value.Summary"), "No Epic",
+                            @Html.DropDownListFor(m => m.selectedEpic, new SelectList(Model.EpicList, "Key", "Value.Summary"), "All Epics",
                                              new { @class = "epic-dropdown form-control" })
                         </div>
                         
@@ -44,6 +44,7 @@
                     </div>
                         @{ if (Model.StoryList.Count() <= 0)
                             {
+                                <input type="hidden" id="hack-button-to-disable-next" value="-1" />
                                 <div class="row no-stories-panel"> 
                                     <div class="col-xs-7 centered missing-stories-block">
                                         <img class="magnifying-glass" src="~/Content/magnifying-glass.svg"/>
@@ -56,7 +57,7 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th class="col-xs-1 cell-centered"> <span class="glyphicon glyphicon-trash" />  </th>
+                                        <th class="col-xs-1 cell-centered"> <span class="glyphicon glyphicon-trash trash-select-all" />  </th>
                                         <th class="col-xs-1 cell-centered"> Epic </th>
                                         <th class="col-xs-1 cell-centered"> Story ID </th>
                                         <th class="col-xs-4"> Summary </th>
@@ -157,6 +158,7 @@
     // Delete Selected button
     $(".btn-delete").on("click", function (e) {
         e.preventDefault();
+
         var c = confirm("Delete stories?");
         if (c) { deleteStoryForm() };
     })
@@ -282,5 +284,29 @@
         });
         done(true);
     }
+
+    // Select all for deletion functionality
+    $(document).on('click', '.trash-select-all', function () {
+        var didCheck = false;
+        $(this.parentNode.parentNode.parentNode.parentNode).find('input[type="checkbox"]').each(function () {
+            if ($(this).prop('checked') == false) {
+                $(this).prop('checked', true);
+                didCheck = true;
+            }
+        })
+        if (!didCheck) {
+            $(this.parentNode.parentNode.parentNode.parentNode).find('input[type="checkbox"]').each(function () {
+                $(this).prop('checked', false);
+            })
+        }
+    })
+
+    // No stories
+    $(document).ready(function(){
+        if ($('#hack-button-to-disable-next').val() == -1){
+            $('.btn-next').prop('disabled', true);
+            $('.btn-next').addClass('disabled');
+        }
+    })
 </script>
 
