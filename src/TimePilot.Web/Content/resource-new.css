@@ -43,10 +43,10 @@
     width: 100%;
   }
   .form-control{
-    min-width: 76px;
+    width: 76px;
   }
   .form-control-name{
-    min-width: 91px
+      width: 90px;
   }
   .nav-control-panel{
     display: flex;

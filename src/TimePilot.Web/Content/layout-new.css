@@ -124,6 +124,11 @@ hr {
     text-align: right;
 }
 
+.breadcrumb>.active{
+    font-weight: 700;
+    color: black;
+}
+
 .footer {
     position: relative;
     bottom: 0;
