@@ -1,5 +1,4 @@
 ﻿@model TimePilot.Web.ViewModels.ResourceCapacityViewModel
-@using TimePilot.Web.Models;
 @using System.Linq;
 
 @{
@@ -8,12 +7,11 @@
 }
 @section resource{<link href="~/Content/resource-new.css" rel="stylesheet" />}
 
-<!-- Modal -->
+@* Negative value modal *@
 <button class="btn-modal" id="btn-trigger-modal" data-toggle="modal" data-target="#negative-value-modal"></button>
 <div id="negative-value-modal" class="modal fade" role="dialog">
     <div class="modal-dialog">
 
-        <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -30,11 +28,12 @@
 
     </div>
 </div>
+
+@* Delete member modal *@
 <button class="btn-modal" id="btn-trigger-delete-member-modal" data-toggle="modal" data-target="#delete-member-modal"></button>
 <div id="delete-member-modal" class="modal fade" role="dialog">
     <div class="modal-dialog">
 
-        <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -52,11 +51,12 @@
 
     </div>
 </div>
+
+@* Delete sprint modal *@
 <button class="btn-modal" id="btn-trigger-delete-sprint-modal" data-toggle="modal" data-target="#delete-sprint-modal"></button>
 <div id="delete-sprint-modal" class="modal fade" role="dialog">
     <div class="modal-dialog">
 
-        <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -91,7 +91,17 @@
                 <div class="panel-heading sprint-heading">
                     <div class="sprint-control-panel editable">
                         <div class="input-group">
-                            <h3 class="sprint-name" id="sprint-name-@i">@(Model.sprints[i].Name)</h3>
+                            <h3 class="sprint-name" id="sprint-name-@i">
+                            @{if (!String.IsNullOrEmpty(Model.sprints[i].Name))
+                                {
+                                    @Html.Raw(Model.sprints[i].Name);
+                                }
+                                else
+                                {
+                                    @Html.Raw("Enter Sprint Name...")
+                                }
+                              }
+                            </h3>
                             @Html.HiddenFor(m => m.sprints[i].Name, new { @id = "sprint-name-" + i + "-hidden" })
                             <input class="page-id" type="hidden" id="sprints_@(i)__PageID" name="sprints[@(i)].PageID" value="@i" />
                         </div>
@@ -139,15 +149,15 @@
                                         }
                                     }</td>
                                     <td>
-                                        <select class="role-select">
-                                            <option value="leadDev" @*selected=logic for if this is the member's role from db'*@>Lead Dev</option>
-                                            <option value="seniorDev" @*selected=logic for if this is the member's role from db'*@>Senior Dev</option>
-                                            <option value="intermediateDev" @*selected=logic for if this is the member's role from db'*@>Regular Dev</option>
-                                            <option value="juniorDev" @*selected=logic for if this is the member's role from db'*@>Junior Dev</option>
-                                            <option value="leadQA" @*selected=logic for if this is the member's role from db'*@>Lead QA</option>
-                                            <option value="seniorQA" @*selected=logic for if this is the member's role from db'*@>Senior QA</option>
-                                            <option value="intermediateQA" @*selected=logic for if this is the member's role from db'*@>Regular QA</option>
-                                            <option value="juniorQA" @*selected=logic for if this is the member's role from db'*@>Junior QA</option>
+                                        <select class="role-select" id="members_@(memberTotal)__Role" name="members[@(memberTotal)].Role">
+                                            <option value="leadDev" @{ if (Model.members[j].Role == "leadDev") {@Html.Raw("selected='selected'") }}>Lead Dev</option>
+                                            <option value="seniorDev" @{ if (Model.members[j].Role == "seniorDev") {@Html.Raw("selected='selected'") }}>Senior Dev</option>
+                                            <option value="intermediateDev" @{ if (Model.members[j].Role == "intermediateDev") {@Html.Raw("selected='selected'") }}>Regular Dev</option>
+                                            <option value="juniorDev" @{ if (Model.members[j].Role == "juniorDev") {@Html.Raw("selected='selected'") }}>Junior Dev</option>
+                                            <option value="leadQA" @{ if (Model.members[j].Role == "leadQA") {@Html.Raw("selected='selected'") }}>Lead QA</option>
+                                            <option value="seniorQA" @{ if (Model.members[j].Role == "seniorQA") {@Html.Raw("selected='selected'") }}>Senior QA</option>
+                                            <option value="intermediateQA" @{ if (Model.members[j].Role == "intermediateQA") {@Html.Raw("selected='selected'") }}>Regular QA</option>
+                                            <option value="juniorQA" @{ if (Model.members[j].Role == "juniorQA") {@Html.Raw("selected='selected'") }}>Junior QA</option>
                                         </select>
                                     </td>
                                     <td>@Html.TextBoxFor(m => m.members[j].Name, new { @class = "form-control form-control-name", placeholder = "Name" })</td>
@@ -254,10 +264,11 @@
         if (text != ""){return true}
     }
 
-    @*// Always save changes
+    // Always save changes
     $(window).bind('beforeunload', function () {
+        $('#loading').show();
         postResourceForm();
-    })*@
+    })
     function postResourceForm() {
         var data = $('#resource-form').serialize();
         $.ajax({
@@ -277,7 +288,7 @@
         var isInvalidInput = false;
 
         $("input[name='totalAvailable']").each(function () {
-            if (parseFloat(this.value) <= 0) {
+            if (parseFloat(this.value) <= 0 || isNaN(parseFloat(this.value))) {
                 $(this).css("background-color", "#e56060");
                 $(this).css("color", "#fff");
                 isInvalidInput = true; // Set flag
@@ -290,7 +301,7 @@
         }
         else {
             $('#loading').show();
-            postResourceForm();
+            //postResourceForm();
             location.href = "@Url.Action("Result", "Home")"
         }
     })

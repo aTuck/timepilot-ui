@@ -54,11 +54,11 @@ namespace TimePilot.DataAccess.Repository
 
         private void Update(Member member)
         {
-            string sql = @"UPDATE Member SET   Name = @n, SprintDays = @sd, Percentwork = @pw, 
+            string sql = @"UPDATE Member SET   Role = @r, Name = @n, SprintDays = @sd, Percentwork = @pw, 
                                                StandupDuration = @std, Misc = @m, TimeOff = @t,
                                                SprintID = @sid
                                          WHERE MemberID = @id";
-            dbContext.Query<Member>(sql, new { id = member.MemberID, n = member.Name, sd = member.SprintDays,
+            dbContext.Query<Member>(sql, new { id = member.MemberID, r = member.Role, n = member.Name, sd = member.SprintDays,
                                                pw = member.PercentWork, std = member.StandupDuration,
                                                m = member.Misc, t = member.TimeOff, sid = member.SprintID });
         }
@@ -92,13 +92,13 @@ namespace TimePilot.DataAccess.Repository
             if (check.MemberID == -1)
             {
                 //TSQL string to insert the project passed to this function into the project table
-                string sql = @"INSERT INTO Member (Name, SprintDays, Percentwork, StandupDuration,
+                string sql = @"INSERT INTO Member (Role, Name, SprintDays, Percentwork, StandupDuration,
                                                    Misc, TimeOff, SprintID) 
-                                                   VALUES (@n, @sd, @pw, @std, @m, @t, @sid)
+                                                   VALUES (@r, @n, @sd, @pw, @std, @m, @t, @sid)
                                                    SELECT CAST(SCOPE_IDENTITY() as int)";
 
                 //Do a query sending sql string and assigning variables in sql string to the member object passed in
-                var addedMemberID = dbContext.Query<int>(sql, new { n = member.Name, sd = member.SprintDays,
+                var addedMemberID = dbContext.Query<int>(sql, new { r = member.Role, n = member.Name, sd = member.SprintDays,
                                                                     pw = member.PercentWork, std = member.StandupDuration,
                                                                     m = member.Misc, t = member.TimeOff, sid = member.SprintID}).Single();
 

@@ -8,6 +8,7 @@ namespace TimePilot.Entities
     public class Member
     {
         public int MemberID { get; set; }
+        public string Role { get; set; }
         public string Name { get; set; }
         public int SprintDays { get; set; }
         public int PercentWork { get; set; }

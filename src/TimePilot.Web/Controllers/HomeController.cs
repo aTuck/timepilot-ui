@@ -19,7 +19,8 @@ namespace TimePilot.Controllers
         public static float totalDevCapacity;
         public static int totalStoryPoints;
         public static int totalNumOfSprints;
-        public static bool isDoneSortingToBuckets = false;
+        public static bool isDoneSortingToBuckets = true;
+        public static bool isDoneSaving = true;
 
         public static int[] StoryPointAllocation;
         private static string SelectedProject;
@@ -100,6 +101,11 @@ namespace TimePilot.Controllers
         [OutputCache(Duration = 0, VaryByParam = "none", NoStore = true)]
         public ActionResult Story()
         {
+            System.Threading.Thread.Sleep(350);
+            while (!isDoneSaving)
+            {
+                System.Threading.Thread.Sleep(100);
+            }
             isDoneSortingToBuckets = false;
             StoryVM.EpicList = new Dictionary<string, Epic>();
             stories = StoryDB.GetAllByForeignId(SelectedProject);
@@ -156,6 +162,7 @@ namespace TimePilot.Controllers
         [HttpPost]
         public ActionResult StoryUpdate(StoryViewModel m)
         {
+            isDoneSaving = false;
             List<Story> storiesToBeSorted = new List<Story>();
             StoryVM = m;
             if (m.StoryList != null)
@@ -175,6 +182,7 @@ namespace TimePilot.Controllers
             StoryVM.StoryList = storiesToBeSorted;
             sortStoryPointsIntoBuckets();
             isDoneSortingToBuckets = true;
+            isDoneSaving = true;
             return RedirectToAction("Resource");
         }
 
@@ -192,6 +200,11 @@ namespace TimePilot.Controllers
         [OutputCache(Duration = 0, VaryByParam = "none", NoStore = true)]
         public ActionResult Resource()
         {
+            System.Threading.Thread.Sleep(350);
+            while (!isDoneSaving)
+            {
+                System.Threading.Thread.Sleep(100);
+            }
             List<Member> currentMembers = new List<Member>();
             ResourceVM.members = currentMembers;
             ResourceVM.sprints = SprintDB.GetAllByForeignId(SelectedProject);
@@ -223,6 +236,7 @@ namespace TimePilot.Controllers
         [HttpPost]
         public ActionResult ResourceUpdate(ResourceCapacityViewModel m)
         {
+            isDoneSaving = false;
             ResourceVM = m;
             totalDevCapacity = m.totalDevCapacity;
             totalNumOfSprints = m.sprints.Count;
@@ -249,7 +263,8 @@ namespace TimePilot.Controllers
                     }
                 }
             }
-            
+
+            isDoneSaving = true;
             return RedirectToAction("Resource");
         }
 
@@ -278,9 +293,10 @@ namespace TimePilot.Controllers
             // the correct stories into buckets isn't complete yet and results
             // page uses incorrect stories.
             // Fix: Spin until it's done
-            while (!isDoneSortingToBuckets)
+            System.Threading.Thread.Sleep(350);
+            while (!isDoneSortingToBuckets || !isDoneSaving)
             {
-                System.Threading.Thread.Sleep(200);
+                System.Threading.Thread.Sleep(100);
             }
             ResultsVM.storyPointAllocation = StoryPointAllocation;
             ResultsVM.DaysPerPt = ConversionRateDB.GetAllByForeignId(SelectedProject);
@@ -304,12 +320,14 @@ namespace TimePilot.Controllers
         [HttpPost]
         public void ResultUpdate(ResultsViewModel m)
         {
+            isDoneSaving = false;
             List<int> listOfIDs = new List<int>();
             for (int i = 0; i<m.DaysPerPt.Count; i++)
             {
                 m.DaysPerPt[i].ProjectKey = SelectedProject;
                 listOfIDs.Add(ConversionRateDB.Add(m.DaysPerPt[i]));
             }
+            isDoneSaving = true;
         }
 
         private void sortStoryPointsIntoBuckets()

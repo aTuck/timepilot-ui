@@ -152,6 +152,7 @@
 
     // Always save changes
     $(window).bind('beforeunload', function () {
+        $('#loading').show();
         postStoryForm();
     });
 
@@ -289,7 +290,7 @@
     $(document).on('click', '.trash-select-all', function () {
         var didCheck = false;
         $(this.parentNode.parentNode.parentNode.parentNode).find('input[type="checkbox"]').each(function () {
-            if ($(this).prop('checked') == false) {
+            if ($(this).prop('checked') == false && !($(this.parentNode.parentNode).hasClass('hidden-story'))) {
                 $(this).prop('checked', true);
                 didCheck = true;
             }
