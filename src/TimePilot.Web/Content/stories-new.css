@@ -30,7 +30,7 @@ a:focus {
     vertical-align: middle;
 }
 
-#story-id-cell {
+.story-id-cell {
     min-width: 120px;
 }
 
@@ -42,7 +42,11 @@ th:first-child, td:first-child {
     text-align: center;
 }
 
-.btn.active, .btn-radio:active {
+/*.btn.active, .btn-radio:active {
+    font-weight: 700;
+}*/
+
+active>h3{
     font-weight: 700;
 }
 
@@ -75,6 +79,20 @@ th:first-child, td:first-child {
     display: flex;
     justify-content: space-between;
     width: 140px;
+}
+
+.btn-crud{
+    height: 45px;
+}
+
+.btn-no-stories-refresh{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70px;
+    padding: 2px 12px;
+    font-size: 30px !important;
+    width: 85%;
 }
 
 .edit-sprint-btn {
@@ -125,22 +143,23 @@ th:first-child, td:first-child {
     align-items: flex-end;
     padding: 25px 20px;
     min-width: 350px;
-    max-width: 80%;
+    max-width: 30%;
 }
 
-.story-point-total-panel {
-    min-width: 250px;
-}
 
 .pre-table-panel {
     display: flex;
     justify-content: space-between;
+    padding: 0px 15px
 }
 
 .badge {
     white-space: normal;
 }
-
+.missing-stories-text{
+    font-size: 50px;
+    margin-bottom: 25px;
+}
 .story-list {
     font-size: 16px;
     text-align: left;
@@ -160,19 +179,17 @@ th:first-child, td:first-child {
 }
 
 .missing-stories-block{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     padding: 35px;
-}
-
-.refresh-stories-fake-button{
-    background:#46b8da;
-    color:white;
-    border-radius: 4px;
-    white-space: pre;
+    width: 500px
 }
 
 .magnifying-glass {
-    width: 125px;
-    height: 125px;
+    width: 100%;
+    height: 165px;
 }
 
 #story-points-cell {
@@ -180,13 +197,56 @@ th:first-child, td:first-child {
 }
 
 .no-stories-panel {
-    margin: 65px 0px;
+    margin: 25px 0px 65px 0px;
 }
 
-#story-point-header {
-    margin-bottom: 15px;
+.filter-by-epic-panel{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 0px;
+}
+.filter-by-active-sprint-panel{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-width: 400px;
+    height: 120px;
+}
+.btn-active-sprint{
+    height: 85px;
+    width: 70%;
+    text-align: center;
+    padding-top: 12px;
+}
+.btn-active-sprint:active{
+    font-weight:300 !important;
+}
+.active-sprint-name{
+    word-wrap: break-word !important;
+    overflow-wrap: break-word;
+    font-size: 24px;
+    margin-top: 4px;
+}
+#active-sprint-checkbox{
+    display: none;
+}
+.btn>h3{
+    cursor:pointer;
+}
+.story-point-total-panel{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 0px;
 }
 
+.story-point-total{
+    font-size: 28px
+}
 @media only screen and (max-width: 1200px) {
     .aside-right {
         width: 100%;

@@ -42,7 +42,7 @@
 
 <script>
     //Filters dropdown
-    document.getElementById("search-box").onkeyup = function() {
+    $('#search-box').on('keyup input change blur', function(){
         // Declare variables
         var input, filter, select, option, i, test = 0, projectcounter=0;
         input = document.getElementById('search-box');
@@ -59,7 +59,7 @@
                 projectcounter++;
             }
         }
-    }
+    })
 
     //Sorts dropdown
     document.getElementById("sort-order").onchange = function () {

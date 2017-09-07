@@ -25,35 +25,43 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3>Stories</h3>
-                <a class="dont-see-stories" href="javascript:void(0);"> Don't see your stories? </a>
+                @*<a class="dont-see-stories" href="javascript:void(0);"> Don't see your stories? </a>*@
             </div>
             <div class="panel-body">
                 <div class="story-container form-group">
                     <div class="row row-hcentered row-vcentered pre-table-panel">
-                        <div class="filter-by-epic-panel">
-                            <label>Filter by Epic: &nbsp;</label>
-                            @Html.DropDownListFor(m => m.selectedEpic, new SelectList(Model.EpicList, "Key", "Value.Summary"), "All Epics",
-                                             new { @class = "epic-dropdown form-control" })
+                        <div class="col-sm-3">
+                            <div class="filter-by-epic-panel">
+                                <label>Filter by Epic</label>
+                                @Html.DropDownListFor(m => m.selectedEpic, new SelectList(Model.EpicList, "Key", "Value.Summary"), "All Epics",
+                                                 new { @class = "epic-dropdown form-control" })
+                            </div>
                         </div>
-                        
-                        <div class="story-point-total-panel">
-                            <h2 id="story-point-header">Story Points:<span class="story-point-total"></span></h2>
-                            @Html.HiddenFor(m => m.totalStoryPoints,
-                            new { @class = "story-point-total-hidden" })
+                        <div class="col-sm-6 filter-by-active-sprint-panel">
+                            <div id="active-sprint-checkbox-container" class="btn btn-default btn-active-sprint btn-group @(Model.activeSprint == "No Active Sprint" ? "disabled" : "")" data-toggle="buttons">
+                                Only show stories in active sprint
+                                <div class="active-sprint-name">@Model.activeSprint</div>
+                                @if (Model.activeSprint != "No Active Sprint")
+                                {<input type="checkbox" id="active-sprint-checkbox" />}
+                            </div>
+                        </div>
+                        <div class="col-sm-3 story-point-total-panel">
+                            <h2 id="story-point-header">Story Points&nbsp;&nbsp;<span class="story-point-total badge"></span></h2>
+                            @Html.HiddenFor(m => m.totalStoryPoints, new { @class = "story-point-total-hidden" })
                         </div>
                     </div>
-                        @{ if (Model.StoryList.Count() <= 0)
-                            {
-                                <input type="hidden" id="hack-button-to-disable-next" value="-1" />
-                                <div class="row no-stories-panel"> 
-                                    <div class="col-xs-7 centered missing-stories-block">
-                                        <img class="magnifying-glass" src="~/Content/magnifying-glass.svg"/>
-                                        <h1>Hmm, where are those stories? Click that <span class="refresh-stories-fake-button">&nbsp;Refresh Stories&nbsp;</span> button!</h1>
-                                    </div>
+                    @{ if (Model.StoryList.Count() <= 0)
+                        {
+                            <input type="hidden" id="hack-button-to-disable-next" value="-1" />
+                            <div class="row no-stories-panel">
+                                <div class="col-xs-7 centered missing-stories-block">
+                                    <img class="magnifying-glass" src="~/Content/magnifying-glass.svg" />
+                                    <h1 class="missing-stories-text">Hmm, where are those stories?</h1><button class="btn btn-info btn-crud btn-populate btn-no-stories-refresh"><span class="glyphicon glyphicon-cloud"></span>&nbsp;&nbsp;Fetch Stories</button>
                                 </div>
-                            }
-                            else
-                            {
+                            </div>
+                        }
+                        else
+                        {
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -67,73 +75,76 @@
                                 <tbody>
                                     @for (int i = 0; i < Model.StoryList.Count(); i++)
                                     {
-                                    <tr>
-                                        @Html.HiddenFor(m => m.StoryList[i].StoryID)
-                                        @Html.HiddenFor(m => m.StoryList[i].StoryKey)
-                                        @Html.HiddenFor(m => m.StoryList[i].EpicKey, new { @class = "hidden-epic-key" })
-                                        @Html.HiddenFor(m => m.StoryList[i].Summary)
-                                        @Html.HiddenFor(m => m.StoryList[i].isHidden, new { @value = 0, @class = "hidden-bool" })
-                                        <td class="cell-centered"> <input type="checkbox" name="chk-delete" value="@Model.StoryList[i].StoryID"/> </td>
-                                        @{
-                                            if (Model.StoryList[i].EpicKey != null && Model.EpicList.ContainsKey(Model.StoryList[i].EpicKey))
-                                            {
-                                                <td id="story-id-cell" class="cell-centered"> <a href="https://pnimedia.jira.com/browse/@Model.StoryList[i].EpicKey" target="_blank"><span class="badge">@Model.EpicList[Model.StoryList[i].EpicKey].Summary</span></a></td>
+                                        <tr id="@Model.StoryList[i].StoryKey">
+                                            @Html.HiddenFor(m => m.StoryList[i].StoryID)
+                                            @Html.HiddenFor(m => m.StoryList[i].StoryKey)
+                                            @Html.HiddenFor(m => m.StoryList[i].EpicKey, new { @class = "hidden-epic-key" })
+                                            @Html.HiddenFor(m => m.StoryList[i].Summary)
+                                            @Html.HiddenFor(m => m.StoryList[i].isHidden, new { @value = 0, @class = "hidden-bool" })
+                                            <td class="cell-centered"> <input type="checkbox" name="chk-delete" value="@Model.StoryList[i].StoryID" /> </td>
+                                            @{
+                                                if (Model.StoryList[i].EpicKey != null && Model.EpicList.ContainsKey(Model.StoryList[i].EpicKey))
+                                                {
+                                                    <td id="story-epic-cell" class="story-id-cell cell-centered"> <a href="https://pnimedia.jira.com/browse/@Model.StoryList[i].EpicKey" target="_blank"><span class="badge">@Model.EpicList[Model.StoryList[i].EpicKey].Summary</span></a></td>
+                                                }
+                                                else
+                                                {
+                                                    <td id="story-epic-cell" class="story-id-cell cell-centered"> <span class="badge">Unassigned</span></td>
+                                                }
                                             }
-                                            else
-                                            {
-                                                <td id="story-id-cell" class="cell-centered"> <span class="badge">Unassigned</span></td>
-                                            }
-                                        }
-                                        <td id="story-id-cell" class="cell-centered"> <a href="https://pnimedia.jira.com/browse/@Model.StoryList[i].StoryKey" target="_blank">@Model.StoryList[i].StoryKey</a></td>
-                                        <td> <p>@Model.StoryList[i].Summary</p> </td>
-                                        <td id="story-points-cell">
-                                            <fieldset class="radio-group">
-                                                <div class="btn-group" data-toggle="buttons">
-                                                    <label class="btn btn-default btn-radio @(Model.StoryList[i].StoryPoints == 1 ? "active" : "")">1 
-                                                        @Html.RadioButtonFor(m => m.StoryList[i].StoryPoints, "1",
-                                                                          checked(Model.StoryList[i].StoryPoints == 1))
-                                                    </label>
-                                                    <label class="btn btn-default btn-radio @(Model.StoryList[i].StoryPoints == 3 ? "active" : "")">3
-                                                        @Html.RadioButtonFor(m => m.StoryList[i].StoryPoints, "3",
-                                                                          checked(Model.StoryList[i].StoryPoints == 3))
-                                                    </label>
-                                                    <label class="btn btn-default btn-radio @(Model.StoryList[i].StoryPoints == 5 ? "active" : "")">5
-                                                        @Html.RadioButtonFor(m => m.StoryList[i].StoryPoints, "5",
-                                                                          checked(Model.StoryList[i].StoryPoints == 5))
-                                                    </label>
-                                                    <label class="btn btn-default btn-radio @(Model.StoryList[i].StoryPoints == 8 ? "active" : "")">8
-                                                        @Html.RadioButtonFor(m => m.StoryList[i].StoryPoints, "8",
-                                                                          checked(Model.StoryList[i].StoryPoints == 8))
-                                                    </label>
-                                                    <label class="btn btn-default btn-radio @(Model.StoryList[i].StoryPoints == 13 ? "active" : "")">13
-                                                        @Html.RadioButtonFor(m => m.StoryList[i].StoryPoints, "13",
-                                                                          checked(Model.StoryList[i].StoryPoints == 13))
-                                                    </label>
-                                                    <label class="btn btn-default btn-radio @(Model.StoryList[i].StoryPoints == 21 ? "active" : "")">21
-                                                        @Html.RadioButtonFor(m => m.StoryList[i].StoryPoints, "21",
-                                                                          checked(Model.StoryList[i].StoryPoints == 21))
-                                                    </label>
-                                                </div>
-                                            </fieldset>
-                                        </td>
-                                    </tr>
-                                    }
+                                            <td id="@Model.StoryList[i].StoryKey" class="story-id-cell cell-centered"> <a href="https://pnimedia.jira.com/browse/@Model.StoryList[i].StoryKey" target="_blank">@Model.StoryList[i].StoryKey</a></td>
+                                            <td>@Model.StoryList[i].Summary</td>
+                                            <td id="story-points-cell">
+                                                <fieldset class="radio-group">
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default btn-radio @(Model.StoryList[i].StoryPoints == 1 ? "active" : "")">
+                                                            1
+                                                            @Html.RadioButtonFor(m => m.StoryList[i].StoryPoints, "1", checked(Model.StoryList[i].StoryPoints == 1))
+                                                        </label>
+                                                        <label class="btn btn-default btn-radio @(Model.StoryList[i].StoryPoints == 3 ? "active" : "")">
+                                                            3
+                                                            @Html.RadioButtonFor(m => m.StoryList[i].StoryPoints, "3", checked(Model.StoryList[i].StoryPoints == 3))
+                                                        </label>
+                                                        <label class="btn btn-default btn-radio @(Model.StoryList[i].StoryPoints == 5 ? "active" : "")">
+                                                            5
+                                                            @Html.RadioButtonFor(m => m.StoryList[i].StoryPoints, "5", checked(Model.StoryList[i].StoryPoints == 5))
+                                                        </label>
+                                                        <label class="btn btn-default btn-radio @(Model.StoryList[i].StoryPoints == 8 ? "active" : "")">
+                                                            8
+                                                            @Html.RadioButtonFor(m => m.StoryList[i].StoryPoints, "8", checked(Model.StoryList[i].StoryPoints == 8))
+                                                        </label>
+                                                        <label class="btn btn-default btn-radio @(Model.StoryList[i].StoryPoints == 13 ? "active" : "")">
+                                                            13
+                                                            @Html.RadioButtonFor(m => m.StoryList[i].StoryPoints, "13", checked(Model.StoryList[i].StoryPoints == 13))
+                                                        </label>
+                                                        <label class="btn btn-default btn-radio @(Model.StoryList[i].StoryPoints == 21 ? "active" : "")">
+                                                            21
+                                                            @Html.RadioButtonFor(m => m.StoryList[i].StoryPoints, "21", checked(Model.StoryList[i].StoryPoints == 21))
+                                                        </label>
+                                                    </div>
+                                                </fieldset>
+                                            </td>
+                                        </tr>
+                                                }
                                 </tbody>
                             </table>
-                            }
-                        }
+                                                }
+                    }
                 </div>
             </div>
-        
-            <div class="crud-control-panel">
-                <div class="crud-left btn-group">
-                    <button class="btn btn-info ctrl-btn btn-populate"><span class="glyphicon glyphicon-refresh"></span> &nbsp; Refresh Stories</button>
-                    @*<button class="btn btn-info ctrl-btn btn-populate"><span class="glyphicon glyphicon-refresh"></span> &nbsp; Refresh (Save)</button>*@
+            @{ if (!(Model.StoryList.Count() <= 0))
+                {
+                <div class="crud-control-panel">
+                    <div class="crud-left btn-group">
+                        <button class="btn btn-info btn-crud btn-populate"><span class="glyphicon glyphicon-refresh"></span> &nbsp; Refresh Stories</button>
+                        @*<button class="btn btn-info ctrl-btn btn-populate"><span class="glyphicon glyphicon-refresh"></span> &nbsp; Refresh (Save)</button>*@
+                    </div>
+                    <div class="crud-right btn-group">
+                        <button class="btn btn-danger btn-crud delete-selected btn-delete"><span class="glyphicon glyphicon-trash"></span> &nbsp; Delete Selected</button>
+                    </div>
                 </div>
-                <div class="crud-right btn-group">
-                    <button class="btn btn-danger  ctrl-btn delete-selected btn-delete"><span class="glyphicon glyphicon-trash"></span> &nbsp; Delete Selected</button>
-                </div>
-            </div>
+                }
+            }
         </div>
         <div class="nav-control-panel">
             <button class="btn ctrl-btn btn-primary nav-btn btn-prev"><span class="glyphicon glyphicon-menu-left"></span>&nbsp;Projects</button>
@@ -189,15 +200,12 @@
     }
 
     // Refresh stories button
-    $('.btn-populate').on('click', function (e) {
+    $('.btn-populate, .dont-see-stories').on('click', function (e) {
         e.preventDefault();
-        var c = confirm("Story point changes will be lost on refresh");
-        if (c) { refreshStoryForm() };
-    })
-    $('.dont-see-stories').on('click', function (e) {
-        e.preventDefault();
-        var c = confirm("Story point changes will be lost on refresh");
-        if (c) { refreshStoryForm() };
+        // Have user confirm refresh if this is necessary
+        //var c = confirm("Story point changes will be lost on refresh");
+        //if (c) { refreshStoryForm() };
+        refreshStoryForm();
     })
     function refreshStoryForm() {
         $('#loading').show();
@@ -255,8 +263,10 @@
         $('.story-point-total-hidden').val(total);
     }
 
-
+    // Filter by epic
     $('.epic-dropdown').on('change', function () {
+        document.getElementById("active-sprint-checkbox").checked = false;
+        $('#active-sprint-checkbox-container').removeClass('active');
         epicFilter($(this).val(), (isDone) => {
             if (isDone) { sumStoryPoints() }
         });
@@ -286,6 +296,34 @@
         done(true);
     }
 
+
+    // Filter by active sprint
+    $('#active-sprint-checkbox').change(function(){
+        activeSprintFilter(this.checked, (isDone) => {
+            if (isDone) { sumStoryPoints() }
+        });
+    })
+    function activeSprintFilter(checked, done){
+        if (checked) {
+            $('.epic-dropdown').val("");
+            var stories = @Html.Raw(Json.Encode(Model.StoriesInActiveSprintList));
+            $('tbody > tr').each(function () {
+                $(this).addClass('hidden-story');
+                $(this).hide();
+            });
+            for (var key of stories){
+                $('#'+key).removeClass('hidden-story');
+                $('#'+key).show();
+            }
+        }
+        else {
+            $('tbody > tr').each(function () {
+                $(this).removeClass('hidden-story');
+                $(this).show();
+            })
+        }
+    }
+
     // Select all for deletion functionality
     $(document).on('click', '.trash-select-all', function () {
         var didCheck = false;
@@ -302,7 +340,7 @@
         }
     })
 
-    // No stories
+    // No stories button disable
     $(document).ready(function(){
         if ($('#hack-button-to-disable-next').val() == -1){
             $('.btn-next').prop('disabled', true);

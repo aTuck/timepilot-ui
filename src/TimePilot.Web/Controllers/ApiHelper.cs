@@ -40,9 +40,9 @@ namespace TimePilot.Controllers
             return Convert.ToBase64String(byteCredentials);
         }
 
-        public List<TimePilot.Entities.Story> parseStoryData(string jsonString)
+        public List<Story> parseStoryData(string jsonString)
         {
-            List<TimePilot.Entities.Story> stories = new List<TimePilot.Entities.Story>();
+            List<Story> stories = new List<Story>();
             JObject results = JObject.Parse(jsonString);
 
 
@@ -50,7 +50,7 @@ namespace TimePilot.Controllers
             {
                 foreach (var result in results["issues"])
                 {
-                    TimePilot.Entities.Story story = new TimePilot.Entities.Story();
+                    Story story = new Story();
 
                     story.StoryID = (int)result["id"];
                     story.StoryKey = (string)result["key"];
@@ -96,6 +96,35 @@ namespace TimePilot.Controllers
                 projects.Add(project);
             }
             return projects;
+        }
+
+        public List<string> parseActiveSprintData(string jsonString)
+        {
+            List<string> StoriesInActiveSprintList = new List<string>();
+            JObject results = JObject.Parse(jsonString);
+
+            if (jsonString.Contains("issues"))
+            {
+                foreach (var result in results["issues"])
+                {
+                    StoriesInActiveSprintList.Add((string)result["key"]);
+                }
+            }
+
+            return StoriesInActiveSprintList;
+        }
+
+        public string getActiveSprint(string jsonString)
+        {
+            string activeSprint = "";
+            JObject results = JObject.Parse(jsonString);
+
+            if (jsonString.Contains("fields"))
+            {
+                activeSprint = (string)results["issues"][0]["fields"]["customfield_10331"][0];
+            }
+
+            return activeSprint;
         }
     }
 }

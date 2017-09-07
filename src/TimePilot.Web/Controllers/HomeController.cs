@@ -15,6 +15,7 @@ namespace TimePilot.Controllers
         private string projectJson;
         private string storyJson;
         private string epicJson;
+        private string activeSprintJson;
 
         public static float totalDevCapacity;
         public static int totalStoryPoints;
@@ -25,6 +26,7 @@ namespace TimePilot.Controllers
         public static int[] StoryPointAllocation;
         private static string SelectedProject;
         public static string SelectedEpic;
+        private static string ActiveSprint;
 
         List<Story> stories = new List<Story>();        
         List<Project> projects = new List<Project>();
@@ -49,12 +51,17 @@ namespace TimePilot.Controllers
 
         public void receiveStoryData()
         {
-            storyJson = apiHelper.getDataFromJira("https://pnimedia.jira.com/rest/api/2/search?jql=project=" + "'" + SelectedProject + "'" + "%20AND%20type%20in(story,improvement)%20and%20(Sprint=EMPTY%20OR%20Sprint%20not%20in(openSprints(),futureSprints()))%20AND%20status%20not%20in(closed,done,resolved,accepted)&fields=customfield_10013,customfield_10830,id,description,summary&maxResults=1000");
+            storyJson = apiHelper.getDataFromJira("https://pnimedia.jira.com/rest/api/2/search?jql=project=" + "'" + SelectedProject + "'" + "%20AND%20type%20in(story,improvement)%20and%20%28status%20not%20in(closed,done,resolved,accepted)+OR+Sprint+IN+openSprints%28%29%29&fields=customfield_10013,customfield_10830,id,description,summary&maxResults=1000");
         }
 
         public void recieveEpicData()
         {
             epicJson = apiHelper.getDataFromJira("https://pnimedia.jira.com/rest/api/2/search?jql=project=" + "'" + SelectedProject + "'" + "%20AND%20type%20in(epic)%20and%20(Sprint=EMPTY%20OR%20Sprint%20not%20in(openSprints(),futureSprints()))%20AND%20status%20not%20in(closed,done,resolved,accepted)&fields=customfield_10013,customfield_10830,id,description,summary&maxResults=1000");
+        }
+
+        public void receiveActiveSprintData()
+        {
+            activeSprintJson = apiHelper.getDataFromJira("https://pnimedia.jira.com/rest/api/2/search?jql=project=" + "'" + SelectedProject + "'" + "+AND+issuetype+%3D+Story+AND+Sprint+IN+openSprints%28%29+ORDER+BY+priority+DESC%2C+updated+DESC&fields=customfield_10331");
         }
 
         public ActionResult Index()
@@ -107,9 +114,11 @@ namespace TimePilot.Controllers
                 System.Threading.Thread.Sleep(100);
             }
             isDoneSortingToBuckets = false;
-            StoryVM.EpicList = new Dictionary<string, Epic>();
+
             stories = StoryDB.GetAllByForeignId(SelectedProject);
             epics = EpicDB.GetAllByForeignId(SelectedProject);
+
+            StoryVM.EpicList = new Dictionary<string, Epic>();
             StoryVM.StoryList = stories;
             for (int i = 0; i < epics.Count; i++) {
                 if (checkForEpicInStories(epics[i].EpicKey))
@@ -118,6 +127,10 @@ namespace TimePilot.Controllers
                 }
             }
             sortStoryPointsIntoBuckets();
+
+            receiveActiveSprintData();
+            StoryVM.StoriesInActiveSprintList = apiHelper.parseActiveSprintData(activeSprintJson);
+            StoryVM.activeSprint = parseActiveSprintString(apiHelper.getActiveSprint(activeSprintJson));
             return View(StoryVM);
         }
 
@@ -400,6 +413,22 @@ namespace TimePilot.Controllers
             c.StoryPoints = n;
             return c;
         }
+
+        private string parseActiveSprintString(string s)
+        {
+            if (s != "")
+            {
+                int index1 = s.IndexOf("name=")+5;
+                int index2 = s.IndexOf(",goal=");
+                s = s.Substring(index1, index2-index1).Trim();
+                return s;
+            }
+            else
+            {
+                return "No Active Sprint";
+            }
+        }
+
     }
 }
 

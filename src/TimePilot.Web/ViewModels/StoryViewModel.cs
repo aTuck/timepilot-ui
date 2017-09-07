@@ -14,6 +14,8 @@ namespace TimePilot.Web.ViewModels
         public int totalStoryPoints { get; set; }
         public List<Story> StoryList { get; set; }
         public Dictionary<string, Epic> EpicList { get; set; }
+        public List<string> StoriesInActiveSprintList { get; set; }
+        public string activeSprint { get; set; }
         public string selectedEpic { get; set; }
     }
 }
