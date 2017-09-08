@@ -95,7 +95,11 @@
                     <br />
                     <div class="row">
                         <div class="col-md-6 col-xs-6"> <label>Total Duration</label> <h3 class="med-value hoursval-total-duration">0w 0d 0h</h3> </div>
-                        <div class="col-md-6 col-xs-6"> <label>Release & Hardening</label><h3 class="med-value release-and-hardening">2 weeks</h3></div>
+                        <div class="col-md-6 col-xs-6 rh-block inactive btn btn-default btn-group" data-toggle="buttons">
+                            <label class="rh-label">Release & Hardening</label>
+                            <h3 class="med-value release-and-hardening">2 weeks</h3>
+                            <input type="checkbox" class="rh-chkbox" id="chkbox1" />
+                        </div>
                     </div>
                     <br /><br />
                     <div class="row">
@@ -140,7 +144,11 @@
                     <br />
                     <div class="row">
                         <div class="col-xs-6"> <label>Total Duration</label> <h3 class="med-value velocityval-total-duration">0w 0d 0h</h3> </div>
-                        <div class="col-xs-6"> <label>Release & Hardening</label><h3 class="med-value release-and-hardening">2 weeks</h3></div>
+                        <div class="col-md-6 col-xs-6 rh-block inactive btn btn-default btn-group" data-toggle="buttons">
+                            <label class="rh-label">Release & Hardening</label>
+                            <h3 class="med-value release-and-hardening">2 weeks</h3>
+                            <input type="checkbox" class="rh-chkbox" id="chkbox2" />
+                        </div>
                     </div>
                     <br /><br />
                     <div class="row">
@@ -152,7 +160,7 @@
     </div>
     <div class="nav-control-panel">
         <button class="btn ctrl-btn btn-primary nav-btn btn-prev"><span class="glyphicon glyphicon-menu-left"></span> &nbsp; Resource Capacity </button>
-        <button class="btn ctrl-btn btn-primary nav-btn btn-home"><span class="glyphicon glyphicon-home"></span></button>
+        <button class="btn ctrl-btn btn-primary nav-btn btn-home"><span class="glyphicon glyphicon-home home-icon"></span></button>
         <!--<button class="btn ctrl-btn btn-primary nav-btn chart-flip"><span class="glyphicon glyphicon-share-alt"/></label> &nbsp; Chart Flip </button>-->
         <button class="btn ctrl-btn btn-success nav-btn btn-export" onclick="return xepOnline.Formatter.Format('main', {render:'newwin', cssStyle:[{width: '75%'}], pageMargin:'0.5in'});">Export to PDF &nbsp; 
             <span class="glyphicon glyphicon-send">
@@ -219,6 +227,22 @@
             return false;
         }
     });
+    $(document).on('keydown', '.conversion-rate', function(e) {
+        var keycode = e.keyCode;
+        // 69 = e, 189 = -, 190 = .
+        if (keycode == 69 || keycode == 189 || keycode == 190) {
+            e.preventDefault();
+            return false;
+            // 16 = shift, 17 = ctrl, 8 = backspace, 37/38/39/40 = left, up, right, down arrows
+            // Enabling these for usability on number inputs because otherwise they do nothing with max length of 2
+        }else if((this.value.length==2 && getSelectedText()) || keycode == 16 || keycode == 17 || keycode == 8 
+                                                             || keycode == 37 || keycode == 38 || keycode == 39 || keycode == 40){
+            return true;
+        }else if(this.value.length==2 ){
+            e.preventDefault();
+            return false;
+        }
+    });
     $('.team-velocity').on('paste', function(e){
         e.preventDefault();
     });
@@ -236,10 +260,35 @@
         }
     }, 50);
 
-    $(window).on('beforeunload', function () {
-        $('#loading').show();
-        postConversionForm();
-    });
+
+
+    /* lock checkboxes together & calculate */
+    $('.rh-chkbox').on('input change', function(){
+        var block = $('.rh-block');
+        if ($(this).prop('checked')==true){
+            $(block).blur();
+            $(block).removeClass('inactive');
+            $(block).addClass('active')
+            if ($(this).attr('id') == 'chkbox1'){
+                $('#chkbox2').prop('checked', true);
+            }
+            else{
+                $('#chkbox1').prop('checked', true);
+            }
+        }
+        else{
+            $(block).addClass('inactive');
+            $(block).removeClass('active');
+            if ($(this).attr('id') == 'chkbox1'){
+                $('#chkbox2').prop('checked', false);
+            }
+            else{
+                $('#chkbox1').prop('checked', false);
+            }
+        }
+        calculatePage();
+
+    })
 
     /* lock sliders together & calculate */
     $('.slider').on('input', function(){
@@ -281,8 +330,12 @@
         var totalNumOfSprints = @Model.totalNumOfSprints;
         var numOfWeeks = $('select.sprint-length').val();
         var contingency = parseFloat(1) + parseFloat($('.slider').val()/100);
-        var releaseAndHardening = $('select.sprint-length').val();
+        var releaseAndHardening = $('select.sprint-length').val(); 
+        var sprintLength = $('select.sprint-length').val();
         var teamVelocity = $('.team-velocity').val();
+
+        var withReleaseAndHardening = false;
+        withReleaseAndHardening = $('.rh-chkbox').prop('checked') == true ? true : false;
 
         $('.tier-label').each(function(){
             totalDays += parseInt($(this).text());
@@ -291,11 +344,15 @@
         devQaRequired = Math.round(parseFloat(totalHours * contingency));
         avgCapacityPerWeek = Math.round((totalDevCapacity/totalNumOfSprints)/numOfWeeks);
         hoursvalTotalDuration = parseDuration(devQaRequired / avgCapacityPerWeek);
-        hoursvalProjectDuration = parseDuration((devQaRequired / avgCapacityPerWeek) + parseInt(releaseAndHardening));
+        hoursvalProjectDuration = parseDuration(devQaRequired / avgCapacityPerWeek);
         totalStoryPoints = Math.round(totalStoryPoints * contingency);
         sprintsRequired = (totalStoryPoints/teamVelocity).toFixed(2);
-        velocityvalTotalDuration = parseDuration(sprintsRequired*releaseAndHardening);
-        velocityvalProjectDuration = parseDuration((sprintsRequired*releaseAndHardening)+ parseInt(releaseAndHardening));
+        velocityvalTotalDuration = parseDuration(sprintsRequired*sprintLength);
+        velocityvalProjectDuration = parseDuration(sprintsRequired*sprintLength);
+        if (withReleaseAndHardening){
+            hoursvalProjectDuration = parseDuration((devQaRequired / avgCapacityPerWeek) + parseInt(releaseAndHardening));
+            velocityvalProjectDuration = parseDuration((sprintsRequired*sprintLength) + parseInt(releaseAndHardening));
+        }
 
         $('.total-days').text(totalDays);
         $('.total-hours').text(totalHours);
@@ -321,7 +378,13 @@
         hours = Math.trunc((duration % 1).toFixed(2)*24)
 
         if(isFinite(duration)){
-            return(weeks+'w '+days+'d '+hours+'h');
+            var durationString = weeks+'w '+days+'d '+hours+'h';
+            if (durationString.length >= 11){
+                return(weeks+'w '+days+'d');
+            }
+            else{
+                return durationString
+            }
         }
         else{
             return('∞');
@@ -349,6 +412,12 @@
             }
         })
     };
+
+    $(window).on('beforeunload', function () {
+        $('#loading').show();
+        postConversionForm();
+    });
+
     /* flip cards around for charts
     $('.chart-flip').on('click', function(){
       $('.main').toggleClass('main-flip');

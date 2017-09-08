@@ -1,4 +1,5 @@
 ﻿@using TimePilot.Web.ViewModels
+@using TimePilot.Controllers;
 @model StoryViewModel
 
 @{
@@ -19,13 +20,37 @@
     </div>
 </div>
 
+@* Negative value modal *@
+<button class="btn-modal" id="btn-trigger-modal" data-toggle="modal" data-target="#negative-value-modal"></button>
+<div id="negative-value-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h3 class="modal-title">No Story Points</h3>
+            </div>
+            <div class="modal-body">
+                <img class="modal-warning" src="~/Content/embarrassed.svg" />
+                <h3 class="modal-text">Looks like you need some story points</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btn-close-modal" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
 @using (Html.BeginForm("Story", "Home", FormMethod.Post, new { @id = "story-form" }))
 {
     <div class="container">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3>Stories</h3>
-                @*<a class="dont-see-stories" href="javascript:void(0);"> Don't see your stories? </a>*@
+                <div>
+                    <h3>Stories</h3>
+                    <div>@Model.selectedProject</div>
+                </div>
             </div>
             <div class="panel-body">
                 <div class="story-container form-group">
@@ -38,12 +63,12 @@
                             </div>
                         </div>
                         <div class="col-sm-6 filter-by-active-sprint-panel">
-                            <div id="active-sprint-checkbox-container" class="btn btn-default btn-active-sprint btn-group @(Model.activeSprint == "No Active Sprint" ? "disabled" : "")" data-toggle="buttons">
+                            @*<div id="active-sprint-checkbox-container" class="btn btn-default btn-active-sprint btn-group @(Model.activeSprint == "No Active Sprint" ? "disabled" : "")" data-toggle="buttons">
                                 Only show stories in active sprint
                                 <div class="active-sprint-name">@Model.activeSprint</div>
                                 @if (Model.activeSprint != "No Active Sprint")
                                 {<input type="checkbox" id="active-sprint-checkbox" />}
-                            </div>
+                            </div>*@
                         </div>
                         <div class="col-sm-3 story-point-total-panel">
                             <h2 id="story-point-header">Story Points&nbsp;&nbsp;<span class="story-point-total badge"></span></h2>
@@ -56,7 +81,7 @@
                             <div class="row no-stories-panel">
                                 <div class="col-xs-7 centered missing-stories-block">
                                     <img class="magnifying-glass" src="~/Content/magnifying-glass.svg" />
-                                    <h1 class="missing-stories-text">Hmm, where are those stories?</h1><button class="btn btn-info btn-crud btn-populate btn-no-stories-refresh"><span class="glyphicon glyphicon-cloud"></span>&nbsp;&nbsp;Fetch Stories</button>
+                                    <h1 class="missing-stories-text">Hmm, where are those stories?</h1><button class="btn btn-info btn-crud btn-populate btn-no-stories-refresh"><span class="glyphicon glyphicon-cloud"></span>&nbsp;&nbsp;Fetch stories</button>
                                 </div>
                             </div>
                         }
@@ -219,10 +244,16 @@
         })
     }
 
-    // Navigate to resource page
+    // Navigate to resource page if there are story points
     $('.btn-next').on('click', function(e) {
         e.preventDefault();
-        window.location.href = "@Url.Action("Resource", "Home")"
+        if($('.story-point-total-hidden').val() <= 0){
+            $('#btn-trigger-modal').click();
+            return;
+        }
+        else{
+            window.location.href = "@Url.Action("Resource", "Home")"
+        }
     })
 
     // Navigate to previous page
@@ -265,7 +296,10 @@
 
     // Filter by epic
     $('.epic-dropdown').on('change', function () {
-        document.getElementById("active-sprint-checkbox").checked = false;
+        var checkbox = document.getElementById("active-sprint-checkbox");
+        if (checkbox != null){
+            checkbox.checked = false;
+        }
         $('#active-sprint-checkbox-container').removeClass('active');
         epicFilter($(this).val(), (isDone) => {
             if (isDone) { sumStoryPoints() }
@@ -315,12 +349,14 @@
                 $('#'+key).removeClass('hidden-story');
                 $('#'+key).show();
             }
+            done(true);
         }
         else {
             $('tbody > tr').each(function () {
                 $(this).removeClass('hidden-story');
                 $(this).show();
             })
+            done(true);
         }
     }
 

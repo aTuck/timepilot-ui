@@ -13,16 +13,16 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3>Projects</h3>
-            <a class="dont-see-projects"> Don't see your project? </a>
+            @*<a class="dont-see-projects"> Don't see your project? </a>*@
         </div>
         <div class="panel-body">
             <div class="aside-right">
-                <label class="controls-label">Sort Projects By:</label>
+                <label class="controls-label">Sort projects by </label>
                 <select id="sort-order" class="selectpicker">
                     <option value="desc">Name A-Z</option>
                     <option value="asc">Name Z-A</option>
                 </select>
-                <label class="controls-label">Search:</label>
+                <label class="controls-label">&nbsp;&nbsp; Search</label>
                 <input id="search-box" class="form-control search-box" maxlength="20" />
             </div>
             <div class="project-container form-group">
@@ -33,7 +33,7 @@
         </div>
     </div>
     <div class="nav-control-panel">
-        <button class="btn ctrl-btn btn-primary nav-btn btn-refresh"><span class="glyphicon glyphicon-refresh"></span> &nbsp; Grab new projects </button>
+        <button class="btn ctrl-btn btn-info nav-btn btn-refresh"><span class="glyphicon glyphicon-refresh"></span> &nbsp; Grab new projects </button>
         <button class="btn ctrl-btn btn-primary nav-btn btn-next disabled" disabled="disabled" type="submit">Stories &nbsp; <span class="glyphicon glyphicon-menu-right"></span></button>
     </div>
     }

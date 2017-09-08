@@ -98,7 +98,7 @@ namespace TimePilot.Controllers
             Project temp;
             for (int i = 0; i < projects.Count; i++)
             {
-                temp = ProjDB.GetById(projects[i]);
+                temp = ProjDB.GetById(projects[i].ProjectKey);
                 if (!(temp.ProjectKey == projects[i].ProjectKey))
                     ProjDB.Add(projects[i]);
                 }
@@ -131,6 +131,7 @@ namespace TimePilot.Controllers
             receiveActiveSprintData();
             StoryVM.StoriesInActiveSprintList = apiHelper.parseActiveSprintData(activeSprintJson);
             StoryVM.activeSprint = parseActiveSprintString(apiHelper.getActiveSprint(activeSprintJson));
+            StoryVM.selectedProject = ProjDB.GetById(SelectedProject).Summary;
             return View(StoryVM);
         }
 

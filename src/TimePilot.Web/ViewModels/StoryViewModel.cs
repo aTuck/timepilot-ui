@@ -17,5 +17,6 @@ namespace TimePilot.Web.ViewModels
         public List<string> StoriesInActiveSprintList { get; set; }
         public string activeSprint { get; set; }
         public string selectedEpic { get; set; }
+        public string selectedProject { get; set; }
     }
 }

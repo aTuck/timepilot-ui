@@ -53,6 +53,7 @@ a:focus {
 }
 
 .search-box {
+    margin-left: 0px !important;
     width: 200px;
 }
 

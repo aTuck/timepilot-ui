@@ -8,7 +8,7 @@ using TimePilot.Entities;
 
 namespace TimePilot.DataAccess.Repository
 {
-    public class ProjectRepository : RepositoryBase, IProjectRepository
+    public class ProjectRepository : RepositoryBase
     {
         public List<Project> GetAll()
         {
@@ -26,13 +26,13 @@ namespace TimePilot.DataAccess.Repository
 
         /* Returns a project object with the same key as 'key'
          * Returns a project object with key = null if a project with 'key' was not found */
-        public Project GetById(Project proj)
+        public Project GetById(string projKey)
         {
             // This will be the return value if no ID was found
             Project dummyProj = new Project { ProjectKey = null };
 
             string sql = @"SELECT * from project where ProjectKey = @k";
-            List<Project> projects = dbContext.Query<Project>(sql, new { k = proj.ProjectKey }).ToList();
+            List<Project> projects = dbContext.Query<Project>(sql, new { k = projKey }).ToList();
             if (projects.Count <= 0)
             {
                 return dummyProj;

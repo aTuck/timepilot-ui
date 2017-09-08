@@ -8,7 +8,7 @@
 @section resource{<link href="~/Content/resource-new.css" rel="stylesheet" />}
 
 @* Negative value modal *@
-<button class="btn-modal" id="btn-trigger-modal" data-toggle="modal" data-target="#negative-value-modal"></button>
+<button class="btn-modal" id="btn-trigger-negative-value-modal" data-toggle="modal" data-target="#negative-value-modal"></button>
 <div id="negative-value-modal" class="modal fade" role="dialog">
     <div class="modal-dialog">
 
@@ -18,8 +18,8 @@
                 <h3 class="modal-title">Invalid Capacities</h3>
             </div>
             <div class="modal-body">
-                <img class="modal-warning" src="~/Content/warning.svg" />
-                <h3 class="modal-text">Woah those capacities don't look right. They gotta be > 0!</h3>
+                <img class="modal-warning" src="~/Content/embarrassed.svg" />
+                <h3 class="modal-text">Oops, those capacities aren't right. Try getting them above zero.</h3>
             </div>
             <div class="modal-footer">
                 <button type="button" id="btn-close-modal" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -237,7 +237,7 @@
             e.preventDefault();
         // 16 = shift, 17 = ctrl, 8 = backspace, 37/38/39/40 = left, up, right, down arrows
         // Enabling these for usability on number inputs because otherwise they do nothing with max length of 2
-        }else if(this.value.length==2 && getSelectedText() || keycode == 16 || keycode == 17 || keycode == 8 
+        }else if(this.value.length==2 && getSelectedText() || keycode == 16 || keycode == 17 || keycode == 8
                                                            || keycode == 37 || keycode == 38 || keycode == 39 || keycode == 40){
             return true;
         }else if(this.value.length==2 ){
@@ -297,7 +297,7 @@
 
         // Flag was set
         if(isInvalidInput) {
-            $('#btn-trigger-modal').click();
+            $('#btn-trigger-negative-value-modal').click();
         }
         else {
             $('#loading').show();
@@ -554,7 +554,7 @@
             $('#'+sprintNum+'-'+memberNum).html(''+
                     '<td><input type="checkbox" name="chkDelete" value="-1"/></td>'+
                     '<td>'+
-                        '<select class="role-select">'+
+                        '<select class="role-select" id="members_'+memberTotal+'__Role" name="members['+memberTotal+'].Role">'+
                             '<option value="leadDev" >Lead Dev</option>'+
                             '<option value="seniorDev" >Senior Dev</option>'+
                             '<option value="intermediateDev" >Regular Dev</option>'+

@@ -1,168 +1,199 @@
-﻿th{
-    font-size:13px;
+﻿th {
+    font-size: 13px;
     text-align: center;
-  }
-    p{
-        width: 160px;
-    }
-  h3{
-    margin-top:10px;
-  }
-  input[type=checkbox]{
+}
+
+p {
+    width: 160px;
+}
+
+h3 {
+    margin-top: 10px;
+}
+
+input[type=checkbox] {
     width: 20px;
     height: 20px;
-  }
-  input[type=checkbox]:hover{
-      cursor: pointer;
-  }
-  .btn:focus, .btn:active{
-    outline:none !important;
-    box-shadow:none !important;
-  }
-  .navbar-default{
+}
+
+    input[type=checkbox]:hover {
+        cursor: pointer;
+    }
+
+.btn:focus, .btn:active {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.navbar-default {
     border: none;
     margin-bottom: 40px;
     box-shadow: 0 2px 1px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-  }
-  .sprint-heading{
-    display:flex;
+}
+
+.sprint-heading {
+    display: flex;
     justify-content: flex-start;
-  }
-  .sprint-name-edit{
-    width:700px;
-  }
-  .sprint-name:hover{
+}
+
+.sprint-name-edit {
+    width: 700px;
+}
+
+.sprint-name:hover {
     cursor: pointer;
-  }
-  .add-member-btn{
+}
+
+.add-member-btn {
     margin-left: 15px;
-  }
-  .sprint-control-panel{
+}
+
+.sprint-control-panel {
     display: flex;
     justify-content: space-between;
     width: 100%;
-  }
-  .form-control{
+}
+
+.form-control {
     width: 76px;
-  }
-  .form-control-name{
-      width: 90px;
-  }
-  .nav-control-panel{
+}
+
+.form-control-name {
+    width: 90px;
+}
+
+.nav-control-panel {
     display: flex;
     justify-content: space-between;
     height: 45px;
     margin-top: 25px;
     margin-bottom: 20px;
-  }
-  .nav-btn{
+}
+
+.nav-btn {
     display: flex;
     align-items: baseline;
     padding: 0px 16px;
-  }
-  .crud-control-panel{
+}
+
+.crud-control-panel {
     margin-top: 40px;
     display: flex;
     justify-content: space-between;
     align-items: stretch;
-  }
-  .btn-control-panel{
+}
+
+.btn-control-panel {
     display: flex;
     justify-content: space-between;
     width: 165px;
-  }
-  .edit-sprint-btn{
+}
+
+.edit-sprint-btn {
     display: none;
-  }
-  .ctrl-btn{
+}
+
+.ctrl-btn {
     margin-right: 10px;
-  }
-  .ctrl-btn:last-child{
-    margin-right:0px;
-  }
-  .panel{
+}
+
+    .ctrl-btn:last-child {
+        margin-right: 0px;
+    }
+
+.panel {
     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-    margin-bottom:30px;
-  }
-  .panel-body{
+    margin-bottom: 30px;
+}
+
+.panel-body {
     overflow-x: auto;
-  }
-  .sprint-remove{
+}
+
+.sprint-remove {
     margin-top: -5px;
     margin-right: -9px;
     height: 14px;
-  }
-  .sprint-remove:hover{
+}
+
+.sprint-remove:hover {
     cursor: pointer;
     color: #d43f3a;
-  }
-  .dropdown-toggle{
+}
+
+.dropdown-toggle {
     width: 80px;
-  }
-  .btn, .btn:active, .btn:focus{
-    border: 1px solid transparent !important;
-  }
-  .popover-title, .popover-content{
+}
+
+.popover-title, .popover-content {
     font-family: 'Roboto', sans-serif;
-  }
-  .final-values-panel{
-      display: flex;
-      justify-content: space-around;
-      margin-top: 40px;
-  }
-  .final-value{
-      font-size: 40px;
-  }
-  .role-select{
-      border-radius:4px; 
-      height:34px;
-      border: 1px solid #ccc;
-      padding: 8px;
-  }
-  .role-select:hover{
-      cursor:pointer;
-  }
-  option:hover{
-      cursor:pointer;
-  }
-  .add-sprint{
-      width: 100px;
-      font-size: 50px;
-  }
-  #checkbox-cell{
-      min-width: 36px;
-  }
-  .btn-modal{
-      display: none;
-  }
-  .modal-body{
-      padding: 75px;
-  }
-  .modal-warning{
-      display: flex;
-      margin: 0px auto;
-      width: 100px;
-      margin-bottom: 35px;
-  }
-  .modal-text{
-      font-size: 24px;
-      text-align: center;
-      width: 100%;
-  }
-  /* boot-strap select change width */
-    .bootstrap-select.btn-group .dropdown-menu, .btn.dropdown-toggle.btn-default, .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn){
-        min-width: 90px !important;
-        width:110px;
+}
+
+.final-values-panel {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 40px;
+}
+
+.final-value {
+    font-size: 40px;
+}
+
+.role-select {
+    border-radius: 4px;
+    height: 34px;
+    border: 1px solid #ccc;
+    padding: 8px;
+}
+
+    .role-select:hover {
+        cursor: pointer;
     }
-  /* iPhone 5 */
-  @media only screen and (min-width: 320px) and (max-width: 374px){
-    .btn-control-panel {width: 60px;}
-  }
-  /* Phones */
-  @media only screen and (min-width: 320px) and (max-width: 567px){
-    th{font-size: 12px;}
-    .sprint-name {font-size: 18px;}
-    .btn-control-panel {justify-content: flex-end;}
-    .add-member-text {display:none;}
-    .add-member-btn {margin-right:6px;}
-  }
+
+option:hover {
+    cursor: pointer;
+}
+
+.add-sprint {
+    width: 100px;
+    font-size: 50px;
+}
+
+#checkbox-cell {
+    min-width: 36px;
+}
+
+
+/* boot-strap select change width */
+.bootstrap-select.btn-group .dropdown-menu, .btn.dropdown-toggle.btn-default, .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
+    min-width: 90px !important;
+    width: 110px;
+}
+/* iPhone 5 */
+@media only screen and (min-width: 320px) and (max-width: 374px) {
+    .btn-control-panel {
+        width: 60px;
+    }
+}
+/* Phones */
+@media only screen and (min-width: 320px) and (max-width: 567px) {
+    th {
+        font-size: 12px;
+    }
+
+    .sprint-name {
+        font-size: 18px;
+    }
+
+    .btn-control-panel {
+        justify-content: flex-end;
+    }
+
+    .add-member-text {
+        display: none;
+    }
+
+    .add-member-btn {
+        margin-right: 6px;
+    }
+}

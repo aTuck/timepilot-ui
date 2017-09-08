@@ -32,8 +32,7 @@ namespace TimePilot.App_Start
         {
             //Business layer services
             container.RegisterType<IProjectService, ProjectService>();
-            container.RegisterType<IProjectRepository, ProjectRepository>();
-
+            //container.RegisterType<IProjectRepository, ProjectRepository>();
         }
     }
 }
